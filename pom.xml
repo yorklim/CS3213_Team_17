@@ -35,7 +35,14 @@
     <developerConnection>scm:git:ssh://github.com:sqlancer/sqlancer.git</developerConnection>
   </scm>
   <properties>
+    <sonar.organization>yorklim</sonar.organization>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <sonar.sources>src</sonar.sources>
+    <sonar.tests>test</sonar.tests>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <sonar.coverage.jacoco.xmlReportPaths>
+    ../app-it/target/site/jacoco-aggregate/jacoco.xml
+    </sonar.coverage.jacoco.xmlReportPaths>
   </properties>
   <build>
     <sourceDirectory>src</sourceDirectory>
@@ -92,6 +99,7 @@
         <version>0.8.8</version>
         <executions>
           <execution>
+            <id>prepare-agent</id>
             <goals>
               <goal>prepare-agent</goal>
             </goals>
@@ -102,6 +110,11 @@
             <goals>
               <goal>report</goal>
             </goals>
+            <configuration>
+              <formats>
+                <format>XML</format>
+              </formats>
+            </configuration>
           </execution>
         </executions>
       </plugin>
