@@ -22,7 +22,7 @@ public class OceanBaseColumnReference implements OceanBaseExpression {
     }
 
     public OceanBaseConstant getValue() {
-        return value;
+        return getExpectedValue();
     }
 
     @Override
