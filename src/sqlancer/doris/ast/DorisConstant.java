@@ -609,20 +609,15 @@ public abstract class DorisConstant implements DorisExpression {
 
         @Override
         public DorisConstant valueEquals(DorisConstant rightVal) {
-            if (rightVal.isNull()) {
-                return DorisConstant.createNullConstant();
-            }
-            if (rightVal.isBoolean()) {
-                return DorisConstant.createBooleanConstant(value == rightVal.asBoolean());
-            }
-            if (rightVal.isNum() || rightVal.isString() && DorisNumberUtils.isNumber(rightVal.asString())) {
-                return DorisConstant.createBooleanConstant((value ? 1 : 0) == rightVal.asFloat());
-            }
-            throw new AssertionError(rightVal);
+            return valueLessThanOrEquals(rightVal);
         }
 
         @Override
         public DorisConstant valueLessThan(DorisConstant rightVal) {
+            return valueLessThanOrEquals(rightVal);
+        }
+
+        private DorisConstant valueLessThanOrEquals(DorisConstant rightVal) {
             if (rightVal.isNull()) {
                 return DorisConstant.createNullConstant();
             }
