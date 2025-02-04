@@ -336,6 +336,9 @@ public final class Randomly {
 
         public abstract String getString(Randomly r);
 
+        /**
+         * @param r This object is used only in SOPHISTICATED strategy 
+         */
         public String transformCachedString(Randomly r, String s) {
             return s;
         }
