@@ -647,7 +647,7 @@ public final class Main {
                         int maxNrDbs = options.getMaxGeneratedDatabases();
                         // run without a limit if maxNrDbs == -1
                         for (int i = 0; i < maxNrDbs || maxNrDbs == -1; i++) {
-                            Boolean continueRunning = run(options, execService, executorFactory, r, databaseName);
+                            Boolean continueRunning = run(options, executorFactory, r, databaseName);
                             if (!continueRunning) {
                                 someOneFails.set(true);
                                 break;
@@ -661,8 +661,8 @@ public final class Main {
                     }
                 }
 
-                private boolean run(MainOptions options, ExecutorService execService,
-                        DBMSExecutorFactory<?, ?, ?> executorFactory, Randomly r, final String databaseName) {
+                private boolean run(MainOptions options, DBMSExecutorFactory<?, ?, ?> executorFactory, 
+                        Randomly r, final String databaseName) {
                     DBMSExecutor<?, ?, ?> executor = executorFactory.getDBMSExecutor(databaseName, r);
                     try {
                         executor.run();
