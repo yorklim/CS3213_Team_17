@@ -473,7 +473,7 @@ public abstract class SQLite3Expression implements Expression<SQLite3Column> {
         // comparison, with precedence to the collating function of the left operand.
         @Override
         public SQLite3CollateSequence getExplicitCollateSequence() {
-            return collate;
+            return getCollate();
         }
 
         @Override

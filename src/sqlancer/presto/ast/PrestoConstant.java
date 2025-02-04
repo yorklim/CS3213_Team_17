@@ -233,21 +233,14 @@ public abstract class PrestoConstant implements PrestoExpression {
     }
 
     public static PrestoExpression createArrayConstant(PrestoSchema.PrestoCompositeDataType type) {
-        PrestoSchema.PrestoCompositeDataType elementType = type.getElementType();
-        long size = Randomly.getNotCachedInteger(0, 10);
-
-        List<PrestoExpression> elements = new ArrayList<>();
-        for (int i = 0; i <= size; i++) {
-            if (elementType.getPrimitiveDataType() == PrestoSchema.PrestoDataType.ARRAY) {
-                elements.add(createArrayConstant(elementType));
-            } else {
-                elements.add(generateConstant(elementType, false));
-            }
-        }
-        return new PrestoArrayConstant(elements);
+        return createListConstant(type);
     }
 
     public static PrestoExpression createMapConstant(PrestoSchema.PrestoCompositeDataType type) {
+        return createListConstant(type);
+    }
+
+    private static PrestoExpression createListConstant(PrestoSchema.PrestoCompositeDataType type) {
         PrestoSchema.PrestoCompositeDataType elementType = type.getElementType();
         long size = Randomly.getNotCachedInteger(0, 10);
 

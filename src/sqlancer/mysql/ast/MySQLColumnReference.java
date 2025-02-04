@@ -21,7 +21,7 @@ public class MySQLColumnReference implements MySQLExpression {
     }
 
     public MySQLConstant getValue() {
-        return value;
+        return getExpectedValue();
     }
 
     @Override
