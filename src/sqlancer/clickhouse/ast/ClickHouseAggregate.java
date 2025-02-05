@@ -37,10 +37,6 @@ public class ClickHouseAggregate extends ClickHouseExpression {
             return Randomly.fromOptions(values());
         }
 
-        public static ClickHouseAggregateFunction getRandom(ClickHouseDataType type) {
-            return Randomly.fromOptions(values());
-        }
-
         public ClickHouseDataType getType(ClickHouseDataType returnType) {
             return returnType;
         }
