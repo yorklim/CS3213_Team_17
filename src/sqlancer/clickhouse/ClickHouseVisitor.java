@@ -39,11 +39,11 @@ public interface ClickHouseVisitor {
 
     default void visit(ClickHouseSelect s, boolean inner) {
 
-    };
+    }
 
     default void visit(ClickHouseColumnReference columnReference) {
 
-    };
+    }
 
     default void visit(ClickHouseExpression.ClickHousePostfixText op) {
 

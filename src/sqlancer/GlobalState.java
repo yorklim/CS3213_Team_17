@@ -82,7 +82,7 @@ public abstract class GlobalState<O extends DBMSSpecificOptions<?>, S extends Ab
         this.databaseName = databaseName;
     }
 
-    private ExecutionTimer executePrologue(Query<?> q) throws Exception {
+    private ExecutionTimer executePrologue(Query<?> q) {
         boolean logExecutionTime = getOptions().logExecutionTime();
         ExecutionTimer timer = null;
         if (logExecutionTime) {

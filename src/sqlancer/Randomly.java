@@ -295,17 +295,18 @@ public final class Randomly {
             public String transformCachedString(Randomly r, String randomString) {
                 if (Randomly.getBoolean()) {
                     return randomString.toLowerCase();
-                } else if (Randomly.getBoolean()) {
-                    return randomString.toUpperCase();
-                } else {
-                    char[] chars = randomString.toCharArray();
-                    if (chars.length != 0) {
-                        for (int i = 0; i < Randomly.smallNumber(); i++) {
-                            chars[r.getInteger(0, chars.length)] = ALPHABET.charAt(r.getInteger(0, ALPHABET.length()));
-                        }
-                    }
-                    return new String(chars);
                 }
+                if (Randomly.getBoolean()) {
+                    return randomString.toUpperCase();
+                }
+
+                char[] chars = randomString.toCharArray();
+                if (chars.length != 0) {
+                    for (int i = 0; i < Randomly.smallNumber(); i++) {
+                        chars[r.getInteger(0, chars.length)] = ALPHABET.charAt(r.getInteger(0, ALPHABET.length()));
+                    }
+                }
+                return new String(chars);
             }
 
         };
@@ -335,6 +336,14 @@ public final class Randomly {
 
         public abstract String getString(Randomly r);
 
+        /**
+         * @param r
+         *            This object is used only in SOPHISTICATED strategy
+         * @param s
+         *            String to be transformed
+         *
+         * @return transformed string
+         */
         public String transformCachedString(Randomly r, String s) {
             return s;
         }

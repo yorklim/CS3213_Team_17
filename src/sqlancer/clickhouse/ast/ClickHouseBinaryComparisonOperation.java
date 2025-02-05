@@ -182,6 +182,14 @@ public class ClickHouseBinaryComparisonOperation extends ClickHouseExpression
 
         private final String[] textRepresentation;
 
+        /**
+         * @param left
+         *            Left operands
+         * @param right
+         *            Right operands
+         *
+         * @return result of operation
+         */
         ClickHouseConstant apply(ClickHouseConstant left, ClickHouseConstant right) {
             return null;
         }

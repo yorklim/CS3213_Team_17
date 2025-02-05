@@ -44,11 +44,6 @@ public class StatementReducer<G extends GlobalState<O, ?, C>, O extends DBMSSpec
             knownToReproduceBugStatements.add((Query<C>) stat);
         }
 
-        // System.out.println("Starting query:");
-        // Main.StateLogger logger = newGlobalState.getLogger();
-        // printQueries(knownToReproduceBugStatements);
-        // System.out.println();
-
         if (knownToReproduceBugStatements.size() <= 1) {
             return;
         }
@@ -62,8 +57,7 @@ public class StatementReducer<G extends GlobalState<O, ?, C>, O extends DBMSSpec
                 && hasNotReachedLimit(currentReduceTime, maxReduceTime)) {
             observedChange = false;
 
-            knownToReproduceBugStatements = tryReduction(state, reproducer, newGlobalState,
-                    knownToReproduceBugStatements);
+            knownToReproduceBugStatements = tryReduction(reproducer, newGlobalState, knownToReproduceBugStatements);
 
             if (!observedChange) {
                 if (partitionNum == knownToReproduceBugStatements.size()) {
@@ -74,14 +68,12 @@ public class StatementReducer<G extends GlobalState<O, ?, C>, O extends DBMSSpec
             }
         }
 
-        // System.out.println("Reduced query:");
-        // printQueries(knownToReproduceBugStatements);
         newGlobalState.getState().setStatements(new ArrayList<>(knownToReproduceBugStatements));
         newGlobalState.getLogger().logReduced(newGlobalState.getState());
 
     }
 
-    private List<Query<C>> tryReduction(G state, // NOPMD
+    private List<Query<C>> tryReduction(// NOPMD
             Reproducer<G> reproducer, G newGlobalState, List<Query<C>> knownToReproduceBugStatements) throws Exception {
 
         List<Query<C>> statements = knownToReproduceBugStatements;
@@ -110,7 +102,6 @@ public class StatementReducer<G extends GlobalState<O, ?, C>, O extends DBMSSpec
                         observedChange = true;
                         statements = candidateStatements;
                         partitionNum = Math.max(partitionNum - 1, 2);
-                        // reproducer.outputHook((SQLite3GlobalState) newGlobalState);
                         newGlobalState.getLogger().logReduced(newGlobalState.getState());
                         break;
 

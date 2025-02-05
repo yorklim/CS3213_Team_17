@@ -69,15 +69,13 @@ public class CitusProvider extends PostgresProvider {
                 generateOnlyKnown)), //
         CLUSTER(PostgresClusterGenerator::create), //
         COMMIT(g -> {
-            SQLQueryAdapter query;
             if (Randomly.getBoolean()) {
-                query = new SQLQueryAdapter("COMMIT", true);
-            } else if (Randomly.getBoolean()) {
-                query = PostgresTransactionGenerator.executeBegin();
-            } else {
-                query = new SQLQueryAdapter("ROLLBACK", true);
+                return new SQLQueryAdapter("COMMIT", true);
             }
-            return query;
+            if (Randomly.getBoolean()) {
+                return PostgresTransactionGenerator.executeBegin();
+            }
+            return new SQLQueryAdapter("ROLLBACK", true);
         }), //
         CREATE_STATISTICS(PostgresStatisticsGenerator::insert), //
         DROP_STATISTICS(PostgresStatisticsGenerator::remove), //
