@@ -661,8 +661,8 @@ public final class Main {
                     }
                 }
 
-                private boolean run(MainOptions options, DBMSExecutorFactory<?, ?, ?> executorFactory, 
-                        Randomly r, final String databaseName) {
+                private boolean run(MainOptions options, DBMSExecutorFactory<?, ?, ?> executorFactory, Randomly r,
+                        final String databaseName) {
                     DBMSExecutor<?, ?, ?> executor = executorFactory.getDBMSExecutor(databaseName, r);
                     try {
                         executor.run();

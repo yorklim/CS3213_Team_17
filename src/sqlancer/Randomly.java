@@ -298,7 +298,7 @@ public final class Randomly {
                 }
                 if (Randomly.getBoolean()) {
                     return randomString.toUpperCase();
-                } 
+                }
 
                 char[] chars = randomString.toCharArray();
                 if (chars.length != 0) {
@@ -337,7 +337,8 @@ public final class Randomly {
         public abstract String getString(Randomly r);
 
         /**
-         * @param r This object is used only in SOPHISTICATED strategy 
+         * @param r
+         *            This object is used only in SOPHISTICATED strategy
          */
         public String transformCachedString(Randomly r, String s) {
             return s;
