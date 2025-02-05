@@ -184,9 +184,11 @@ public class ClickHouseBinaryComparisonOperation extends ClickHouseExpression
 
         /**
          * @param left
-         *            To be used when overriding this method
+         *            Left operands
          * @param right
-         *            To be used when overriding this method
+         *            Right operands
+         *
+         * @return result of operation
          */
         ClickHouseConstant apply(ClickHouseConstant left, ClickHouseConstant right) {
             return null;

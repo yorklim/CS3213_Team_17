@@ -339,6 +339,10 @@ public final class Randomly {
         /**
          * @param r
          *            This object is used only in SOPHISTICATED strategy
+         * @param s
+         *            String to be transformed
+         *
+         * @return transformed string
          */
         public String transformCachedString(Randomly r, String s) {
             return s;
