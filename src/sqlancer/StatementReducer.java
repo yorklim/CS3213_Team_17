@@ -57,8 +57,7 @@ public class StatementReducer<G extends GlobalState<O, ?, C>, O extends DBMSSpec
                 && hasNotReachedLimit(currentReduceTime, maxReduceTime)) {
             observedChange = false;
 
-            knownToReproduceBugStatements = tryReduction(reproducer, newGlobalState,
-                    knownToReproduceBugStatements);
+            knownToReproduceBugStatements = tryReduction(reproducer, newGlobalState, knownToReproduceBugStatements);
 
             if (!observedChange) {
                 if (partitionNum == knownToReproduceBugStatements.size()) {
