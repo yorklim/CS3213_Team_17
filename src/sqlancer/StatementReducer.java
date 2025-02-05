@@ -44,11 +44,6 @@ public class StatementReducer<G extends GlobalState<O, ?, C>, O extends DBMSSpec
             knownToReproduceBugStatements.add((Query<C>) stat);
         }
 
-        // System.out.println("Starting query:");
-        // Main.StateLogger logger = newGlobalState.getLogger();
-        // printQueries(knownToReproduceBugStatements);
-        // System.out.println();
-
         if (knownToReproduceBugStatements.size() <= 1) {
             return;
         }
