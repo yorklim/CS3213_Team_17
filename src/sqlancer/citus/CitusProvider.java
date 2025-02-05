@@ -72,7 +72,8 @@ public class CitusProvider extends PostgresProvider {
             SQLQueryAdapter query;
             if (Randomly.getBoolean()) {
                 query = new SQLQueryAdapter("COMMIT", true);
-            } else if (Randomly.getBoolean()) {
+            }
+            if (Randomly.getBoolean()) {
                 query = PostgresTransactionGenerator.executeBegin();
             } else {
                 query = new SQLQueryAdapter("ROLLBACK", true);
