@@ -1,6 +1,5 @@
 package sqlancer.clickhouse.gen;
 
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,7 +30,7 @@ public class ClickHouseInsertGenerator extends AbstractInsertGenerator<ClickHous
         ClickHouseErrors.addExpectedExpressionErrors(errors);
     }
 
-    public static SQLQueryAdapter getQuery(ClickHouseGlobalState globalState) throws SQLException {
+    public static SQLQueryAdapter getQuery(ClickHouseGlobalState globalState) {
         return new ClickHouseInsertGenerator(globalState).get();
     }
 
