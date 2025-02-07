@@ -210,7 +210,7 @@ public class ClickHouseSchema extends AbstractSchema<ClickHouseGlobalState, Clic
         }
     }
 
-    public static ClickHouseSchema fromConnection(SQLConnection con, String databaseName) throws SQLException {
+    public static ClickHouseSchema fromConnection(SQLConnection con) throws SQLException {
         List<ClickHouseTable> databaseTables = new ArrayList<>();
         List<String> tableNames = getTableNames(con);
         for (String tableName : tableNames) {

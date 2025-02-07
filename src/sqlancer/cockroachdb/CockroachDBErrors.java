@@ -191,8 +191,8 @@ public final class CockroachDBErrors {
             errors.add("expected required columns to be a subset of output columns");
         }
 
-        errors.add("unable to vectorize execution plan"); // SET vectorize=experimental_always;
-        errors.add(" mismatched physical types at index"); // SET vectorize=experimental_always;
+        errors.add("unable to vectorize execution plan");
+        errors.add(" mismatched physical types at index");
         errors.add("unsupported type time");
         errors.add("unsupported type varbit");
         errors.add("unsupported type bit");

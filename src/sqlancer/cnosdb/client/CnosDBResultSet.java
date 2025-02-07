@@ -1,7 +1,6 @@
 package sqlancer.cnosdb.client;
 
 import java.io.Reader;
-import java.sql.SQLException;
 import java.util.Iterator;
 
 import org.apache.commons.csv.CSVFormat;
@@ -22,7 +21,7 @@ public class CnosDBResultSet {
     public void close() {
     }
 
-    public boolean next() throws SQLException {
+    public boolean next() {
         if (records.hasNext()) {
             next = records.next();
             return true;
@@ -30,23 +29,19 @@ public class CnosDBResultSet {
         return false;
     }
 
-    public int getInt(int i) throws SQLException {
+    public int getInt(int i) {
         return Integer.parseInt(next.get(i - 1));
     }
 
-    public String getString(int i) throws SQLException {
+    public String getString(int i) {
         return next.get(i - 1);
     }
 
-    public long getLong(int i) throws SQLException {
+    public long getLong(int i) {
         if (next.get(i - 1).isEmpty()) {
             throw new IgnoreMeException();
         }
         return Long.parseLong(next.get(i - 1));
     }
-
-    // public boolean getBool(int i) throws Exception {
-    // return Boolean.parseBoolean(getString(i));
-    // }
 
 }

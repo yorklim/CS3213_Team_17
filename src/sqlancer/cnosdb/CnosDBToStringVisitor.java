@@ -119,18 +119,13 @@ public final class CnosDBToStringVisitor extends ToStringVisitor<CnosDBExpressio
             case FULL:
                 sb.append("FULL OUTER JOIN");
                 break;
-            // case CROSS:
-            // sb.append("CROSS JOIN");
-            // break;
             default:
                 throw new AssertionError(j.getType());
             }
             sb.append(" ");
             visit(j.getTableReference());
-            // if (j.getType() != CnosDBJoinType.CROSS) {
             sb.append(" ON ");
             visit(j.getOnClause());
-            // }
         }
 
         if (s.getWhereClause() != null) {

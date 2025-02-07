@@ -34,8 +34,6 @@ public class CnosDBJoin implements CnosDBExpression {
 
     public enum CnosDBJoinType {
         INNER, LEFT, RIGHT, FULL;
-        // now not support
-        // CROSS;
 
         public static CnosDBJoinType getRandom() {
             return Randomly.fromOptions(values());

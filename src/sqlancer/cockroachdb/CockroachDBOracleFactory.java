@@ -28,10 +28,8 @@ public enum CockroachDBOracleFactory implements OracleFactory<CockroachDBProvide
                 CockroachDBProvider.CockroachDBGlobalState globalState) throws SQLException {
             CockroachDBExpressionGenerator gen = new CockroachDBExpressionGenerator(globalState);
             ExpectedErrors errors = ExpectedErrors.newErrors().with(CockroachDBErrors.getExpressionErrors())
-                    .with(CockroachDBErrors.getTransactionErrors()).with("unable to vectorize execution plan") // SET
-                                                                                                               // vectorize=experimental_always;
-                    .with(" mismatched physical types at index") // SET vectorize=experimental_always;
-                    .build();
+                    .with(CockroachDBErrors.getTransactionErrors()).with("unable to vectorize execution plan")
+                    .with(" mismatched physical types at index").build();
             return new NoRECOracle<>(globalState, gen, errors);
         }
     },

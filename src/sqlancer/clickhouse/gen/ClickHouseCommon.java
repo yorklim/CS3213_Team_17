@@ -24,8 +24,7 @@ public final class ClickHouseCommon {
         return String.format("x%d", nr);
     }
 
-    public static List<ClickHouseExpression> getTableRefs(List<ClickHouseSchema.ClickHouseTable> tables,
-            ClickHouseSchema s) {
+    public static List<ClickHouseExpression> getTableRefs(List<ClickHouseSchema.ClickHouseTable> tables) {
         List<ClickHouseExpression> tableRefs = new ArrayList<>();
         for (ClickHouseSchema.ClickHouseTable t : tables) {
             ClickHouseTableReference tableRef;

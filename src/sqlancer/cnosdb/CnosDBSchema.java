@@ -140,7 +140,7 @@ public class CnosDBSchema extends AbstractSchema<CnosDBGlobalState, CnosDBSchema
             super(tables);
         }
 
-        public CnosDBRowValue getRandomRowValue(CnosDBConnection con) {
+        public CnosDBRowValue getRandomRowValue() {
             return null;
         }
 
@@ -195,7 +195,6 @@ public class CnosDBSchema extends AbstractSchema<CnosDBGlobalState, CnosDBSchema
             return res;
         }
 
-        // SELECT COUNT(*) FROM table;
         @Override
         public long getNrRows(CnosDBGlobalState globalState) {
             long res;
