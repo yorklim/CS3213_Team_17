@@ -21,7 +21,7 @@ on:
 jobs:
   misc:
     name: General tests
-    runs-on: ubuntu-latested
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
@@ -46,7 +46,7 @@ jobs:
 
   citus:
     name: DBMS Tests (Citus)
-    runs-on: ubuntu-latested
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -94,7 +94,7 @@ jobs:
 
   cnosdb:
     name: DBMS Tests (CnosDB)
-    runs-on: ubuntu-latested
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -120,7 +120,7 @@ jobs:
 
   clickhouse:
     name: DBMS Tests (ClickHouse)
-    runs-on: ubuntu-latested
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -149,7 +149,7 @@ jobs:
 
   cockroachdb:
     name: DBMS Tests (CockroachDB)
-    runs-on: ubuntu-latested
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -177,7 +177,7 @@ jobs:
 
   cockroachdb-qpg:
     name: QPG Tests (CockroachDB)
-    runs-on: ubuntu-latested
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -202,7 +202,7 @@ jobs:
 
   databend:
     name: DBMS Tests (Databend)
-    runs-on: ubuntu-latested
+    runs-on: ubuntu-latest
     services:
       databend:
         image: datafuselabs/databend:v1.2.687-nightly
@@ -232,7 +232,7 @@ jobs:
 
   datafusion:
     name: DBMS Tests (DataFusion)
-    runs-on: ubuntu-latested
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -260,7 +260,7 @@ jobs:
 
   duckdb:
     name: DBMS Tests (DuckDB)
-    runs-on: ubuntu-latested
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
@@ -281,7 +281,7 @@ jobs:
 
   h2:
     name: DBMS Tests (H2)
-    runs-on: ubuntu-latested
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -299,7 +299,7 @@ jobs:
 
   hsqldb:
     name: DBMS Tests (HSQLB)
-    runs-on: ubuntu-latested
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -319,7 +319,7 @@ jobs:
 
   mariadb:
     name: DBMS Tests (MariaDB)
-    runs-on: ubuntu-latested
+    runs-on: ubuntu-latest
     services:
       mysql:
         image: mariadb:11.3.2
@@ -348,7 +348,7 @@ jobs:
 
   materialize:
     name: DBMS Tests (Materialize)
-    runs-on: ubuntu-latested
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -376,7 +376,7 @@ jobs:
 
   materialize-qpg:
     name: QPG Tests (Materialize)
-    runs-on: ubuntu-latested
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -403,7 +403,7 @@ jobs:
 
   mysql:
     name: DBMS Tests (MySQL)
-    runs-on: ubuntu-latested
+    runs-on: ubuntu-latest
     services:
       mysql:
         image: mysql:8.0.36
@@ -434,7 +434,7 @@ jobs:
 
   oceanbase:
     name: DBMS Tests (OceanBase)
-    runs-on: ubuntu-latested
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -459,7 +459,7 @@ jobs:
           OCEANBASE_AVAILABLE=true mvn test -Dtest=TestOceanBaseTLP
   postgres:
     name: DBMS Tests (PostgreSQL)
-    runs-on: ubuntu-latested
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -488,7 +488,7 @@ jobs:
 
   presto:
     name: DBMS Tests (Presto)
-    runs-on: ubuntu-latested
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -514,7 +514,7 @@ jobs:
           PRESTO_AVAILABLE=true mvn -Dtest=TestPrestoTLP test
   sqlite:
     name: DBMS Tests (SQLite)
-    runs-on: ubuntu-latested
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
@@ -536,7 +536,7 @@ jobs:
 
   sqlite-qpg:
     name: QPG Tests (SQLite)
-    runs-on: ubuntu-latested
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
@@ -556,7 +556,7 @@ jobs:
 
   tidb:
     name: DBMS Tests (TiDB)
-    runs-on: ubuntu-latested
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -583,7 +583,7 @@ jobs:
 
   tidb-qpg:
     name: QPG Tests (TiDB)
-    runs-on: ubuntu-latested
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -608,7 +608,7 @@ jobs:
 
   yugabyte:
     name: DBMS Tests (YugabyteDB)
-    runs-on: ubuntu-latested
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -635,7 +635,7 @@ jobs:
 
   doris:
     name: DBMS Tests (Apache Doris)
-    runs-on: ubuntu-latested
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
@@ -676,7 +676,7 @@ jobs:
 
   reducer:
     name: Reducer Tests
-    runs-on: ubuntu-latested
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
