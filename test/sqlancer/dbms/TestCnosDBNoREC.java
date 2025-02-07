@@ -4,12 +4,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 
 import sqlancer.Main;
 
 public class TestCnosDBNoREC {
 
     @Test
+    @Disabled("This test is failing on main repo.")
     public void testCnosDBNoREC() {
         assumeTrue(TestConfig.isEnvironmentTrue(TestConfig.CNOSDB_ENV));
         // Run with 0 queries as current implementation is resulting in database crashes

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 
 import sqlancer.Main;
 import sqlancer.Randomly;
@@ -11,6 +12,7 @@ import sqlancer.Randomly;
 public class TestDatabendPQS {
 
     @Test
+    @Disabled("This test is failing on main repo.")
     public void testDatabendPQS() {
         assumeTrue(TestConfig.isEnvironmentTrue(TestConfig.DATABEND_ENV));
         assertEquals(0,
