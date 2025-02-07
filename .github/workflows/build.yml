@@ -33,4 +33,4 @@ jobs:
       - name: Build and analyze
         env:
           SONAR_TOKEN: ea43ab07e4913119db516cbe5613c5023a7762bc
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=NUS-CS3213-AY2425S2_cs3213-project-group-17 -DskipTests
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=yorklim_CS3213_Team_17 -DskipTests
