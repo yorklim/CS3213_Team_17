@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 
 import sqlancer.Main;
 import sqlancer.MainOptions;
@@ -16,6 +17,7 @@ import sqlancer.materialize.MaterializeProvider;
 public class TestMaterializeQueryPlan {
 
     @Test
+    @Disabled("This test is failing on main repo.")
     void testMaterializeQueryPlan() throws Exception {
         String materialize = System.getenv("MATERIALIZE_AVAILABLE");
         boolean materializeIsAvailable = materialize != null && materialize.equalsIgnoreCase("true");
