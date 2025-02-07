@@ -117,7 +117,7 @@ public class CnosDBExpressionGenerator implements ExpressionGenerator<CnosDBExpr
             throw new IgnoreMeException();
         }
         CnosDBFunctionWithUnknownResult randomFunction = Randomly.fromList(supportedFunctions);
-        return new CnosDBFunction(randomFunction, type, randomFunction.getArguments(type, this, depth + 1));
+        return new CnosDBFunction(randomFunction, type, randomFunction.getArguments(this, depth + 1));
     }
 
     private CnosDBExpression generateBooleanExpression(int depth) {
