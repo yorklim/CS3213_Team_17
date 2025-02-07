@@ -44,8 +44,4 @@ public class CnosDBResultSet {
         return Long.parseLong(next.get(i - 1));
     }
 
-    // public boolean getBool(int i) throws Exception {
-    // return Boolean.parseBoolean(getString(i));
-    // }
-
 }
