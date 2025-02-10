@@ -44,7 +44,7 @@ public class DatabendQueryPartitioningGroupByTester extends DatabendQueryPartiti
 
     @Override
     List<DatabendExpression> generateFetchColumns() {
-        return Randomly.nonEmptySubset(targetTables.getColumns()).stream().map(c -> new DatabendColumnReference(c))
+        return Randomly.nonEmptySubset(targetTables.getColumns()).stream().map(DatabendColumnReference::new)
                 .collect(Collectors.toList());
     }
 
