@@ -260,7 +260,7 @@ public final class DataFusionExpressionGenerator
 
     @Override
     public List<DataFusionJoin> getRandomJoinClauses() {
-        List<DataFusionTableReference> tableList = tables.stream().map(t -> new DataFusionTableReference(t))
+        List<DataFusionTableReference> tableList = tables.stream().map(DataFusionTableReference::new)
                 .collect(Collectors.toList());
         List<DataFusionJoin> joins = DataFusionJoin.getJoins(tableList, globalState);
         tables = tableList.stream().map(t -> t.getTable()).collect(Collectors.toList());
@@ -269,7 +269,7 @@ public final class DataFusionExpressionGenerator
 
     @Override
     public List<DataFusionExpression> getTableRefs() {
-        return tables.stream().map(t -> new DataFusionTableReference(t)).collect(Collectors.toList());
+        return tables.stream().map(DataFusionTableReference::new).collect(Collectors.toList());
     }
 
     @Override
@@ -278,7 +278,7 @@ public final class DataFusionExpressionGenerator
         if (shouldUseAggregate) {
             select.setFetchColumnsString("COUNT(*)");
         } else {
-            List<DataFusionExpression> allColumns = columns.stream().map((c) -> new DataFusionColumnReference(c))
+            List<DataFusionExpression> allColumns = columns.stream().map(DataFusionColumnReference::new)
                     .collect(Collectors.toList());
             select.setFetchColumns(allColumns);
         }
@@ -300,6 +300,6 @@ public final class DataFusionExpressionGenerator
     @Override
     public List<DataFusionExpression> generateFetchColumns(boolean shouldCreateDummy) {
         List<DataFusionColumn> randomColumns = DataFusionTable.getRandomColumns(tables);
-        return randomColumns.stream().map((c) -> new DataFusionColumnReference(c)).collect(Collectors.toList());
+        return randomColumns.stream().map(DataFusionColumnReference::new).collect(Collectors.toList());
     }
 }
