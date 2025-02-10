@@ -57,9 +57,9 @@ public class DatabendQueryPartitioningBase
         groupByExpression = new ArrayList<>(columnOfLeafNode);
 
         select.setFetchColumns(
-                randomColumn.stream().map(c -> new DatabendColumnReference(c)).collect(Collectors.toList()));
+                randomColumn.stream().map(DatabendColumnReference::new).collect(Collectors.toList()));
         List<DatabendTable> tables = targetTables.getTables();
-        List<DatabendTableReference> tableList = tables.stream().map(t -> new DatabendTableReference(t))
+        List<DatabendTableReference> tableList = tables.stream().map(DatabendTableReference::new)
                 .collect(Collectors.toList());
         if (!DatabendBugs.bug9236) {
             List<DatabendJoin> joins = DatabendJoin.getJoins(tableList, state);
@@ -81,7 +81,7 @@ public class DatabendQueryPartitioningBase
 
     List<DatabendExpression> generateRandomColumns() {
         List<DatabendExpression> columns;
-        columns = Randomly.nonEmptySubset(targetTables.getColumns()).stream().map(c -> new DatabendColumnReference(c))
+        columns = Randomly.nonEmptySubset(targetTables.getColumns()).stream().map(DatabendColumnReference::new)
                 .collect(Collectors.toList());
         return columns;
     }
