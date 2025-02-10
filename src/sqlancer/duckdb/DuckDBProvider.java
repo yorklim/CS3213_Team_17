@@ -40,12 +40,12 @@ public class DuckDBProvider extends SQLProviderAdapter<DuckDBGlobalState, DuckDB
 
         INSERT(DuckDBInsertGenerator::getQuery), //
         CREATE_INDEX(DuckDBIndexGenerator::getQuery), //
-        VACUUM((g) -> new SQLQueryAdapter("VACUUM;")), //
-        ANALYZE((g) -> new SQLQueryAdapter("ANALYZE;")), //
+        VACUUM(g -> new SQLQueryAdapter("VACUUM;")), //
+        ANALYZE(g -> new SQLQueryAdapter("ANALYZE;")), //
         DELETE(DuckDBDeleteGenerator::generate), //
         UPDATE(DuckDBUpdateGenerator::getQuery), //
         CREATE_VIEW(DuckDBViewGenerator::generate), //
-        EXPLAIN((g) -> {
+        EXPLAIN(g -> {
             ExpectedErrors errors = new ExpectedErrors();
             DuckDBErrors.addExpressionErrors(errors);
             DuckDBErrors.addGroupByErrors(errors);
@@ -114,7 +114,7 @@ public class DuckDBProvider extends SQLProviderAdapter<DuckDBGlobalState, DuckDB
             throw new IgnoreMeException(); // TODO
         }
         StatementExecutor<DuckDBGlobalState, Action> se = new StatementExecutor<>(globalState, Action.values(),
-                DuckDBProvider::mapActions, (q) -> {
+                DuckDBProvider::mapActions, q -> {
                     if (globalState.getSchema().getDatabaseTables().isEmpty()) {
                         throw new IgnoreMeException();
                     }
