@@ -98,9 +98,7 @@ public class ASTBasedReducer<G extends GlobalState<O, ?, C>, O extends DBMSSpeci
                     Query<?> query = reducedStatements.get(i);
                     boolean initFlag = t.init(query.getQueryString());
                     int index = i;
-                    t.setStatementChangedCallBack((statementString) -> {
-                        updateStatements(statementString, index);
-                    });
+                    t.setStatementChangedCallBack(statementString -> updateStatements(statementString, index));
 
                     if (!initFlag) {
                         newGlobalState.getLogger()
