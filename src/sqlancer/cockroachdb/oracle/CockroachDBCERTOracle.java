@@ -53,8 +53,8 @@ public class CockroachDBCERTOracle extends CERTOracleBase<CockroachDBGlobalState
                 tables.getTables().stream().map(CockroachDBTableReference::new).collect(Collectors.toList()));
         gen = new CockroachDBExpressionGenerator(state).setColumns(tables.getColumns());
         List<CockroachDBExpression> fetchColumns = new ArrayList<>();
-        fetchColumns.addAll(Randomly.nonEmptySubset(tables.getColumns()).stream()
-                .map(CockroachDBColumnReference::new).collect(Collectors.toList()));
+        fetchColumns.addAll(Randomly.nonEmptySubset(tables.getColumns()).stream().map(CockroachDBColumnReference::new)
+                .collect(Collectors.toList()));
         select = new CockroachDBSelect();
         select.setFetchColumns(fetchColumns);
         select.setFromList(tableList);
