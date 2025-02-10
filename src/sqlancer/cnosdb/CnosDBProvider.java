@@ -86,7 +86,7 @@ public class CnosDBProvider extends ProviderAdapter<CnosDBGlobalState, CnosDBOpt
 
     protected void prepareTables(CnosDBGlobalState globalState) throws Exception {
         StatementExecutor<CnosDBGlobalState, Action> se = new StatementExecutor<>(globalState, Action.values(),
-                CnosDBProvider::mapActions, (q) -> {
+                CnosDBProvider::mapActions, q -> {
                     if (globalState.getSchema().getDatabaseTables().isEmpty()) {
                         throw new IgnoreMeException();
                     }
