@@ -44,7 +44,7 @@ public class CockroachDBTLPGroupByOracle extends CockroachDBTLPBase {
 
     @Override
     List<CockroachDBExpression> generateFetchColumns() {
-        return Randomly.nonEmptySubset(targetTables.getColumns().stream().map(c -> new CockroachDBColumnReference(c))
+        return Randomly.nonEmptySubset(targetTables.getColumns().stream().map(CockroachDBColumnReference::new)
                 .collect(Collectors.toList()));
     }
 
