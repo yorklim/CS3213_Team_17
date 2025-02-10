@@ -214,17 +214,17 @@ public class CnosDBSchema extends AbstractSchema<CnosDBGlobalState, CnosDBSchema
             List<CnosDBColumn> selectedColumns = new ArrayList<>();
             ArrayList<CnosDBColumn> remainingColumns = new ArrayList<>(this.getColumns());
 
-            remainingColumns.removeIf(column -> column instanceof CnosDBTimeColumn);
+            remainingColumns.removeIf(CnosDBTimeColumn.class::isInstance);
             CnosDBTimeColumn timeColumn = new CnosDBTimeColumn();
             timeColumn.setTable(this);
             selectedColumns.add(timeColumn);
 
-            remainingColumns.stream().filter(column -> column instanceof CnosDBTagColumn).findFirst().ifPresent(tag -> {
+            remainingColumns.stream().filter(CnosDBTagColumn.class::isInstance).findFirst().ifPresent(tag -> {
                 selectedColumns.add(tag);
                 remainingColumns.remove(tag);
             });
 
-            remainingColumns.stream().filter(column -> column instanceof CnosDBFieldColumn).findFirst()
+            remainingColumns.stream().filter(CnosDBFieldColumn.class::isInstance).findFirst()
                     .ifPresent(field -> {
                         selectedColumns.add(field);
                         remainingColumns.remove(field);
