@@ -44,7 +44,7 @@ public class DuckDBQueryPartitioningBase extends TernaryLogicPartitioningOracleB
         select = new DuckDBSelect();
         select.setFetchColumns(generateFetchColumns());
         List<DuckDBTable> tables = targetTables.getTables();
-        List<DuckDBTableReference> tableList = tables.stream().map(t -> new DuckDBTableReference(t))
+        List<DuckDBTableReference> tableList = tables.stream().map(DuckDBTableReference::new)
                 .collect(Collectors.toList());
         List<DuckDBJoin> joins = DuckDBJoin.getJoins(tableList, state);
         select.setJoinList(joins.stream().collect(Collectors.toList()));
@@ -57,7 +57,7 @@ public class DuckDBQueryPartitioningBase extends TernaryLogicPartitioningOracleB
         if (Randomly.getBoolean()) {
             columns.add(new DuckDBColumnReference(new DuckDBColumn("*", null, false, false)));
         } else {
-            columns = Randomly.nonEmptySubset(targetTables.getColumns()).stream().map(c -> new DuckDBColumnReference(c))
+            columns = Randomly.nonEmptySubset(targetTables.getColumns()).stream().map(DuckDBColumnReference::new)
                     .collect(Collectors.toList());
         }
         return columns;
