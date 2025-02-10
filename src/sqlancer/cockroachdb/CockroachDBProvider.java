@@ -62,11 +62,11 @@ public class CockroachDBProvider extends SQLProviderAdapter<CockroachDBGlobalSta
         DROP_VIEW(CockroachDBDropViewGenerator::drop), //
         COMMENT_ON(CockroachDBCommentOnGenerator::comment), //
         SHOW(CockroachDBShowGenerator::show), //
-        TRANSACTION((g) -> {
+        TRANSACTION(g -> {
             String s = Randomly.fromOptions("BEGIN", "ROLLBACK", "COMMIT");
             return new SQLQueryAdapter(s, ExpectedErrors.from("there is no transaction in progress",
                     "there is already a transaction in progress", "current transaction is aborted"));
-        }), EXPLAIN((g) -> {
+        }), EXPLAIN(g -> {
             StringBuilder sb = new StringBuilder("EXPLAIN ");
             ExpectedErrors errors = new ExpectedErrors();
             if (Randomly.getBoolean()) {
@@ -82,7 +82,7 @@ public class CockroachDBProvider extends SQLProviderAdapter<CockroachDBGlobalSta
             CockroachDBErrors.addExpressionErrors(errors);
             return new SQLQueryAdapter(sb.toString(), errors);
         }), //
-        SCRUB((g) -> new SQLQueryAdapter(
+        SCRUB(g -> new SQLQueryAdapter(
                 "EXPERIMENTAL SCRUB table " + g.getSchema().getRandomTable(t -> !t.isView()).getName(),
                 // https://github.com/cockroachdb/cockroach/issues/46401
                 ExpectedErrors.from("scrub-fk: column \"t.rowid\" does not exist",
@@ -91,7 +91,7 @@ public class CockroachDBProvider extends SQLProviderAdapter<CockroachDBGlobalSta
                                                                                               * cockroachdb / cockroach
                                                                                               * /issues/ 47031
                                                                                               */))), //
-        SPLIT((g) -> {
+        SPLIT(g -> {
             StringBuilder sb = new StringBuilder("ALTER INDEX ");
             CockroachDBTable randomTable = g.getSchema().getRandomTable();
             sb.append(randomTable.getName());
@@ -252,7 +252,7 @@ public class CockroachDBProvider extends SQLProviderAdapter<CockroachDBGlobalSta
         }
 
         if (globalState.getDbmsSpecificOptions().getTestOracleFactory().stream()
-                .anyMatch((o) -> o == CockroachDBOracleFactory.CERT)) {
+                .anyMatch(o -> o == CockroachDBOracleFactory.CERT)) {
             // Enfore statistic collected for all tables
             ExpectedErrors errors = new ExpectedErrors();
             CockroachDBErrors.addExpressionErrors(errors);
