@@ -382,7 +382,7 @@ public class DatabendNewExpressionGenerator
 
     @Override
     public List<DatabendJoin> getRandomJoinClauses() {
-        List<DatabendTableReference> tableList = tables.stream().map(t -> new DatabendTableReference(t))
+        List<DatabendTableReference> tableList = tables.stream().map(DatabendTableReference::new)
                 .collect(Collectors.toList());
         List<DatabendJoin> joins = DatabendJoin.getJoins(tableList, globalState);
         tables = tableList.stream().map(t -> t.getTable()).collect(Collectors.toList());
@@ -391,7 +391,7 @@ public class DatabendNewExpressionGenerator
 
     @Override
     public List<DatabendExpression> getTableRefs() {
-        return tables.stream().map(t -> new DatabendTableReference(t)).collect(Collectors.toList());
+        return tables.stream().map(DatabendTableReference::new).collect(Collectors.toList());
     }
 
     @Override
@@ -404,7 +404,7 @@ public class DatabendNewExpressionGenerator
                     DatabendAggregateFunction.COUNT);
             select.setFetchColumns(List.of(aggr));
         } else {
-            List<DatabendExpression> allColumns = columns.stream().map((c) -> new DatabendColumnReference(c))
+            List<DatabendExpression> allColumns = columns.stream().map(DatabendColumnReference::new)
                     .collect(Collectors.toList());
             select.setFetchColumns(allColumns);
             if (Randomly.getBooleanWithSmallProbability()) {
@@ -433,6 +433,6 @@ public class DatabendNewExpressionGenerator
         if (shouldCreateDummy) {
             return List.of(new DatabendColumnReference(new DatabendColumn("*", null, false, false)));
         }
-        return columns.stream().map(c -> new DatabendColumnReference(c)).collect(Collectors.toList());
+        return columns.stream().map(DatabendColumnReference::new).collect(Collectors.toList());
     }
 }

@@ -397,7 +397,7 @@ public class CockroachDBExpressionGenerator extends
     @Override
     public List<CockroachDBJoin> getRandomJoinClauses() {
         List<CockroachDBJoin> joinExpressions = new ArrayList<>();
-        List<CockroachDBTableReference> tableReferences = tables.stream().map(t -> new CockroachDBTableReference(t))
+        List<CockroachDBTableReference> tableReferences = tables.stream().map(CockroachDBTableReference::new)
                 .collect(Collectors.toList());
         while (tableReferences.size() >= 2 && Randomly.getBoolean()) {
             CockroachDBTableReference leftTable = tableReferences.remove(0);
@@ -416,7 +416,7 @@ public class CockroachDBExpressionGenerator extends
 
     @Override
     public List<CockroachDBExpression> getTableRefs() {
-        List<CockroachDBTableReference> tableReferences = tables.stream().map(t -> new CockroachDBTableReference(t))
+        List<CockroachDBTableReference> tableReferences = tables.stream().map(CockroachDBTableReference::new)
                 .collect(Collectors.toList());
 
         return CockroachDBCommon.getTableReferences(tableReferences);
@@ -452,7 +452,7 @@ public class CockroachDBExpressionGenerator extends
         }
         return "SELECT SUM(count) FROM (SELECT CAST(" + CockroachDBVisitor.asString(whereCondition)
                 + " IS TRUE AS INT) as count FROM " + fromString + " "
-                + joinList.stream().map(j -> CockroachDBVisitor.asString(j)).collect(Collectors.joining(", ")) + ")";
+                + joinList.stream().map(CockroachDBVisitor::asString).collect(Collectors.joining(", ")) + ")";
     }
 
     @Override
@@ -460,7 +460,7 @@ public class CockroachDBExpressionGenerator extends
         if (shouldCreateDummy || columns.size() == 0) {
             return List.of(new CockroachDBColumnReference(new CockroachDBColumn("*", null, false, false)));
         }
-        return Randomly.nonEmptySubset(columns).stream().map(c -> new CockroachDBColumnReference(c))
+        return Randomly.nonEmptySubset(columns).stream().map(CockroachDBColumnReference::new)
                 .collect(Collectors.toList());
     }
 

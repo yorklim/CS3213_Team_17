@@ -114,7 +114,7 @@ public class CERTOracle<Z extends Select<J, E, T, C>, J extends Join<E, T, C>, E
                     }
 
                     Optional<String> queryPlanSequence = queryPlanParser.apply(rs);
-                    queryPlanSequence.ifPresent(qps -> queryPlanSequences.add(qps));
+                    queryPlanSequence.ifPresent(queryPlanSequences::add);
                 }
             }
         } catch (IgnoreMeException e) {
