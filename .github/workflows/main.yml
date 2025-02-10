@@ -10,6 +10,7 @@ on:
       - '.github/workflows/*.yml'
       - 'pom.xml'
   pull_request:
+    types: [opened, synchronize, reopened]
     branches:
       - main
     paths:
