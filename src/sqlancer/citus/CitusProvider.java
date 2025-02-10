@@ -89,21 +89,21 @@ public class CitusProvider extends PostgresProvider {
         REINDEX(PostgresReindexGenerator::create), //
         SET(CitusSetGenerator::create), //
         CREATE_INDEX(CitusIndexGenerator::generate), //
-        SET_CONSTRAINTS((g) -> {
+        SET_CONSTRAINTS(g -> {
             StringBuilder sb = new StringBuilder();
             sb.append("SET CONSTRAINTS ALL ");
             sb.append(Randomly.fromOptions("DEFERRED", "IMMEDIATE"));
             return new SQLQueryAdapter(sb.toString());
         }), //
-        RESET_ROLE((g) -> new SQLQueryAdapter("RESET ROLE")), //
+        RESET_ROLE(g -> new SQLQueryAdapter("RESET ROLE")), //
         COMMENT_ON(PostgresCommentGenerator::generate), //
-        RESET((g) -> new SQLQueryAdapter("RESET ALL") /*
+        RESET(g -> new SQLQueryAdapter("RESET ALL") /*
                                                        * https://www.postgresql.org/docs/devel/sql-reset.html TODO: also
                                                        * configuration parameter
                                                        */), //
         NOTIFY(PostgresNotifyGenerator::createNotify), //
-        LISTEN((g) -> PostgresNotifyGenerator.createListen()), //
-        UNLISTEN((g) -> PostgresNotifyGenerator.createUnlisten()), //
+        LISTEN(g -> PostgresNotifyGenerator.createListen()), //
+        UNLISTEN(g -> PostgresNotifyGenerator.createUnlisten()), //
         CREATE_SEQUENCE(PostgresSequenceGenerator::createSequence), //
         CREATE_VIEW(CitusViewGenerator::create);
 
@@ -387,7 +387,7 @@ public class CitusProvider extends PostgresProvider {
     @Override
     protected void prepareTables(PostgresGlobalState globalState) throws Exception {
         StatementExecutor<PostgresGlobalState, PostgresProvider.Action> se = new StatementExecutor<>(globalState,
-                PostgresProvider.Action.values(), PostgresProvider::mapActions, (q) -> {
+                PostgresProvider.Action.values(), PostgresProvider::mapActions, q -> {
                     if (globalState.getSchema().getDatabaseTables().isEmpty()) {
                         throw new IgnoreMeException();
                     }
