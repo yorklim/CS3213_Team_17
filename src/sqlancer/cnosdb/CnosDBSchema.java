@@ -224,11 +224,10 @@ public class CnosDBSchema extends AbstractSchema<CnosDBGlobalState, CnosDBSchema
                 remainingColumns.remove(tag);
             });
 
-            remainingColumns.stream().filter(CnosDBFieldColumn.class::isInstance).findFirst()
-                    .ifPresent(field -> {
-                        selectedColumns.add(field);
-                        remainingColumns.remove(field);
-                    });
+            remainingColumns.stream().filter(CnosDBFieldColumn.class::isInstance).findFirst().ifPresent(field -> {
+                selectedColumns.add(field);
+                remainingColumns.remove(field);
+            });
 
             int nr = Math.min(Randomly.smallNumber() + 1, remainingColumns.size());
             for (int i = 0; i < nr; i++) {

@@ -56,8 +56,7 @@ public class DatabendQueryPartitioningBase
                 .addAll(randomColumn.stream().map(c -> new DatabendColumnValue(c, null)).collect(Collectors.toList()));
         groupByExpression = new ArrayList<>(columnOfLeafNode);
 
-        select.setFetchColumns(
-                randomColumn.stream().map(DatabendColumnReference::new).collect(Collectors.toList()));
+        select.setFetchColumns(randomColumn.stream().map(DatabendColumnReference::new).collect(Collectors.toList()));
         List<DatabendTable> tables = targetTables.getTables();
         List<DatabendTableReference> tableList = tables.stream().map(DatabendTableReference::new)
                 .collect(Collectors.toList());

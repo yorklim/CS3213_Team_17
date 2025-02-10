@@ -45,8 +45,8 @@ public final class CockroachDBRandomQuerySynthesizer {
             }
         }
         select.setFetchColumns(columns);
-        List<CockroachDBTableReference> tableList = tables.getTables().stream()
-                .map(CockroachDBTableReference::new).collect(Collectors.toList());
+        List<CockroachDBTableReference> tableList = tables.getTables().stream().map(CockroachDBTableReference::new)
+                .collect(Collectors.toList());
         List<CockroachDBExpression> updatedTableList = CockroachDBCommon.getTableReferences(tableList);
         if (Randomly.getBoolean()) {
             select.setJoinList(CockroachDBTLPBase.getJoins(updatedTableList, globalState));

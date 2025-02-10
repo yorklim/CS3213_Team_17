@@ -98,9 +98,9 @@ public class CitusProvider extends PostgresProvider {
         RESET_ROLE(g -> new SQLQueryAdapter("RESET ROLE")), //
         COMMENT_ON(PostgresCommentGenerator::generate), //
         RESET(g -> new SQLQueryAdapter("RESET ALL") /*
-                                                       * https://www.postgresql.org/docs/devel/sql-reset.html TODO: also
-                                                       * configuration parameter
-                                                       */), //
+                                                     * https://www.postgresql.org/docs/devel/sql-reset.html TODO: also
+                                                     * configuration parameter
+                                                     */), //
         NOTIFY(PostgresNotifyGenerator::createNotify), //
         LISTEN(g -> PostgresNotifyGenerator.createListen()), //
         UNLISTEN(g -> PostgresNotifyGenerator.createUnlisten()), //
