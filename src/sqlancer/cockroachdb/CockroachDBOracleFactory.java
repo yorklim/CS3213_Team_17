@@ -101,7 +101,7 @@ public enum CockroachDBOracleFactory implements OracleFactory<CockroachDBProvide
             CockroachDBExpressionGenerator gen = new CockroachDBExpressionGenerator(globalState);
             ExpectedErrors expectedErrors = ExpectedErrors.newErrors().with(CockroachDBErrors.getExpressionErrors())
                     .build();
-            CERTOracle.CheckedFunction<SQLancerResultSet, Optional<Long>> rowCountParser = (rs) -> {
+            CERTOracle.CheckedFunction<SQLancerResultSet, Optional<Long>> rowCountParser = rs -> {
                 String content = rs.getString(1);
                 if (content.contains("count:")) {
                     try {
@@ -112,7 +112,7 @@ public enum CockroachDBOracleFactory implements OracleFactory<CockroachDBProvide
                 }
                 return Optional.empty();
             };
-            CERTOracle.CheckedFunction<SQLancerResultSet, Optional<String>> queryPlanParser = (rs) -> {
+            CERTOracle.CheckedFunction<SQLancerResultSet, Optional<String>> queryPlanParser = rs -> {
                 String content = rs.getString(1);
                 if (content.contains("• ")) {
                     String operation = content.split("• ")[1].split(" ")[0];
