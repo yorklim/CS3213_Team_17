@@ -49,7 +49,7 @@ public final class DatabendRandomQuerySynthesizer {
         select.setDistinct(isDistinct);
         select.setFetchColumns(columns);
         List<DatabendTable> tables = targetTables.getTables();
-        List<DatabendTableReference> tableList = tables.stream().map(t -> new DatabendTableReference(t))
+        List<DatabendTableReference> tableList = tables.stream().map(DatabendTableReference::new)
                 .collect(Collectors.toList());
         List<DatabendJoin> joins = DatabendJoin.getJoins(tableList, globalState);
         select.setJoinList(joins.stream().collect(Collectors.toList()));
