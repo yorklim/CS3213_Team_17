@@ -44,7 +44,7 @@ public class ClickHouseTLPHavingOracle extends ClickHouseTLPBase {
         List<String> resultSet = ComparatorHelper.getResultSetFirstColumnAsString(originalQueryString, errors, state);
 
         List<ClickHouseExpression> aggregateExprs = select.getFetchColumns().stream()
-                .filter(p -> p instanceof ClickHouseAggregate).collect(Collectors.toList());
+                .filter(ClickHouseAggregate.class::isInstance).collect(Collectors.toList());
         if (aggregateExprs.isEmpty()) {
             throw new IgnoreMeException();
         }
