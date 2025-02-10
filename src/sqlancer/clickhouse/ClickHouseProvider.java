@@ -98,7 +98,7 @@ public class ClickHouseProvider extends SQLProviderAdapter<ClickHouseGlobalState
 
         // TODO: add more Actions to populate table
         StatementExecutor<ClickHouseGlobalState, Action> se = new StatementExecutor<>(globalState, Action.values(),
-                ClickHouseProvider::mapActions, (q) -> {
+                ClickHouseProvider::mapActions, q -> {
                     if (globalState.getSchema().getDatabaseTables().isEmpty()) {
                         throw new IgnoreMeException();
                     }
