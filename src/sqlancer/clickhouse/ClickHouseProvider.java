@@ -71,7 +71,7 @@ public class ClickHouseProvider extends SQLProviderAdapter<ClickHouseGlobalState
 
         public String getOracleName() {
             return String.join("_",
-                    this.clickHouseOptions.oracle.stream().map(o -> o.toString()).collect(Collectors.toList()));
+                    this.clickHouseOptions.oracle.stream().map(Object::toString).collect(Collectors.toList()));
         }
 
         @Override
