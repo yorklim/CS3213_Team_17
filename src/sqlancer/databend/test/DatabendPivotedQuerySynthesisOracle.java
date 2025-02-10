@@ -50,7 +50,7 @@ public class DatabendPivotedQuerySynthesisOracle
                 .map(c -> new DatabendColumnValue(getFetchValueAliasedColumn(c), pivotRow.getValues().get(c)))
                 .collect(Collectors.toList()));
         selectStatement.setFromList(
-                randomTables.getTables().stream().map(t -> new DatabendTableReference(t)).collect(Collectors.toList()));
+                randomTables.getTables().stream().map(DatabendTableReference::new).collect(Collectors.toList()));
         DatabendExpression whereClause = generateRectifiedExpression(columns, pivotRow);
         selectStatement.setWhereClause(whereClause);
         List<DatabendExpression> groupByClause = generateGroupByClause(columns, pivotRow);
