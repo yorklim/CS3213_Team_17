@@ -470,7 +470,7 @@ public final class DuckDBExpressionGenerator extends UntypedExpressionGenerator<
 
     @Override
     public List<DuckDBJoin> getRandomJoinClauses() {
-        List<DuckDBTableReference> tableList = tables.stream().map(t -> new DuckDBTableReference(t))
+        List<DuckDBTableReference> tableList = tables.stream().map(DuckDBTableReference::new)
                 .collect(Collectors.toList());
         List<DuckDBJoin> joins = DuckDBJoin.getJoins(tableList, globalState);
         tables = tableList.stream().map(t -> t.getTable()).collect(Collectors.toList());
@@ -479,13 +479,13 @@ public final class DuckDBExpressionGenerator extends UntypedExpressionGenerator<
 
     @Override
     public List<DuckDBExpression> getTableRefs() {
-        return tables.stream().map(t -> new DuckDBTableReference(t)).collect(Collectors.toList());
+        return tables.stream().map(DuckDBTableReference::new).collect(Collectors.toList());
     }
 
     @Override
     public String generateOptimizedQueryString(DuckDBSelect select, DuckDBExpression whereCondition,
             boolean shouldUseAggregate) {
-        List<DuckDBExpression> allColumns = columns.stream().map((c) -> new DuckDBColumnReference(c))
+        List<DuckDBExpression> allColumns = columns.stream().map(DuckDBColumnReference::new)
                 .collect(Collectors.toList());
         if (shouldUseAggregate) {
             DuckDBFunction<DuckDBAggregateFunction> aggr = new DuckDBFunction<>(
@@ -520,7 +520,7 @@ public final class DuckDBExpressionGenerator extends UntypedExpressionGenerator<
         if (Randomly.getBoolean()) {
             return List.of(new DuckDBColumnReference(new DuckDBColumn("*", null, false, false)));
         }
-        return Randomly.nonEmptySubset(columns).stream().map(c -> new DuckDBColumnReference(c))
+        return Randomly.nonEmptySubset(columns).stream().map(DuckDBColumnReference::new)
                 .collect(Collectors.toList());
     }
 }
