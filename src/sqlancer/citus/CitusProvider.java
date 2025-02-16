@@ -121,7 +121,6 @@ public class CitusProvider extends PostgresProvider {
         }
     }
 
-
     private class CitusWorkerNode {
 
         private final String host;
@@ -389,8 +388,8 @@ public class CitusProvider extends PostgresProvider {
 
     @Override
     protected void prepareTables(PostgresGlobalState globalState) throws Exception {
-        StatementExecutor<PostgresGlobalState, PostgresProvider.Action> se = new StatementExecutor<>(globalState, PostgresProvider.Action.values(),
-                PostgresProvider::mapActions, (q) -> {
+        StatementExecutor<PostgresGlobalState, PostgresProvider.Action> se = new StatementExecutor<>(globalState,
+                PostgresProvider.Action.values(), PostgresProvider::mapActions, (q) -> {
                     if (globalState.getSchema().getDatabaseTables().isEmpty()) {
                         throw new IgnoreMeException();
                     }
