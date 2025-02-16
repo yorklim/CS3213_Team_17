@@ -1,9 +1,6 @@
 package sqlancer.mysql;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,6 +15,7 @@ import sqlancer.SQLConnection;
 import sqlancer.SQLProviderAdapter;
 import sqlancer.StatementExecutor;
 import sqlancer.common.DBMSCommon;
+import sqlancer.common.DatabaseUtils;
 import sqlancer.common.query.ExpectedErrors;
 import sqlancer.common.query.SQLQueryAdapter;
 import sqlancer.common.query.SQLQueryProvider;
@@ -183,23 +181,10 @@ public class MySQLProvider extends SQLProviderAdapter<MySQLGlobalState, MySQLOpt
         if (port == MainOptions.NO_SET_PORT) {
             port = MySQLOptions.DEFAULT_PORT;
         }
-        String databaseName = globalState.getDatabaseName();
-        globalState.getState().logStatement("DROP DATABASE IF EXISTS " + databaseName);
-        globalState.getState().logStatement("CREATE DATABASE " + databaseName);
-        globalState.getState().logStatement("USE " + databaseName);
+
         String url = String.format("jdbc:mysql://%s:%d?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true",
                 host, port);
-        Connection con = DriverManager.getConnection(url, username, password);
-        try (Statement s = con.createStatement()) {
-            s.execute("DROP DATABASE IF EXISTS " + databaseName);
-        }
-        try (Statement s = con.createStatement()) {
-            s.execute("CREATE DATABASE " + databaseName);
-        }
-        try (Statement s = con.createStatement()) {
-            s.execute("USE " + databaseName);
-        }
-        return new SQLConnection(con);
+        return DatabaseUtils.setupDatabase(globalState, url, username, password);
     }
 
     @Override

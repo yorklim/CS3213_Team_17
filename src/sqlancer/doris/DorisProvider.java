@@ -1,9 +1,6 @@
 package sqlancer.doris;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import com.google.auto.service.AutoService;
 
@@ -16,6 +13,7 @@ import sqlancer.SQLConnection;
 import sqlancer.SQLGlobalState;
 import sqlancer.SQLProviderAdapter;
 import sqlancer.StatementExecutor;
+import sqlancer.common.DatabaseUtils;
 import sqlancer.common.query.SQLQueryAdapter;
 import sqlancer.common.query.SQLQueryProvider;
 import sqlancer.doris.DorisProvider.DorisGlobalState;
@@ -128,23 +126,10 @@ public class DorisProvider extends SQLProviderAdapter<DorisGlobalState, DorisOpt
         if (port == MainOptions.NO_SET_PORT) {
             port = DorisOptions.DEFAULT_PORT;
         }
-        String databaseName = globalState.getDatabaseName();
-        globalState.getState().logStatement("DROP DATABASE IF EXISTS " + databaseName);
-        globalState.getState().logStatement("CREATE DATABASE " + databaseName);
-        globalState.getState().logStatement("USE " + databaseName);
+
         String url = String.format("jdbc:mysql://%s:%d?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true",
                 host, port);
-        Connection con = DriverManager.getConnection(url, username, password);
-        try (Statement s = con.createStatement()) {
-            s.execute("DROP DATABASE IF EXISTS " + databaseName);
-        }
-        try (Statement s = con.createStatement()) {
-            s.execute("CREATE DATABASE " + databaseName);
-        }
-        try (Statement s = con.createStatement()) {
-            s.execute("USE " + databaseName);
-        }
-        return new SQLConnection(con);
+        return DatabaseUtils.setupDatabase(globalState, url, username, password);
     }
 
     @Override
