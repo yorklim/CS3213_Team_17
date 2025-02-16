@@ -130,7 +130,7 @@ public class PostgresProvider extends SQLProviderAdapter<PostgresGlobalState, Po
         }
     }
 
-    protected static int mapActions(PostgresGlobalState globalState, Action a) {
+    public static int mapActions(PostgresGlobalState globalState, Action a) {
         Randomly r = globalState.getRandomly();
         int nrPerformed;
         switch (a) {
