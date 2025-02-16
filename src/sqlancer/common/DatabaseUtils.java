@@ -8,7 +8,12 @@ import java.sql.Statement;
 import sqlancer.SQLConnection;
 import sqlancer.SQLGlobalState;
 
-public class DatabaseUtils {
+public final class DatabaseUtils {
+
+    private DatabaseUtils() {
+        throw new UnsupportedOperationException("Utility class - instantiation not allowed");
+    }
+
     public static SQLConnection setupDatabase(SQLGlobalState<?, ?> globalState, String jdbcUrl, String username,
             String password) throws SQLException {
         String databaseName = globalState.getDatabaseName();
