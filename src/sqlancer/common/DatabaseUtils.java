@@ -9,7 +9,8 @@ import sqlancer.SQLConnection;
 import sqlancer.SQLGlobalState;
 
 public class DatabaseUtils {
-    public static SQLConnection setupDatabase(SQLGlobalState<?, ?> globalState, String jdbcUrl, String username, String password) throws SQLException {
+    public static SQLConnection setupDatabase(SQLGlobalState<?, ?> globalState, String jdbcUrl, String username,
+            String password) throws SQLException {
         String databaseName = globalState.getDatabaseName();
         globalState.getState().logStatement("DROP DATABASE IF EXISTS " + databaseName);
         globalState.getState().logStatement("CREATE DATABASE " + databaseName);
