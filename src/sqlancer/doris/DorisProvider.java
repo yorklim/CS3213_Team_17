@@ -126,7 +126,7 @@ public class DorisProvider extends SQLProviderAdapter<DorisGlobalState, DorisOpt
         if (port == MainOptions.NO_SET_PORT) {
             port = DorisOptions.DEFAULT_PORT;
         }
-//
+
         String url = String.format("jdbc:mysql://%s:%d?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true",
                 host, port);
         return DatabaseUtils.setupDatabase(globalState, url, username, password);
