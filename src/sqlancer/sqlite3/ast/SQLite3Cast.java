@@ -72,7 +72,7 @@ public final class SQLite3Cast {
             }
 
             Long result = AstUtils.castToIntStringHelper(asString);
-            if (result.equals(null)) {
+            if (result == null) {
                 return SQLite3Constant.createIntConstant(0);
             } else {
                 return SQLite3Constant.createIntConstant(result);

@@ -57,7 +57,7 @@ public final class ClickHouseCast extends ClickHouseExpression {
                 return ClickHouseCreateConstant.createInt32Constant(0);
             }
             Long result = AstUtils.castToIntStringHelper(asString);
-            if (result.equals(null)) {
+            if (result == null) {
                 return ClickHouseCreateConstant.createInt32Constant(0);
             } else {
                 return ClickHouseCreateConstant.createInt32Constant(result);
