@@ -38,24 +38,11 @@ public abstract class ClickHouseExpression implements Expression<ClickHouseColum
         }
     }
 
-    public static class ClickHouseJoinOnClause extends ClickHouseExpression
+    public static class ClickHouseJoinOnClause extends ClickHouseBinaryExpression
             implements BinaryOperation<ClickHouseExpression> {
-        private final ClickHouseExpression left;
-        private final ClickHouseExpression right;
 
         public ClickHouseJoinOnClause(ClickHouseExpression left, ClickHouseExpression right) {
-            this.left = left;
-            this.right = right;
-        }
-
-        @Override
-        public final ClickHouseExpression getLeft() {
-            return this.left;
-        }
-
-        @Override
-        public final ClickHouseExpression getRight() {
-            return this.right;
+            super(left, right);
         }
 
         @Override

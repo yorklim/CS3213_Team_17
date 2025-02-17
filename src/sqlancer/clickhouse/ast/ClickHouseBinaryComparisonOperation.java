@@ -7,32 +7,19 @@ import sqlancer.Randomly;
 import sqlancer.clickhouse.ast.constant.ClickHouseCreateConstant;
 import sqlancer.common.visitor.BinaryOperation;
 
-public class ClickHouseBinaryComparisonOperation extends ClickHouseExpression
+public class ClickHouseBinaryComparisonOperation extends ClickHouseBinaryExpression
         implements BinaryOperation<ClickHouseExpression> {
 
     private final ClickHouseBinaryComparisonOperator operation;
-    private final ClickHouseExpression left;
-    private final ClickHouseExpression right;
 
     public ClickHouseBinaryComparisonOperation(ClickHouseExpression left, ClickHouseExpression right,
             ClickHouseBinaryComparisonOperator operation) {
-        this.left = left;
-        this.right = right;
+        super(left, right);
         this.operation = operation;
     }
 
     public ClickHouseBinaryComparisonOperator getOperator() {
         return operation;
-    }
-
-    @Override
-    public ClickHouseExpression getLeft() {
-        return left;
-    }
-
-    @Override
-    public ClickHouseExpression getRight() {
-        return right;
     }
 
     @Override
@@ -42,8 +29,8 @@ public class ClickHouseBinaryComparisonOperation extends ClickHouseExpression
 
     @Override
     public ClickHouseConstant getExpectedValue() {
-        ClickHouseConstant leftExpected = left.getExpectedValue();
-        ClickHouseConstant rightExpected = right.getExpectedValue();
+        ClickHouseConstant leftExpected = this.getLeft().getExpectedValue();
+        ClickHouseConstant rightExpected = this.getRight().getExpectedValue();
         if (leftExpected == null || rightExpected == null) {
             return null;
         }
