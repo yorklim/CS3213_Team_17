@@ -4,10 +4,9 @@ import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.util.Optional;
 
+import sqlancer.common.ast.AstUtils;
 import sqlancer.IgnoreMeException;
 import sqlancer.sqlite3.schema.SQLite3DataType;
-
-import sqlancer.common.ast.AstUtils;
 
 public final class SQLite3Cast {
 

@@ -7,7 +7,6 @@ import java.util.Optional;
 import com.clickhouse.client.ClickHouseDataType;
 
 import sqlancer.clickhouse.ast.constant.ClickHouseCreateConstant;
-
 import sqlancer.common.ast.AstUtils;
 
 public final class ClickHouseCast extends ClickHouseExpression {
