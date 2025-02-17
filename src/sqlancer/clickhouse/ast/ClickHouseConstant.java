@@ -6,8 +6,6 @@ import sqlancer.clickhouse.ast.constant.ClickHouseCreateConstant;
 
 public abstract class ClickHouseConstant extends ClickHouseExpression {
 
-    public abstract boolean isNull();
-
     public abstract ClickHouseConstant cast(ClickHouseDataType type);
 
     public abstract boolean asBooleanNotNull();
@@ -40,5 +38,9 @@ public abstract class ClickHouseConstant extends ClickHouseExpression {
 
     public String asString() {
         throw new UnsupportedOperationException(this.getDataType().toString());
+    }
+
+    public boolean isNull() {
+        return false;    
     }
 }
