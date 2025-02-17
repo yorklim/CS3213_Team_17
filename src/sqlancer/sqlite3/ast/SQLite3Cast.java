@@ -1,25 +1,17 @@
 package sqlancer.sqlite3.ast;
 
-import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 import sqlancer.IgnoreMeException;
 import sqlancer.sqlite3.schema.SQLite3DataType;
 
+import sqlancer.common.ast.AstUtils;
+
 public final class SQLite3Cast {
 
-    private static final double MAX_INT_FOR_WHICH_CONVERSION_TO_INT_IS_TRIED = Math.pow(2, 51 - 1) - 1;
-    private static final double MIN_INT_FOR_WHICH_CONVERSION_TO_INT_IS_TRIED = -Math.pow(2, 51 - 1);
     public static final Charset DEFAULT_ENCODING = Charset.forName("UTF-8");
-
-    private static final byte FILE_SEPARATOR = 0x1c;
-    private static final byte GROUP_SEPARATOR = 0x1d;
-    private static final byte RECORD_SEPARATOR = 0x1e;
-    private static final byte UNIT_SEPARATOR = 0x1f;
-    private static final byte SYNCHRONOUS_IDLE = 0x16;
 
     static Connection castDatabase;
 
@@ -72,35 +64,19 @@ public final class SQLite3Cast {
             return SQLite3Constant.createIntConstant((long) cons.asDouble());
         case TEXT:
             String asString = cons.asString();
-            while (startsWithWhitespace(asString)) {
+            while (AstUtils.startsWithWhitespace(asString)) {
                 asString = asString.substring(1);
             }
-            if (!asString.isEmpty() && unprintAbleCharThatLetsBecomeNumberZero(asString)) {
+            if (!asString.isEmpty() && AstUtils.unprintAbleCharThatLetsBecomeNumberZero(asString)) {
                 return SQLite3Constant.createIntConstant(0);
             }
-            for (int i = asString.length(); i >= 0; i--) {
-                try {
-                    String substring = asString.substring(0, i);
-                    Pattern p = Pattern.compile("[+-]?\\d\\d*");
-                    if (p.matcher(substring).matches()) {
-                        BigDecimal bg = new BigDecimal(substring);
-                        long result;
-                        try {
-                            result = bg.longValueExact();
-                        } catch (ArithmeticException e) {
-                            if (substring.startsWith("-")) {
-                                result = Long.MIN_VALUE;
-                            } else {
-                                result = Long.MAX_VALUE;
-                            }
-                        }
-                        return SQLite3Constant.createIntConstant(result);
-                    }
-                } catch (Exception e) {
 
-                }
+            Long result = AstUtils.castToIntStringHelper(asString);
+            if (result.equals(null)) {
+                return SQLite3Constant.createIntConstant(0);
+            } else {
+                return SQLite3Constant.createIntConstant(result);
             }
-            return SQLite3Constant.createIntConstant(0);
         default:
             throw new AssertionError();
         }
@@ -148,38 +124,23 @@ public final class SQLite3Cast {
             return value;
         case TEXT:
             String asString = value.asString();
-            while (startsWithWhitespace(asString)) {
+            while (AstUtils.startsWithWhitespace(asString)) {
                 asString = asString.substring(1);
             }
-            if (!asString.isEmpty() && unprintAbleCharThatLetsBecomeNumberZero(asString)) {
+            if (!asString.isEmpty() && AstUtils.unprintAbleCharThatLetsBecomeNumberZero(asString)) {
                 return SQLite3Constant.createIntConstant(0);
             }
             if (asString.toLowerCase().startsWith("-infinity") || asString.toLowerCase().startsWith("infinity")
                     || asString.startsWith("NaN")) {
                 return SQLite3Constant.createIntConstant(0);
             }
-            for (int i = asString.length(); i >= 0; i--) {
-                try {
-                    String substring = asString.substring(0, i);
-                    double d = Double.parseDouble(substring);
-                    BigDecimal first = new BigDecimal(substring);
-                    long longValue = first.longValue();
-                    BigDecimal second = BigDecimal.valueOf(longValue);
-                    boolean isWithinConvertibleRange = longValue >= MIN_INT_FOR_WHICH_CONVERSION_TO_INT_IS_TRIED
-                            && longValue <= MAX_INT_FOR_WHICH_CONVERSION_TO_INT_IS_TRIED && convertRealToInt;
-                    boolean isFloatingPointNumber = substring.contains(".") || substring.toUpperCase().contains("E");
-                    boolean doubleShouldBeConvertedToInt = isFloatingPointNumber && first.compareTo(second) == 0
-                            && isWithinConvertibleRange;
-                    boolean isInteger = !isFloatingPointNumber && first.compareTo(second) == 0;
-                    if (doubleShouldBeConvertedToInt || isInteger && !convertIntToReal) {
-                        // see https://www.sqlite.org/src/tktview/afdc5a29dc
-                        return SQLite3Constant.createIntConstant(first.longValue());
-                    } else {
-                        return SQLite3Constant.createRealConstant(d);
-                    }
-                } catch (Exception e) {
-                }
+
+            SQLite3Constant result = AstUtils.convertInternalHelper(asString, convertRealToInt, convertIntToReal,
+                x -> SQLite3Constant.createIntConstant(x), x -> SQLite3Constant.createRealConstant(x));
+            if (result != null) {
+                return result;
             }
+
             if (noNumIsRealZero) {
                 return SQLite3Constant.createRealConstant(0.0);
             } else {
@@ -188,51 +149,6 @@ public final class SQLite3Cast {
         default:
             throw new AssertionError(value);
         }
-    }
-
-    private static boolean startsWithWhitespace(String asString) {
-        if (asString.isEmpty()) {
-            return false;
-        }
-        char c = asString.charAt(0);
-        switch (c) {
-        case ' ':
-        case '\t':
-        case 0x0b:
-        case '\f':
-        case '\n':
-        case '\r':
-            return true;
-        default:
-            return false;
-        }
-    }
-
-    private static boolean unprintAbleCharThatLetsBecomeNumberZero(String s) {
-        // non-printable characters are ignored by Double.valueOf
-        for (int i = 0; i < s.length(); i++) {
-            char charAt = s.charAt(i);
-            if (!Character.isISOControl(charAt) && !Character.isWhitespace(charAt)) {
-                return false;
-            }
-            switch (charAt) {
-            case GROUP_SEPARATOR:
-            case FILE_SEPARATOR:
-            case RECORD_SEPARATOR:
-            case UNIT_SEPARATOR:
-            case SYNCHRONOUS_IDLE:
-                return true;
-            default:
-                // fall through
-            }
-
-            if (Character.isWhitespace(charAt)) {
-                continue;
-            } else {
-                return true;
-            }
-        }
-        return false;
     }
 
     public static SQLite3Constant castToText(SQLite3Constant cons) {
