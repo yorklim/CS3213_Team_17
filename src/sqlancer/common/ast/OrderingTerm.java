@@ -1,20 +1,13 @@
-package sqlancer.cockroachdb.ast;
+package sqlancer.common.ast;
 
 import sqlancer.common.visitor.UnaryOperation;
 
-public class CockroachDBOrderingTerm implements UnaryOperation<CockroachDBExpression>, CockroachDBExpression {
+public abstract class OrderingTerm<T> implements UnaryOperation<T>{
 
-    private final CockroachDBExpression expr;
     private final boolean asc;
 
-    public CockroachDBOrderingTerm(CockroachDBExpression expr, boolean asc) {
-        this.expr = expr;
+    public OrderingTerm(boolean asc) {
         this.asc = asc;
-    }
-
-    @Override
-    public CockroachDBExpression getExpression() {
-        return expr;
     }
 
     @Override
