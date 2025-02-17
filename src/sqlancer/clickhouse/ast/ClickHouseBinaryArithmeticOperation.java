@@ -1,10 +1,8 @@
 package sqlancer.clickhouse.ast;
 
 import sqlancer.Randomly;
-import sqlancer.common.visitor.BinaryOperation;
 
-public class ClickHouseBinaryArithmeticOperation extends ClickHouseExpression
-        implements BinaryOperation<ClickHouseExpression> {
+public class ClickHouseBinaryArithmeticOperation extends ClickHouseBinaryExpression {
 
     public enum ClickHouseBinaryArithmeticOperator {
         ADD("+"), //
@@ -29,28 +27,15 @@ public class ClickHouseBinaryArithmeticOperation extends ClickHouseExpression
     }
 
     private final ClickHouseBinaryArithmeticOperation.ClickHouseBinaryArithmeticOperator operation;
-    private final ClickHouseExpression left;
-    private final ClickHouseExpression right;
 
     public ClickHouseBinaryArithmeticOperation(ClickHouseExpression left, ClickHouseExpression right,
             ClickHouseBinaryArithmeticOperation.ClickHouseBinaryArithmeticOperator operation) {
-        this.left = left;
-        this.right = right;
+        super(left, right);
         this.operation = operation;
     }
 
     public ClickHouseBinaryArithmeticOperation.ClickHouseBinaryArithmeticOperator getOperator() {
         return operation;
-    }
-
-    @Override
-    public ClickHouseExpression getLeft() {
-        return left;
-    }
-
-    @Override
-    public ClickHouseExpression getRight() {
-        return right;
     }
 
     @Override

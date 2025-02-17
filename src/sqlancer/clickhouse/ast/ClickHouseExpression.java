@@ -4,7 +4,6 @@ import sqlancer.clickhouse.ClickHouseSchema.ClickHouseColumn;
 import sqlancer.clickhouse.ClickHouseSchema.ClickHouseTable;
 import sqlancer.common.ast.newast.Expression;
 import sqlancer.common.ast.newast.Join;
-import sqlancer.common.visitor.BinaryOperation;
 import sqlancer.common.visitor.UnaryOperation;
 
 public abstract class ClickHouseExpression implements Expression<ClickHouseColumn> {
@@ -38,8 +37,7 @@ public abstract class ClickHouseExpression implements Expression<ClickHouseColum
         }
     }
 
-    public static class ClickHouseJoinOnClause extends ClickHouseBinaryExpression
-            implements BinaryOperation<ClickHouseExpression> {
+    public static class ClickHouseJoinOnClause extends ClickHouseBinaryExpression {
 
         public ClickHouseJoinOnClause(ClickHouseExpression left, ClickHouseExpression right) {
             super(left, right);

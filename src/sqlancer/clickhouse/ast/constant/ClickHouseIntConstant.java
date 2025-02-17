@@ -46,7 +46,7 @@ public abstract class ClickHouseIntConstant extends ClickHouseConstant {
 
     @Override
     public boolean compareInternal(Object val) {
-        return (int) this.getValue() == (int) val;
+        return (int) value == (int) val;
     }
 
     @Override
