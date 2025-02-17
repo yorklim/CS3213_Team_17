@@ -114,7 +114,8 @@ public final class ClickHouseCast extends ClickHouseExpression {
             }
 
             ClickHouseConstant result = AstUtils.convertInternalHelper(asString, convertRealToInt, convertIntToReal,
-                x -> ClickHouseCreateConstant.createInt32Constant(x), x -> ClickHouseCreateConstant.createFloat64Constant(x));
+                    x -> ClickHouseCreateConstant.createInt32Constant(x),
+                    x -> ClickHouseCreateConstant.createFloat64Constant(x));
 
             if (result != null) {
                 return result;
@@ -129,8 +130,6 @@ public final class ClickHouseCast extends ClickHouseExpression {
             throw new AssertionError(value);
         }
     }
-
-    
 
     public static ClickHouseConstant castToText(ClickHouseConstant cons) {
         if (cons.getDataType() == ClickHouseDataType.String) {

@@ -136,7 +136,7 @@ public final class SQLite3Cast {
             }
 
             SQLite3Constant result = AstUtils.convertInternalHelper(asString, convertRealToInt, convertIntToReal,
-                x -> SQLite3Constant.createIntConstant(x), x -> SQLite3Constant.createRealConstant(x));
+                    x -> SQLite3Constant.createIntConstant(x), x -> SQLite3Constant.createRealConstant(x));
             if (result != null) {
                 return result;
             }

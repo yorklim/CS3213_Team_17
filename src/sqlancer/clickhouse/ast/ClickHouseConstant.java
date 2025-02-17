@@ -41,6 +41,6 @@ public abstract class ClickHouseConstant extends ClickHouseExpression {
     }
 
     public boolean isNull() {
-        return false;    
+        return false;
     }
 }

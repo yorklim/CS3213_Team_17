@@ -14,7 +14,7 @@ public class AstUtils {
     private static final byte RECORD_SEPARATOR = 0x1e;
     private static final byte UNIT_SEPARATOR = 0x1f;
     private static final byte SYNCHRONOUS_IDLE = 0x16;
-    
+
     public static Long castToIntStringHelper(String asString) {
         for (int i = asString.length(); i >= 0; i--) {
             try {
@@ -41,7 +41,8 @@ public class AstUtils {
         return null;
     }
 
-    public static <T> T convertInternalHelper(String asString, boolean convertRealToInt, boolean convertIntToReal, Function<Long, T> func1, Function<Double, T> func2) {
+    public static <T> T convertInternalHelper(String asString, boolean convertRealToInt, boolean convertIntToReal,
+            Function<Long, T> func1, Function<Double, T> func2) {
         for (int i = asString.length(); i >= 0; i--) {
             try {
                 String substring = asString.substring(0, i);
@@ -62,7 +63,7 @@ public class AstUtils {
                     return func2.apply(d);
                 }
             } catch (Exception e) {
-            
+
             }
         }
         return null;

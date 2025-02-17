@@ -2,7 +2,7 @@ package sqlancer.common.ast;
 
 import sqlancer.common.visitor.UnaryOperation;
 
-public abstract class OrderingTerm<T> implements UnaryOperation<T>{
+public abstract class OrderingTerm<T> implements UnaryOperation<T> {
 
     private final boolean asc;
 
