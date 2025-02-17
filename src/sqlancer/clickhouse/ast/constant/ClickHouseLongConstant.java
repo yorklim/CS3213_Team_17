@@ -6,20 +6,30 @@ import com.clickhouse.client.ClickHouseDataType;
 
 import sqlancer.clickhouse.ast.ClickHouseConstant;
 
-public class ClickHouseUInt8Constant extends ClickHouseIntConstant {
+public abstract class ClickHouseLongConstant extends ClickHouseIntConstant {
 
-    public ClickHouseUInt8Constant(int value) {
+    public ClickHouseLongConstant(long value) {
         super(value);
     }
 
     @Override
-    public ClickHouseDataType getDataType() {
-        return ClickHouseDataType.UInt8;
+    public boolean asBooleanNotNull() {
+        return (long) this.getValue() != 0;
+    }
+
+    @Override
+    public boolean compareInternal(Object val) {
+        return (long) this.getValue() == (long) val;
+    }
+
+    @Override
+    public long asInt() {
+        return (long) this.getValue();
     }
 
     @Override
     public ClickHouseConstant cast(ClickHouseDataType type) {
-        int value = (int) this.getValue();
+        long value = (long) this.getValue();
         switch (type) {
         case String:
             return ClickHouseCreateConstant.createStringConstant(this.toString());
@@ -39,18 +49,10 @@ public class ClickHouseUInt8Constant extends ClickHouseIntConstant {
             return ClickHouseCreateConstant.createUInt64Constant(BigInteger.valueOf(value));
         case Int64:
             return ClickHouseCreateConstant.createInt64Constant(BigInteger.valueOf(value));
-        case UInt128:
-            return ClickHouseCreateConstant.createUInt128Constant(BigInteger.valueOf(value));
-        case Int128:
-            return ClickHouseCreateConstant.createInt128Constant(BigInteger.valueOf(value));
-        case UInt256:
-            return ClickHouseCreateConstant.createUInt256Constant(BigInteger.valueOf(value));
-        case Int256:
-            return ClickHouseCreateConstant.createInt256Constant(BigInteger.valueOf(value));
         case Float32:
             return ClickHouseCreateConstant.createFloat32Constant((float) value);
         case Float64:
-            return ClickHouseCreateConstant.createFloat64Constant((double) value);
+            return ClickHouseCreateConstant.createFloat64Constant(value);
         case Nothing:
             return ClickHouseCreateConstant.createNullConstant();
         case Bool:
