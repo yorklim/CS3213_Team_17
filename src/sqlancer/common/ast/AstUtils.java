@@ -6,9 +6,6 @@ import java.util.regex.Pattern;
 
 public final class AstUtils {
 
-    private AstUtils() {
-    }
-
     private static final double MAX_INT_FOR_WHICH_CONVERSION_TO_INT_IS_TRIED = Math.pow(2, 51 - 1) - 1;
     private static final double MIN_INT_FOR_WHICH_CONVERSION_TO_INT_IS_TRIED = -Math.pow(2, 51 - 1);
 
@@ -17,6 +14,9 @@ public final class AstUtils {
     private static final byte RECORD_SEPARATOR = 0x1e;
     private static final byte UNIT_SEPARATOR = 0x1f;
     private static final byte SYNCHRONOUS_IDLE = 0x16;
+
+    private AstUtils() {
+    }
 
     public static Long castToIntStringHelper(String asString) {
         for (int i = asString.length(); i >= 0; i--) {
