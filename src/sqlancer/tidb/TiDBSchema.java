@@ -322,16 +322,7 @@ public class TiDBSchema extends AbstractSchema<TiDBGlobalState, TiDBTable> {
     }
 
     private static List<TableIndex> getIndexes(SQLConnection con, String tableName) throws SQLException {
-        List<TableIndex> indexes = new ArrayList<>();
-        try (Statement s = con.createStatement()) {
-            try (ResultSet rs = s.executeQuery(String.format("SHOW INDEX FROM %s", tableName))) {
-                while (rs.next()) {
-                    String indexName = rs.getString("Key_name");
-                    indexes.add(TableIndex.create(indexName));
-                }
-            }
-        }
-        return indexes;
+        return getIndexesFromQuery(con, tableName, "Key_name");
     }
 
     private static List<TiDBColumn> getTableColumns(SQLConnection con, String tableName) throws SQLException {
