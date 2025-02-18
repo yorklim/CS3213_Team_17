@@ -162,4 +162,17 @@ public class AbstractSchema<G extends GlobalState<?, ?, ?>, A extends AbstractTa
         }
         return tableNames;
     }
+
+    protected static List<TableIndex> getIndexesFromQuery(SQLConnection con, String tableName, String indexColumn) throws SQLException {
+        List<TableIndex> indexes = new ArrayList<>();
+        try (Statement s = con.createStatement()) {
+            try (ResultSet rs = s.executeQuery(String.format("SHOW INDEX FROM %s", tableName))) {
+                while (rs.next()) {
+                    String indexName = rs.getString(indexColumn);  // Use the passed column name
+                    indexes.add(TableIndex.create(indexName));
+                }
+            }
+        }
+        return indexes;
+    }
 }

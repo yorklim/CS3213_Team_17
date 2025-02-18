@@ -308,16 +308,7 @@ public class CockroachDBSchema extends AbstractSchema<CockroachDBGlobalState, Co
     }
 
     private static List<TableIndex> getIndexes(SQLConnection con, String tableName) throws SQLException {
-        List<TableIndex> indexes = new ArrayList<>();
-        try (Statement s = con.createStatement()) {
-            try (ResultSet rs = s.executeQuery(String.format("SHOW INDEX FROM %s", tableName))) {
-                while (rs.next()) {
-                    String indexName = rs.getString("index_name");
-                    indexes.add(TableIndex.create(indexName));
-                }
-            }
-        }
-        return indexes;
+        return getIndexesFromQuery(con, tableName, "index_name");
     }
 
     private static List<CockroachDBColumn> getTableColumns(SQLConnection con, String tableName) throws SQLException {
