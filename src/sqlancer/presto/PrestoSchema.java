@@ -293,39 +293,38 @@ public class PrestoSchema extends AbstractSchema<PrestoGlobalState, PrestoSchema
             int scale = -1;
 
             switch (type) {
-                case INT:
-                    size = Randomly.fromOptions(1, 2, 4, 8);
-                    break;
-                case FLOAT:
-                    size = Randomly.fromOptions(4, 8);
-                    break;
-                case DECIMAL:
-                    size = 8;
-                    scale = 4;
-                    break;
-                case JSON:
-                case VARCHAR:
-                case CHAR:
-                case VARBINARY:
-                    size = Math.toIntExact(Randomly.getNotCachedInteger(10, 250));
-                    break;
-                case BOOLEAN:
-                case DATE:
-                case TIME:
-                case TIMESTAMP:
-                case TIMESTAMP_WITH_TIME_ZONE:
-                case TIME_WITH_TIME_ZONE:
-                case INTERVAL_DAY_TO_SECOND:
-                case INTERVAL_YEAR_TO_MONTH:
-                    size = 0;
-                    break;
-                default:
-                    throw new AssertionError("Unexpected type: " + type);
+            case INT:
+                size = Randomly.fromOptions(1, 2, 4, 8);
+                break;
+            case FLOAT:
+                size = Randomly.fromOptions(4, 8);
+                break;
+            case DECIMAL:
+                size = 8;
+                scale = 4;
+                break;
+            case JSON:
+            case VARCHAR:
+            case CHAR:
+            case VARBINARY:
+                size = Math.toIntExact(Randomly.getNotCachedInteger(10, 250));
+                break;
+            case BOOLEAN:
+            case DATE:
+            case TIME:
+            case TIMESTAMP:
+            case TIMESTAMP_WITH_TIME_ZONE:
+            case TIME_WITH_TIME_ZONE:
+            case INTERVAL_DAY_TO_SECOND:
+            case INTERVAL_YEAR_TO_MONTH:
+                size = 0;
+                break;
+            default:
+                throw new AssertionError("Unexpected type: " + type);
             }
 
             return new ImmutablePair<>(size, scale);
         }
-
 
         public PrestoDataType getPrimitiveDataType() {
             return dataType;
