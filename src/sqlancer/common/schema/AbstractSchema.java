@@ -1,9 +1,5 @@
 package sqlancer.common.schema;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -13,7 +9,6 @@ import java.util.stream.Collectors;
 import sqlancer.GlobalState;
 import sqlancer.IgnoreMeException;
 import sqlancer.Randomly;
-import sqlancer.SQLConnection;
 
 public class AbstractSchema<G extends GlobalState<?, ?, ?>, A extends AbstractTable<?, ?, G>> {
 
@@ -152,14 +147,4 @@ public class AbstractSchema<G extends GlobalState<?, ?, ?>, A extends AbstractTa
         return databaseTables.stream().anyMatch(t -> t.getNrRows(globalState) == 0);
     }
 
-    protected static List<String> getTableNames(SQLConnection con) throws SQLException {
-        List<String> tableNames = new ArrayList<>();
-        try (Statement s = con.createStatement();
-             ResultSet tableRs = s.executeQuery("SHOW TABLES")) {
-            while (tableRs.next()) {
-                tableNames.add(tableRs.getString(1));
-            }
-        }
-        return tableNames;
-    }
 }
