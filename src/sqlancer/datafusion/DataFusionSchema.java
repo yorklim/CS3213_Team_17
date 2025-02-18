@@ -49,7 +49,7 @@ public class DataFusionSchema extends AbstractSchema<DataFusionGlobalState, Data
         return new DataFusionSchema(databaseTables);
     }
 
-    private static List<String> getTableNames(SQLConnection con) throws SQLException {
+    protected static List<String> getTableNames(SQLConnection con) throws SQLException {
         List<String> tableNames = new ArrayList<>();
         try (Statement s = con.createStatement()) {
             try (ResultSet rs = s.executeQuery("select table_name " + "from information_schema.tables "
