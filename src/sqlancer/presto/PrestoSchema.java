@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+
 import sqlancer.Randomly;
 import sqlancer.SQLConnection;
 import sqlancer.common.schema.AbstractRelationalTable;
