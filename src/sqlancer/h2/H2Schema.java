@@ -176,7 +176,7 @@ public class H2Schema extends AbstractSchema<H2GlobalState, H2Table> {
         return new H2Schema(databaseTables);
     }
 
-    private static List<String> getTableNames(SQLConnection con) throws SQLException {
+    protected static List<String> getTableNames(SQLConnection con) throws SQLException {
         List<String> tableNames = new ArrayList<>();
         try (Statement s = con.createStatement()) {
             try (ResultSet rs = s.executeQuery("SHOW TABLES")) {
