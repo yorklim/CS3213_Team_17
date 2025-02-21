@@ -307,8 +307,30 @@ public class CockroachDBSchema extends AbstractSchema<CockroachDBGlobalState, Co
         return new CockroachDBSchema(databaseTables);
     }
 
+    private static List<String> getTableNames(SQLConnection con) throws SQLException {
+        List<String> tableNames = new ArrayList<>();
+        try (Statement s = con.createStatement()) {
+            ResultSet tableRs = s.executeQuery(
+                    "SELECT table_name FROM information_schema.tables WHERE TABLE_TYPE IN ('BASE TABLE', 'LOCAL TEMPORARY');");
+            while (tableRs.next()) {
+                String tableName = tableRs.getString(1);
+                tableNames.add(tableName);
+            }
+        }
+        return tableNames;
+    }
+
     private static List<TableIndex> getIndexes(SQLConnection con, String tableName) throws SQLException {
-        return getIndexesFromQuery(con, tableName, "index_name");
+        List<TableIndex> indexes = new ArrayList<>();
+        try (Statement s = con.createStatement()) {
+            try (ResultSet rs = s.executeQuery(String.format("SHOW INDEX FROM %s", tableName))) {
+                while (rs.next()) {
+                    String indexName = rs.getString("index_name");
+                    indexes.add(TableIndex.create(indexName));
+                }
+            }
+        }
+        return indexes;
     }
 
     private static List<CockroachDBColumn> getTableColumns(SQLConnection con, String tableName) throws SQLException {

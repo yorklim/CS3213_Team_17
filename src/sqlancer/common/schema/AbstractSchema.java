@@ -151,30 +151,4 @@ public class AbstractSchema<G extends GlobalState<?, ?, ?>, A extends AbstractTa
     public boolean containsTableWithZeroRows(G globalState) {
         return databaseTables.stream().anyMatch(t -> t.getNrRows(globalState) == 0);
     }
-
-    protected static List<String> getTableNames(SQLConnection con) throws SQLException {
-        List<String> tableNames = new ArrayList<>();
-        try (Statement s = con.createStatement()) {
-            ResultSet tableRs = s.executeQuery("SHOW TABLES");
-            while (tableRs.next()) {
-                String tableName = tableRs.getString(1);
-                tableNames.add(tableName);
-            }
-        }
-        return tableNames;
-    }
-
-    protected static List<TableIndex> getIndexesFromQuery(SQLConnection con, String tableName, String indexColumn)
-            throws SQLException {
-        List<TableIndex> indexes = new ArrayList<>();
-        try (Statement s = con.createStatement()) {
-            try (ResultSet rs = s.executeQuery(String.format("SHOW INDEX FROM %s", tableName))) {
-                while (rs.next()) {
-                    String indexName = rs.getString(indexColumn); // Use the passed column name
-                    indexes.add(TableIndex.create(indexName));
-                }
-            }
-        }
-        return indexes;
-    }
 }
