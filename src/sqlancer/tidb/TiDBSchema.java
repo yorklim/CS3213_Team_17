@@ -302,7 +302,7 @@ public class TiDBSchema extends AbstractSchema<TiDBGlobalState, TiDBTable> {
 
     public static TiDBSchema fromConnection(SQLConnection con, String databaseName) throws SQLException {
         List<TiDBTable> databaseTables = new ArrayList<>();
-        List<String> tableNames = getTableNames(con);
+        List<String> tableNames = getTableNames(con, "SHOW TABLES");
         for (String tableName : tableNames) {
             List<TiDBColumn> databaseColumns = getTableColumns(con, tableName);
             // Ignore invalid views
@@ -319,18 +319,6 @@ public class TiDBSchema extends AbstractSchema<TiDBGlobalState, TiDBTable> {
 
         }
         return new TiDBSchema(databaseTables);
-    }
-
-    private static List<String> getTableNames(SQLConnection con) throws SQLException {
-        List<String> tableNames = new ArrayList<>();
-        try (Statement s = con.createStatement()) {
-            ResultSet tableRs = s.executeQuery("SHOW TABLES");
-            while (tableRs.next()) {
-                String tableName = tableRs.getString(1);
-                tableNames.add(tableName);
-            }
-        }
-        return tableNames;
     }
 
     private static List<TableIndex> getIndexes(SQLConnection con, String tableName) throws SQLException {
