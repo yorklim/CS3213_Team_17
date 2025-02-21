@@ -173,6 +173,7 @@ public class PostgresSchema extends AbstractSchema<PostgresGlobalState, Postgres
             this.tableType = tableType;
         }
 
+        @Override
         public List<PostgresStatisticsObject> getStatistics() {
             return statistics;
         }
@@ -194,6 +195,7 @@ public class PostgresSchema extends AbstractSchema<PostgresGlobalState, Postgres
             this.name = name;
         }
 
+        @Override
         public String getName() {
             return name;
         }

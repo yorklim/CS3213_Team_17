@@ -288,6 +288,7 @@ public class YSQLSchema extends AbstractSchema<YSQLGlobalState, YSQLTable> {
             this.tableType = tableType;
         }
 
+        @Override
         public List<YSQLStatisticsObject> getStatistics() {
             return statistics;
         }
@@ -313,6 +314,7 @@ public class YSQLSchema extends AbstractSchema<YSQLGlobalState, YSQLTable> {
             this.name = name;
         }
 
+        @Override
         public String getName() {
             return name;
         }
