@@ -1,5 +1,7 @@
 package sqlancer.yugabyte.ycql.ast;
 
+import sqlancer.common.constant.DoubleConstantUtil;
+
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
@@ -50,12 +52,8 @@ public class YCQLConstant implements YCQLExpression {
 
         @Override
         public String toString() {
-            if (value == Double.POSITIVE_INFINITY) {
-                return "'+Inf'";
-            } else if (value == Double.NEGATIVE_INFINITY) {
-                return "'-Inf'";
-            }
-            return String.valueOf(value);
+            return DoubleConstantUtil.doubleToString(value, DoubleConstantUtil.YCQL_POSITIVE_INFINITY,
+                    DoubleConstantUtil.YCQL_NEGATIVE_INFINITY);
         }
 
     }
