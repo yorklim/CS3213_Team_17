@@ -1,9 +1,10 @@
 package sqlancer.hsqldb.ast;
 
-import sqlancer.common.constant.DoubleConstantUtil;
-
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+
+import sqlancer.common.constant.DoubleConstantUtil;
+
 
 public class HSQLDBConstant implements HSQLDBExpression {
 
