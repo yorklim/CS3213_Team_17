@@ -227,7 +227,7 @@ public class ClickHouseSchema extends AbstractSchema<ClickHouseGlobalState, Clic
         return new ClickHouseSchema(databaseTables);
     }
 
-    protected static List<String> getTableNames(SQLConnection con) throws SQLException {
+    private static List<String> getTableNames(SQLConnection con) throws SQLException {
         List<String> tableNames = new ArrayList<>();
         try (Statement s = con.createStatement()) {
             ResultSet tableRs = s.executeQuery("SHOW TABLES");
