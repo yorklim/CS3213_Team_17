@@ -332,7 +332,7 @@ public class DatabendSchema extends AbstractSchema<DatabendGlobalState, Databend
         return new DatabendSchema(databaseTables);
     }
 
-    private static List<String> getTableNames(SQLConnection con, String databaseName) throws SQLException {
+    protected static List<String> getTableNames(SQLConnection con, String databaseName) throws SQLException {
         List<String> tableNames = null;
         tableNames = new ArrayList<>();
 
