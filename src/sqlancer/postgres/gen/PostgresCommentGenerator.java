@@ -1,7 +1,5 @@
 package sqlancer.postgres.gen;
 
-import sqlancer.IgnoreMeException;
-import sqlancer.Randomly;
 import sqlancer.common.gen.PnYSQLCommentGeneratorBase;
 import sqlancer.common.query.SQLQueryAdapter;
 import sqlancer.postgres.PostgresGlobalState;

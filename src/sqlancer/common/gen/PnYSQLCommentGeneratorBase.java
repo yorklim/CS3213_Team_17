@@ -3,7 +3,6 @@ package sqlancer.common.gen;
 import sqlancer.IgnoreMeException;
 import sqlancer.Randomly;
 import sqlancer.SQLGlobalState;
-import sqlancer.common.schema.AbstractRelationalTable;
 
 public class PnYSQLCommentGeneratorBase {
     protected enum Action {
