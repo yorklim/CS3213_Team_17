@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 
 import sqlancer.common.constant.DoubleConstantUtil;
 
-
 public class YCQLConstant implements YCQLExpression {
 
     private YCQLConstant() {
