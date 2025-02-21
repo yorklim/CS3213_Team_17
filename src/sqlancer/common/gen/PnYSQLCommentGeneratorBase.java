@@ -9,7 +9,7 @@ public abstract class PnYSQLCommentGeneratorBase {
         INDEX, COLUMN, STATISTICS, TABLE
     }
 
-    protected static <T extends PnYSQLTable> String generateHelper(SQLGlobalState<?,?> globalState, T randomTable) {
+    protected static <T extends PnYSQLTable<?,?,?>> String generateHelper(SQLGlobalState<?,?> globalState, T randomTable) {
         StringBuilder sb = new StringBuilder();
         sb.append("COMMENT ON ");
         Action type = Randomly.fromOptions(Action.values());
