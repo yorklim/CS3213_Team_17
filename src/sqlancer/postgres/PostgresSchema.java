@@ -16,6 +16,8 @@ import sqlancer.IgnoreMeException;
 import sqlancer.Randomly;
 import sqlancer.SQLConnection;
 import sqlancer.common.DBMSCommon;
+import sqlancer.common.gen.PnYSQLTable;
+import sqlancer.common.gen.PnYStatisticsObject;
 import sqlancer.common.schema.AbstractRelationalTable;
 import sqlancer.common.schema.AbstractRowValue;
 import sqlancer.common.schema.AbstractSchema;
@@ -155,7 +157,7 @@ public class PostgresSchema extends AbstractSchema<PostgresGlobalState, Postgres
     }
 
     public static class PostgresTable
-            extends AbstractRelationalTable<PostgresColumn, PostgresIndex, PostgresGlobalState> {
+            extends PnYSQLTable<PostgresColumn, PostgresIndex, PostgresGlobalState> {
 
         public enum TableType {
             STANDARD, TEMPORARY
@@ -187,7 +189,7 @@ public class PostgresSchema extends AbstractSchema<PostgresGlobalState, Postgres
 
     }
 
-    public static final class PostgresStatisticsObject {
+    public static final class PostgresStatisticsObject extends PnYStatisticsObject {
         private final String name;
 
         public PostgresStatisticsObject(String name) {
