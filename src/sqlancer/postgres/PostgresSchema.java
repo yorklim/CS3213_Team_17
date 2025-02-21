@@ -155,8 +155,7 @@ public class PostgresSchema extends AbstractSchema<PostgresGlobalState, Postgres
 
     }
 
-    public static class PostgresTable
-            extends PnYSQLTable<PostgresColumn, PostgresIndex, PostgresGlobalState> {
+    public static class PostgresTable extends PnYSQLTable<PostgresColumn, PostgresIndex, PostgresGlobalState> {
 
         public enum TableType {
             STANDARD, TEMPORARY
