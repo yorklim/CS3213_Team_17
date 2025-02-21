@@ -32,7 +32,7 @@ public abstract class PnYSQLCommentGeneratorBase {
             if (randomTable.getStatistics().isEmpty()) {
                 throw new IgnoreMeException();
             } else {
-                sb.append(((PnYStatisticsObject) randomTable.getStatistics().get(0)).getName());
+                sb.append(randomTable.getStatistics().get(0).getName());
             }
             break;
         case TABLE:
