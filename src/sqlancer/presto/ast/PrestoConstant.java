@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import sqlancer.Randomly;
+import sqlancer.common.constant.DoubleConstantUtil;
 import sqlancer.presto.PrestoConstantUtils;
 import sqlancer.presto.PrestoSchema;
 
@@ -390,12 +391,8 @@ public abstract class PrestoConstant implements PrestoExpression {
 
         @Override
         public String toString() {
-            if (value == Double.POSITIVE_INFINITY) {
-                return "infinity()";
-            } else if (value == Double.NEGATIVE_INFINITY) {
-                return "-infinity()";
-            }
-            return String.valueOf(value);
+            return DoubleConstantUtil.doubleToString(value, DoubleConstantUtil.PRESTO_POSITIVE_INFINITY,
+                    DoubleConstantUtil.PRESTO_NEGATIVE_INFINITY);
         }
 
         @Override

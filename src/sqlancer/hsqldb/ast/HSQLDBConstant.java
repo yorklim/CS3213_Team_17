@@ -3,6 +3,8 @@ package sqlancer.hsqldb.ast;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
+import sqlancer.common.constant.DoubleConstantUtil;
+
 public class HSQLDBConstant implements HSQLDBExpression {
 
     private HSQLDBConstant() {
@@ -50,12 +52,8 @@ public class HSQLDBConstant implements HSQLDBExpression {
 
         @Override
         public String toString() {
-            if (value == Double.POSITIVE_INFINITY) {
-                return "1.0e1/0.0e1";
-            } else if (value == Double.NEGATIVE_INFINITY) {
-                return "-1.0e1/0.0e1";
-            }
-            return String.valueOf(value);
+            return DoubleConstantUtil.doubleToString(value, DoubleConstantUtil.HSQLDB_POSITIVE_INFINITY,
+                    DoubleConstantUtil.HSQLDB_NEGATIVE_INFINITY);
         }
 
     }

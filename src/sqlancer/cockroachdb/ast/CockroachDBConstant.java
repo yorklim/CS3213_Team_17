@@ -6,6 +6,7 @@ import java.util.List;
 
 import sqlancer.Randomly;
 import sqlancer.cockroachdb.CockroachDBVisitor;
+import sqlancer.common.constant.DoubleConstantUtil;
 
 public class CockroachDBConstant implements CockroachDBExpression {
 
@@ -54,12 +55,8 @@ public class CockroachDBConstant implements CockroachDBExpression {
 
         @Override
         public String toString() {
-            if (value == Double.POSITIVE_INFINITY) {
-                return "FLOAT '+Inf'";
-            } else if (value == Double.NEGATIVE_INFINITY) {
-                return "FLOAT '-Inf'";
-            }
-            return String.valueOf(value);
+            return DoubleConstantUtil.doubleToString(value, DoubleConstantUtil.COCKROACHDB_POSITIVE_INFINITY,
+                    DoubleConstantUtil.COCKROACHDB_NEGATIVE_INFINITY);
         }
 
     }
