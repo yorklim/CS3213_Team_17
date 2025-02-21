@@ -18,7 +18,6 @@ import sqlancer.SQLConnection;
 import sqlancer.common.DBMSCommon;
 import sqlancer.common.gen.PnYSQLTable;
 import sqlancer.common.gen.PnYStatisticsObject;
-import sqlancer.common.schema.AbstractRelationalTable;
 import sqlancer.common.schema.AbstractRowValue;
 import sqlancer.common.schema.AbstractSchema;
 import sqlancer.common.schema.AbstractTableColumn;
