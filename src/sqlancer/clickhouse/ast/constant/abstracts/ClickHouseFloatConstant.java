@@ -1,10 +1,12 @@
 package sqlancer.clickhouse.ast.constant.abstracts;
 
+import java.math.BigInteger;
+
 import com.clickhouse.client.ClickHouseDataType;
+
 import sqlancer.clickhouse.ast.ClickHouseConstant;
 import sqlancer.clickhouse.ast.constant.ClickHouseCreateConstant;
 
-import java.math.BigInteger;
 
 public abstract class ClickHouseFloatConstant<T extends Number> extends ClickHouseConstant {
 
