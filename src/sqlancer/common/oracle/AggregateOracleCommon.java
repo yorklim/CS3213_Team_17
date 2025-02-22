@@ -1,11 +1,15 @@
 package sqlancer.common.oracle;
 
+import java.sql.SQLException;
 import java.util.Map;
 
 import sqlancer.ComparatorHelper;
 import sqlancer.GlobalState;
 import sqlancer.IgnoreMeException;
 import sqlancer.SQLGlobalState;
+import sqlancer.common.query.ExpectedErrors;
+import sqlancer.common.query.SQLQueryAdapter;
+import sqlancer.common.query.SQLancerResultSet;
 
 public final class AggregateOracleCommon {
 
@@ -41,6 +45,28 @@ public final class AggregateOracleCommon {
             String assertionMessage = String.format("%s: the results mismatch!\n%s\n%s", firstQueryString,
                     secondQueryString);
             throw new AssertionError(assertionMessage);
+        }
+    }
+
+    public static String aggregateGetResultCommon(SQLGlobalState<?, ?> state, ExpectedErrors errors, String queryString) throws SQLException {
+        String resultString;
+        SQLQueryAdapter q = new SQLQueryAdapter(queryString, errors);
+        try (SQLancerResultSet result = q.executeAndGet(state)) {
+            if (result == null) {
+                throw new IgnoreMeException();
+            }
+            if (!result.next()) {
+                resultString = null;
+            } else {
+                resultString = result.getString(1);
+            }
+            return resultString;
+        } catch (SQLException e) {
+            if (e.getMessage().contains("Not implemented type")) {
+                throw new IgnoreMeException();
+            } else {
+                throw new AssertionError(queryString, e);
+            }
         }
     }
 
