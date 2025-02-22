@@ -102,33 +102,7 @@ public class ClickHouseExpressionGenerator
             return new ClickHouseAggregate(generateExpressionWithColumns(columns, remainingDepth - 1),
                     ClickHouseAggregate.ClickHouseAggregateFunction.getRandom());
         }
-        if (columns.isEmpty() || remainingDepth <= 2 && Randomly.getBooleanWithRatherLowProbability()) {
-            return generateConstant(null);
-        }
-
-        if (remainingDepth <= 2 || Randomly.getBooleanWithRatherLowProbability()) {
-            return columns.get((int) Randomly.getNotCachedInteger(0, columns.size() - 1));
-        }
-
-        ColumnLike expr = Randomly.fromOptions(ColumnLike.values());
-        switch (expr) {
-        case UNARY_PREFIX:
-            return new ClickHouseUnaryPrefixOperation(generateExpressionWithColumns(columns, remainingDepth - 1),
-                    ClickHouseUnaryPrefixOperator.MINUS);
-        case BINARY_ARITHMETIC:
-            return new ClickHouseBinaryArithmeticOperation(generateExpressionWithColumns(columns, remainingDepth - 1),
-                    generateExpressionWithColumns(columns, remainingDepth - 1),
-                    ClickHouseBinaryArithmeticOperation.ClickHouseBinaryArithmeticOperator.getRandom());
-        case UNARY_FUNCTION:
-            return new ClickHouseUnaryFunctionOperation(generateExpressionWithColumns(columns, remainingDepth - 1),
-                    ClickHouseUnaryFunctionOperation.ClickHouseUnaryFunctionOperator.getRandom());
-        case BINARY_FUNCTION:
-            return new ClickHouseBinaryFunctionOperation(generateExpressionWithColumns(columns, remainingDepth - 1),
-                    generateExpressionWithColumns(columns, remainingDepth - 1),
-                    ClickHouseBinaryFunctionOperation.ClickHouseBinaryFunctionOperator.getRandom());
-        default:
-            throw new AssertionError(expr);
-        }
+        return generateExpressionWithColumns(columns, remainingDepth);
     }
 
     public ClickHouseExpression generateExpressionWithExpression(List<ClickHouseExpression> expression,
