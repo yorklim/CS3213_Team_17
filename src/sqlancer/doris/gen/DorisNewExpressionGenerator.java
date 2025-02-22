@@ -539,7 +539,6 @@ public class DorisNewExpressionGenerator extends TypedExpressionGenerator<DorisE
         if (shouldCreateDummy) {
             return List.of(new DorisColumnReference(new DorisColumn("*", null, false, false)));
         }
-        return Randomly.nonEmptySubset(columns).stream().map(DorisColumnReference::new)
-                .collect(Collectors.toList());
+        return Randomly.nonEmptySubset(columns).stream().map(DorisColumnReference::new).collect(Collectors.toList());
     }
 }

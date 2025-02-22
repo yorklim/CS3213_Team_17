@@ -520,7 +520,6 @@ public final class DuckDBExpressionGenerator extends UntypedExpressionGenerator<
         if (Randomly.getBoolean()) {
             return List.of(new DuckDBColumnReference(new DuckDBColumn("*", null, false, false)));
         }
-        return Randomly.nonEmptySubset(columns).stream().map(DuckDBColumnReference::new)
-                .collect(Collectors.toList());
+        return Randomly.nonEmptySubset(columns).stream().map(DuckDBColumnReference::new).collect(Collectors.toList());
     }
 }
