@@ -288,7 +288,8 @@ public class CockroachDBSchema extends AbstractSchema<CockroachDBGlobalState, Co
 
     public static CockroachDBSchema fromConnection(SQLConnection con, String databaseName) throws SQLException {
         List<CockroachDBTable> databaseTables = new ArrayList<>();
-        List<String> tableNames = getTableNames(con);
+        List<String> tableNames = getTableNames(con, "SELECT table_name FROM information_schema.tables WHERE "
+                + "TABLE_TYPE IN ('BASE TABLE', 'LOCAL TEMPORARY');");
         for (String tableName : tableNames) {
             List<CockroachDBColumn> databaseColumns = getTableColumns(con, tableName);
             List<TableIndex> indexes = getIndexes(con, tableName);
@@ -305,19 +306,6 @@ public class CockroachDBSchema extends AbstractSchema<CockroachDBGlobalState, Co
 
         }
         return new CockroachDBSchema(databaseTables);
-    }
-
-    private static List<String> getTableNames(SQLConnection con) throws SQLException {
-        List<String> tableNames = new ArrayList<>();
-        try (Statement s = con.createStatement()) {
-            ResultSet tableRs = s.executeQuery(
-                    "SELECT table_name FROM information_schema.tables WHERE TABLE_TYPE IN ('BASE TABLE', 'LOCAL TEMPORARY');");
-            while (tableRs.next()) {
-                String tableName = tableRs.getString(1);
-                tableNames.add(tableName);
-            }
-        }
-        return tableNames;
     }
 
     private static List<TableIndex> getIndexes(SQLConnection con, String tableName) throws SQLException {
