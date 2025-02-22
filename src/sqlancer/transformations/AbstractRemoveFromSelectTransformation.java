@@ -14,26 +14,10 @@ public abstract class AbstractRemoveFromSelectTransformation extends JSQLParserB
 
     protected abstract SelectDeParser createRemover();
 
+    protected abstract void handleWithItems(Select select);
+
     protected AbstractRemoveFromSelectTransformation(String description) {
         super(description);
-    }
-
-    protected void handleWithItems(Select select) {
-        List<WithItem> withItemsList = select.getWithItemsList();
-        if (withItemsList == null) {
-            return;
-        }
-
-        for (WithItem withItem : withItemsList) {
-            SubSelect subSelect = withItem.getSubSelect();
-            if (subSelect == null) {
-                return;
-            }
-
-            if (subSelect.getSelectBody() != null) {
-                subSelect.getSelectBody().accept(remover);
-            }
-        }
     }
 
     @Override

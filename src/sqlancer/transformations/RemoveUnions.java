@@ -2,6 +2,7 @@ package sqlancer.transformations;
 
 import java.util.List;
 
+import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.select.SelectBody;
 import net.sf.jsqlparser.statement.select.SetOperationList;
 import net.sf.jsqlparser.util.deparser.SelectDeParser;
@@ -29,5 +30,8 @@ public class RemoveUnions extends AbstractRemoveFromSelectTransformation {
             }
         };
     }
+
+    @Override
+    protected void handleWithItems(Select select) {}
 
 }
