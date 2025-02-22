@@ -48,7 +48,8 @@ public final class AggregateOracleCommon {
         }
     }
 
-    public static String aggregateGetResultCommon(SQLGlobalState<?, ?> state, ExpectedErrors errors, String queryString) throws SQLException {
+    public static String aggregateGetResultCommon(SQLGlobalState<?, ?> state, ExpectedErrors errors, String queryString)
+            throws SQLException {
         String resultString;
         SQLQueryAdapter q = new SQLQueryAdapter(queryString, errors);
         try (SQLancerResultSet result = q.executeAndGet(state)) {
