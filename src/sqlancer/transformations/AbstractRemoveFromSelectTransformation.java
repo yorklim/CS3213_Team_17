@@ -10,7 +10,7 @@ import net.sf.jsqlparser.util.deparser.SelectDeParser;
 
 public abstract class AbstractRemoveFromSelectTransformation extends JSQLParserBasedTransformation {
 
-    private SelectDeParser remover;
+    protected SelectDeParser remover;
 
     protected abstract SelectDeParser createRemover();
 
