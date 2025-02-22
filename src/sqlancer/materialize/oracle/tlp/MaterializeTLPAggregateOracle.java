@@ -8,9 +8,9 @@ import java.util.List;
 
 import org.postgresql.util.PSQLException;
 
-import sqlancer.ComparatorHelper;
 import sqlancer.IgnoreMeException;
 import sqlancer.Randomly;
+import sqlancer.common.oracle.AggregateCheckCommon;
 import sqlancer.common.oracle.TestOracle;
 import sqlancer.common.query.SQLQueryAdapter;
 import sqlancer.common.query.SQLancerResultSet;
@@ -71,20 +71,7 @@ public class MaterializeTLPAggregateOracle extends MaterializeTLPBase implements
         metamorphicQuery = createMetamorphicUnionQuery(select, aggregate, select.getFromList());
         secondResult = getAggregateResult(metamorphicQuery);
 
-        String queryFormatString = "-- %s;\n-- result: %s";
-        String firstQueryString = String.format(queryFormatString, originalQuery, firstResult);
-        String secondQueryString = String.format(queryFormatString, metamorphicQuery, secondResult);
-        state.getState().getLocalState().log(String.format("%s\n%s", firstQueryString, secondQueryString));
-        if (firstResult == null && secondResult != null || firstResult != null && secondResult == null
-                || firstResult != null && !firstResult.contentEquals(secondResult)
-                        && !ComparatorHelper.isEqualDouble(firstResult, secondResult)) {
-            if (secondResult != null && secondResult.contains("Inf")) {
-                throw new IgnoreMeException(); // FIXME: average computation
-            }
-            String assertionMessage = String.format("the results mismatch!\n%s\n%s", firstQueryString,
-                    secondQueryString);
-            throw new AssertionError(assertionMessage);
-        }
+        AggregateCheckCommon.aggregateCheckCommon(state, firstResult, secondResult, originalQuery, metamorphicQuery);
     }
 
     private String createMetamorphicUnionQuery(MaterializeSelect select, MaterializeAggregate aggregate,
