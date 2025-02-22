@@ -76,8 +76,6 @@ public class YSQLTLPAggregateOracle extends YSQLTLPBase implements TestOracle<YS
         map.put("originalQuery", originalQuery);
         map.put("metamorphicQuery", metamorphicQuery);
         AggregateOracleCommon.aggregateCheckCommon(state, map);
-        // AggregateOracleCommon.aggregateCheckCommon(state, Map.of("firstResult", firstResult, "secondResult",
-        // secondResult, "originalQuery", originalQuery, "metamorphicQuery", metamorphicQuery));
     }
 
     private String createMetamorphicUnionQuery(YSQLSelect select, YSQLAggregate aggregate, List<YSQLExpression> from) {
