@@ -538,5 +538,43 @@
         </plugins>
       </build>
     </profile>
+
+    <!-- Postgres Profile -->
+    <profile>
+      <id>postgres</id>
+      <activation>
+        <property>
+          <name>db</name>
+          <value>postgres</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <includes>
+                <include>sqlancer/common/**</include>
+                <include>sqlancer/transformations/**</include>
+                <include>sqlancer/*.java</include>
+                <include>sqlancer/postgres/**</include>
+              </includes>
+            </configuration>
+            <executions>
+              <execution>
+                <id>default-testCompile</id>
+                <phase>test-compile</phase>
+                <goals>
+                  <goal>testCompile</goal>
+                </goals>
+                <configuration>
+                  <skip>true</skip>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 </project>
