@@ -24,7 +24,7 @@ import sqlancer.cnosdb.ast.CnosDBPrefixOperation.PrefixOperator;
 import sqlancer.cnosdb.ast.CnosDBSelect;
 import sqlancer.cnosdb.client.CnosDBResultSet;
 import sqlancer.cnosdb.query.CnosDBSelectQuery;
-import sqlancer.common.oracle.AggregateCheckCommon;
+import sqlancer.common.oracle.AggregateOracleCommon;
 import sqlancer.common.oracle.TestOracle;
 
 public class CnosDBTLPAggregateOracle extends CnosDBTLPBase implements TestOracle<CnosDBGlobalState> {
@@ -64,7 +64,7 @@ public class CnosDBTLPAggregateOracle extends CnosDBTLPBase implements TestOracl
         metamorphicQuery = createMetamorphicUnionQuery(select, aggregate, select.getFromList());
         secondResult = getAggregateResult(metamorphicQuery);
 
-        AggregateCheckCommon.aggregateCheckCommon(state, Map.of("firstResult", firstResult, "secondResult",
+        AggregateOracleCommon.aggregateCheckCommon(state, Map.of("firstResult", firstResult, "secondResult",
                 secondResult, "originalQuery", originalQuery, "metamorphicQuery", metamorphicQuery));
     }
 

@@ -7,9 +7,9 @@ import sqlancer.GlobalState;
 import sqlancer.IgnoreMeException;
 import sqlancer.SQLGlobalState;
 
-public final class AggregateCheckCommon {
+public final class AggregateOracleCommon {
 
-    private AggregateCheckCommon() {
+    private AggregateOracleCommon() {
     }
 
     public static void aggregateCheckCommon(Object state, Map<String, String> queryResults) {

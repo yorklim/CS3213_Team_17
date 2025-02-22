@@ -11,7 +11,7 @@ import org.postgresql.util.PSQLException;
 
 import sqlancer.IgnoreMeException;
 import sqlancer.Randomly;
-import sqlancer.common.oracle.AggregateCheckCommon;
+import sqlancer.common.oracle.AggregateOracleCommon;
 import sqlancer.common.oracle.TestOracle;
 import sqlancer.common.query.SQLQueryAdapter;
 import sqlancer.common.query.SQLancerResultSet;
@@ -69,7 +69,7 @@ public class PostgresTLPAggregateOracle extends PostgresTLPBase implements TestO
         metamorphicQuery = createMetamorphicUnionQuery(select, aggregate, select.getFromList());
         secondResult = getAggregateResult(metamorphicQuery);
 
-        AggregateCheckCommon.aggregateCheckCommon(state, Map.of("firstResult", firstResult, "secondResult",
+        AggregateOracleCommon.aggregateCheckCommon(state, Map.of("firstResult", firstResult, "secondResult",
                 secondResult, "originalQuery", originalQuery, "metamorphicQuery", metamorphicQuery));
     }
 
