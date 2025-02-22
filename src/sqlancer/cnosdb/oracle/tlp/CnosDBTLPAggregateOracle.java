@@ -2,10 +2,11 @@ package sqlancer.cnosdb.oracle.tlp;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
-import sqlancer.ComparatorHelper;
 import sqlancer.IgnoreMeException;
 import sqlancer.Randomly;
 import sqlancer.cnosdb.CnosDBExpectedError;
@@ -24,6 +25,7 @@ import sqlancer.cnosdb.ast.CnosDBPrefixOperation.PrefixOperator;
 import sqlancer.cnosdb.ast.CnosDBSelect;
 import sqlancer.cnosdb.client.CnosDBResultSet;
 import sqlancer.cnosdb.query.CnosDBSelectQuery;
+import sqlancer.common.oracle.AggregateOracleCommon;
 import sqlancer.common.oracle.TestOracle;
 
 public class CnosDBTLPAggregateOracle extends CnosDBTLPBase implements TestOracle<CnosDBGlobalState> {
@@ -63,20 +65,14 @@ public class CnosDBTLPAggregateOracle extends CnosDBTLPBase implements TestOracl
         metamorphicQuery = createMetamorphicUnionQuery(select, aggregate, select.getFromList());
         secondResult = getAggregateResult(metamorphicQuery);
 
-        String queryFormatString = "-- %s;\n-- result: %s";
-        String firstQueryString = String.format(queryFormatString, originalQuery, firstResult);
-        String secondQueryString = String.format(queryFormatString, metamorphicQuery, secondResult);
-        state.getState().getLocalState().log(String.format("%s\n%s", firstQueryString, secondQueryString));
-        if (firstResult == null && secondResult != null || firstResult != null && secondResult == null
-                || firstResult != null && !firstResult.contentEquals(secondResult)
-                        && !ComparatorHelper.isEqualDouble(firstResult, secondResult)) {
-            if (secondResult != null && secondResult.contains("Inf")) {
-                throw new IgnoreMeException(); // FIXME: average computation
-            }
-            String assertionMessage = String.format("%s: the results mismatch!\n%s\n%s", this.s.getDatabaseName(),
-                    firstQueryString, secondQueryString);
-            throw new AssertionError(assertionMessage);
-        }
+        Map<String, String> map = new HashMap<>();
+        map.put("firstResult", firstResult);
+        map.put("secondResult", secondResult);
+        map.put("originalQuery", originalQuery);
+        map.put("metamorphicQuery", metamorphicQuery);
+        AggregateOracleCommon.aggregateCheckCommon(state, map);
+        // AggregateOracleCommon.aggregateCheckCommon(state, Map.of("firstResult", firstResult, "secondResult",
+        // secondResult, "originalQuery", originalQuery, "metamorphicQuery", metamorphicQuery));
     }
 
     private String createMetamorphicUnionQuery(CnosDBSelect select, CnosDBAggregate aggregate,
