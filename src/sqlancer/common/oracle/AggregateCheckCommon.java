@@ -1,11 +1,14 @@
 package sqlancer.common.oracle;
 
 import sqlancer.ComparatorHelper;
-import sqlancer.IgnoreMeException;
 import sqlancer.GlobalState;
+import sqlancer.IgnoreMeException;
 import sqlancer.SQLGlobalState;
 
 public final class AggregateCheckCommon {
+
+    private AggregateCheckCommon() {
+    }
 
     public static void aggregateCheckCommon(Object state, String firstResult, String secondResult, String originalQuery,
             String metamorphicQuery) {
