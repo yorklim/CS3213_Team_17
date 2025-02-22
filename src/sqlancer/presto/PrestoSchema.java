@@ -8,6 +8,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
 import sqlancer.Randomly;
 import sqlancer.SQLConnection;
 import sqlancer.common.schema.AbstractRelationalTable;
@@ -273,47 +276,22 @@ public class PrestoSchema extends AbstractSchema<PrestoGlobalState, PrestoSchema
 
         public static PrestoCompositeDataType getRandomWithoutNull() {
             PrestoDataType type = PrestoDataType.getRandomWithoutNull();
-            int size;
-            int scale = -1;
-            switch (type) {
-            case INT:
-                size = Randomly.fromOptions(1, 2, 4, 8);
-                break;
-            case FLOAT:
-                size = Randomly.fromOptions(4, 8);
-                break;
-            case DECIMAL:
-                size = Math.toIntExact(8);
-                scale = Math.toIntExact(4);
-                break;
-            case VARBINARY:
-            case JSON:
-            case VARCHAR:
-            case CHAR:
-                size = Math.toIntExact(Randomly.getNotCachedInteger(10, 250));
-                break;
-            case ARRAY:
-                return new PrestoCompositeDataType(type, PrestoCompositeDataType.getRandomWithoutNull());
-            case BOOLEAN:
-            case DATE:
-            case TIME:
-            case TIME_WITH_TIME_ZONE:
-            case TIMESTAMP:
-            case TIMESTAMP_WITH_TIME_ZONE:
-            case INTERVAL_DAY_TO_SECOND:
-            case INTERVAL_YEAR_TO_MONTH:
-                size = 0;
-                break;
-            default:
-                throw new AssertionError(type);
-            }
-
-            return new PrestoCompositeDataType(type, size, scale);
+            return fromDataType(type);
         }
 
         public static PrestoCompositeDataType fromDataType(PrestoDataType type) {
+            if (type == PrestoDataType.ARRAY) {
+                return new PrestoCompositeDataType(type, PrestoCompositeDataType.getRandomWithoutNull());
+            }
+
+            Pair<Integer, Integer> sizeAndScale = getSizeAndScale(type);
+            return new PrestoCompositeDataType(type, sizeAndScale.getLeft(), sizeAndScale.getRight());
+        }
+
+        private static Pair<Integer, Integer> getSizeAndScale(PrestoDataType type) {
             int size;
             int scale = -1;
+
             switch (type) {
             case INT:
                 size = Randomly.fromOptions(1, 2, 4, 8);
@@ -322,18 +300,16 @@ public class PrestoSchema extends AbstractSchema<PrestoGlobalState, PrestoSchema
                 size = Randomly.fromOptions(4, 8);
                 break;
             case DECIMAL:
-                size = Math.toIntExact(8);
-                scale = Math.toIntExact(4);
+                size = 8;
+                scale = 4;
                 break;
             case JSON:
             case VARCHAR:
             case CHAR:
+            case VARBINARY:
                 size = Math.toIntExact(Randomly.getNotCachedInteger(10, 250));
                 break;
-            case ARRAY:
-                return new PrestoCompositeDataType(type, PrestoCompositeDataType.getRandomWithoutNull());
             case BOOLEAN:
-            case VARBINARY:
             case DATE:
             case TIME:
             case TIMESTAMP:
@@ -344,10 +320,10 @@ public class PrestoSchema extends AbstractSchema<PrestoGlobalState, PrestoSchema
                 size = 0;
                 break;
             default:
-                throw new AssertionError(type);
+                throw new AssertionError("Unexpected type: " + type);
             }
 
-            return new PrestoCompositeDataType(type, size, scale);
+            return new ImmutablePair<>(size, scale);
         }
 
         public PrestoDataType getPrimitiveDataType() {

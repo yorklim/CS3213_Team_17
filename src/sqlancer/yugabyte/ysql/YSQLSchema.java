@@ -16,7 +16,8 @@ import sqlancer.IgnoreMeException;
 import sqlancer.Randomly;
 import sqlancer.SQLConnection;
 import sqlancer.common.DBMSCommon;
-import sqlancer.common.schema.AbstractRelationalTable;
+import sqlancer.common.gen.PnYSQLTable;
+import sqlancer.common.gen.PnYStatisticsObject;
 import sqlancer.common.schema.AbstractRowValue;
 import sqlancer.common.schema.AbstractSchema;
 import sqlancer.common.schema.AbstractTableColumn;
@@ -273,7 +274,7 @@ public class YSQLSchema extends AbstractSchema<YSQLGlobalState, YSQLTable> {
 
     }
 
-    public static class YSQLTable extends AbstractRelationalTable<YSQLColumn, YSQLIndex, YSQLGlobalState> {
+    public static class YSQLTable extends PnYSQLTable<YSQLColumn, YSQLIndex, YSQLGlobalState> {
 
         private final TableType tableType;
         private final List<YSQLStatisticsObject> statistics;
@@ -287,6 +288,7 @@ public class YSQLSchema extends AbstractSchema<YSQLGlobalState, YSQLTable> {
             this.tableType = tableType;
         }
 
+        @Override
         public List<YSQLStatisticsObject> getStatistics() {
             return statistics;
         }
@@ -305,13 +307,14 @@ public class YSQLSchema extends AbstractSchema<YSQLGlobalState, YSQLTable> {
 
     }
 
-    public static final class YSQLStatisticsObject {
+    public static final class YSQLStatisticsObject extends PnYStatisticsObject {
         private final String name;
 
         public YSQLStatisticsObject(String name) {
             this.name = name;
         }
 
+        @Override
         public String getName() {
             return name;
         }
