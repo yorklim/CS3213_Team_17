@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -69,8 +70,14 @@ public class YSQLTLPAggregateOracle extends YSQLTLPBase implements TestOracle<YS
         metamorphicQuery = createMetamorphicUnionQuery(select, aggregate, select.getFromList());
         secondResult = getAggregateResult(metamorphicQuery);
 
-        AggregateOracleCommon.aggregateCheckCommon(state, Map.of("firstResult", firstResult, "secondResult",
-                secondResult, "originalQuery", originalQuery, "metamorphicQuery", metamorphicQuery));
+        Map<String, String> map = new HashMap<>();
+        map.put("firstResult", firstResult);
+        map.put("secondResult", secondResult);
+        map.put("originalQuery", originalQuery);
+        map.put("metamorphicQuery", metamorphicQuery);
+        AggregateOracleCommon.aggregateCheckCommon(state, map);
+        // AggregateOracleCommon.aggregateCheckCommon(state, Map.of("firstResult", firstResult, "secondResult",
+        // secondResult, "originalQuery", originalQuery, "metamorphicQuery", metamorphicQuery));
     }
 
     private String createMetamorphicUnionQuery(YSQLSelect select, YSQLAggregate aggregate, List<YSQLExpression> from) {
