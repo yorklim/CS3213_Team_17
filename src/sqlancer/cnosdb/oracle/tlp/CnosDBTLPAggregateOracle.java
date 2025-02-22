@@ -3,6 +3,7 @@ package sqlancer.cnosdb.oracle.tlp;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import sqlancer.IgnoreMeException;
@@ -63,7 +64,8 @@ public class CnosDBTLPAggregateOracle extends CnosDBTLPBase implements TestOracl
         metamorphicQuery = createMetamorphicUnionQuery(select, aggregate, select.getFromList());
         secondResult = getAggregateResult(metamorphicQuery);
 
-        AggregateCheckCommon.aggregateCheckCommon(state, firstResult, secondResult, originalQuery, metamorphicQuery);
+        AggregateCheckCommon.aggregateCheckCommon(state, Map.of("firstResult", firstResult, "secondResult",
+                secondResult, "originalQuery", originalQuery, "metamorphicQuery", metamorphicQuery));
     }
 
     private String createMetamorphicUnionQuery(CnosDBSelect select, CnosDBAggregate aggregate,

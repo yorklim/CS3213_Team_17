@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.postgresql.util.PSQLException;
 
@@ -71,7 +72,8 @@ public class MaterializeTLPAggregateOracle extends MaterializeTLPBase implements
         metamorphicQuery = createMetamorphicUnionQuery(select, aggregate, select.getFromList());
         secondResult = getAggregateResult(metamorphicQuery);
 
-        AggregateCheckCommon.aggregateCheckCommon(state, firstResult, secondResult, originalQuery, metamorphicQuery);
+        AggregateCheckCommon.aggregateCheckCommon(state, Map.of("firstResult", firstResult, "secondResult",
+                secondResult, "originalQuery", originalQuery, "metamorphicQuery", metamorphicQuery));
     }
 
     private String createMetamorphicUnionQuery(MaterializeSelect select, MaterializeAggregate aggregate,

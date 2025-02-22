@@ -1,5 +1,7 @@
 package sqlancer.common.oracle;
 
+import java.util.Map;
+
 import sqlancer.ComparatorHelper;
 import sqlancer.GlobalState;
 import sqlancer.IgnoreMeException;
@@ -10,11 +12,12 @@ public final class AggregateCheckCommon {
     private AggregateCheckCommon() {
     }
 
-    public static void aggregateCheckCommon(Object state, String firstResult, String secondResult, String originalQuery,
-            String metamorphicQuery) {
+    public static void aggregateCheckCommon(Object state, Map<String, String> queryResults) {
         String queryFormatString = "-- %s;\n-- result: %s";
-        String firstQueryString = String.format(queryFormatString, originalQuery, firstResult);
-        String secondQueryString = String.format(queryFormatString, metamorphicQuery, secondResult);
+        String firstQueryString = String.format(queryFormatString, queryResults.get("originalQuery"),
+                queryResults.get("firstResult"));
+        String secondQueryString = String.format(queryFormatString, queryResults.get("metamorphicQuery"),
+                queryResults.get("secondResult"));
 
         if (state instanceof GlobalState<?, ?, ?>) {
             ((GlobalState<?, ?, ?>) state).getState().getLocalState()
@@ -26,10 +29,13 @@ public final class AggregateCheckCommon {
             throw new IllegalArgumentException("Unsupported state type: " + state.getClass().getName());
         }
 
-        if (firstResult == null && secondResult != null || firstResult != null && secondResult == null
-                || firstResult != null && !firstResult.contentEquals(secondResult)
-                        && !ComparatorHelper.isEqualDouble(firstResult, secondResult)) {
-            if (secondResult != null && secondResult.contains("Inf")) {
+        if (queryResults.get("firstResult") == null && queryResults.get("secondResult") != null
+                || queryResults.get("firstResult") != null && queryResults.get("secondResult") == null
+                || queryResults.get("firstResult") != null
+                        && !queryResults.get("firstResult").contentEquals(queryResults.get("secondResult"))
+                        && !ComparatorHelper.isEqualDouble(queryResults.get("firstResult"),
+                                queryResults.get("secondResult"))) {
+            if (queryResults.get("secondResult") != null && queryResults.get("secondResult").contains("Inf")) {
                 throw new IgnoreMeException(); // FIXME: average computation
             }
             String assertionMessage = String.format("%s: the results mismatch!\n%s\n%s", firstQueryString,
