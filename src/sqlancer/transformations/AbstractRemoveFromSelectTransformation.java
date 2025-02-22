@@ -1,10 +1,6 @@
 package sqlancer.transformations;
 
-import java.util.List;
-
 import net.sf.jsqlparser.statement.select.Select;
-import net.sf.jsqlparser.statement.select.SubSelect;
-import net.sf.jsqlparser.statement.select.WithItem;
 import net.sf.jsqlparser.util.deparser.ExpressionDeParser;
 import net.sf.jsqlparser.util.deparser.SelectDeParser;
 
