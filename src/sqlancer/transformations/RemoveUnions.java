@@ -32,6 +32,7 @@ public class RemoveUnions extends AbstractRemoveFromSelectTransformation {
     }
 
     @Override
-    protected void handleWithItems(Select select) {}
+    protected void handleWithItems(Select select) {
+    }
 
 }
