@@ -538,5 +538,82 @@
         </plugins>
       </build>
     </profile>
+
+
+    <!-- Specific DB Profile -->
+    <profile>
+      <id>Isolate</id>
+      <activation>
+        <property>
+          <name>db</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <includes>
+                <include>sqlancer/common/**</include>
+                <include>sqlancer/transformations/**</include>
+                <include>sqlancer/*.java</include>
+                <include>sqlancer/${db}/**/*.java</include>
+              </includes>
+            </configuration>
+            <executions>
+              <execution>
+                <id>default-testCompile</id>
+                <phase>test-compile</phase>
+                <goals>
+                  <goal>testCompile</goal>
+                </goals>
+                <configuration>
+                  <skip>true</skip>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <!-- Citus Profile, special case -->
+    <profile>
+      <id>citus</id>
+      <activation>
+        <property>
+          <name>db</name>
+          <value>citus</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <includes>
+                <include>sqlancer/common/**</include>
+                <include>sqlancer/transformations/**</include>
+                <include>sqlancer/*.java</include>
+                <include>sqlancer/citus/**</include>
+                <include>sqlancer/postgres/**</include>
+              </includes>
+            </configuration>
+            <executions>
+              <execution>
+                <id>default-testCompile</id>
+                <phase>test-compile</phase>
+                <goals>
+                  <goal>testCompile</goal>
+                </goals>
+                <configuration>
+                  <skip>true</skip>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 </project>
