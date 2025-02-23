@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import sqlancer.Randomly;
 import sqlancer.SQLConnection;
 import sqlancer.common.oracle.PivotedQuerySynthesisBase;
+import sqlancer.common.oracle.PivotedQuerySynthesisOracleCommon;
 import sqlancer.common.query.Query;
 import sqlancer.common.query.SQLQueryAdapter;
 import sqlancer.databend.DatabendErrors;
@@ -87,26 +88,8 @@ public class DatabendPivotedQuerySynthesisOracle
 
     @Override
     protected Query<SQLConnection> getContainmentCheckQuery(Query<?> pivotRowQuery) throws Exception {
-        StringBuilder sb = new StringBuilder();
-        sb.append("SELECT * FROM (");
-        sb.append(pivotRowQuery.getUnterminatedQueryString());
-        sb.append(") as result WHERE ");
-        int i = 0;
-        for (DatabendColumn c : fetchColumns) {
-            if (i++ != 0) {
-                sb.append(" AND ");
-            }
-            sb.append("result.");
-            sb.append(c.getTable().getName());
-            sb.append(c.getName());
-            if (pivotRow.getValues().get(c).isNull()) {
-                sb.append(" IS NULL ");
-            } else {
-                sb.append(" = ");
-                sb.append(pivotRow.getValues().get(c).toString());
-            }
-        }
-        String resultingQueryString = sb.toString();
+        String resultingQueryString = PivotedQuerySynthesisOracleCommon.getContainmentCheckQueryCommon(fetchColumns,
+                pivotRow, pivotRowQuery);
         return new SQLQueryAdapter(resultingQueryString, errors);
     }
 
