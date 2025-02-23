@@ -3,11 +3,11 @@ package sqlancer.doris.oracle.tlp;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import sqlancer.ComparatorHelper;
 import sqlancer.doris.DorisErrors;
 import sqlancer.doris.DorisProvider.DorisGlobalState;
-import sqlancer.doris.visitor.DorisToStringVisitor;
 
 public class DorisQueryPartitioningDistinctTester extends DorisQueryPartitioningBase {
 
@@ -21,24 +21,20 @@ public class DorisQueryPartitioningDistinctTester extends DorisQueryPartitioning
     public void check() throws SQLException {
         super.check();
         select.setDistinct(true);
-        select.setWhereClause(null);
-        String originalQueryString = DorisToStringVisitor.asString(select);
-        List<String> resultSet = ComparatorHelper.getResultSetFirstColumnAsString(originalQueryString, errors, state);
 
-        select.setWhereClause(predicate);
-        String firstQueryString = DorisToStringVisitor.asString(select);
-        select.setWhereClause(negatedPredicate);
-        String secondQueryString = DorisToStringVisitor.asString(select);
-        select.setWhereClause(isNullPredicate);
-        String thirdQueryString = DorisToStringVisitor.asString(select);
+        Map<String, String> queryStrings = DorisQueryPartitioningTesterCommon.checkCommon(select, predicate,
+                negatedPredicate, isNullPredicate);
+
+        List<String> resultSet = ComparatorHelper
+                .getResultSetFirstColumnAsString(queryStrings.get("originalQueryString"), errors, state);
         List<String> combinedString = new ArrayList<>();
-
-        String unionString = "SELECT DISTINCT * FROM (" + firstQueryString + " UNION ALL " + secondQueryString
-                + " UNION ALL " + thirdQueryString + ") tmpTable";
+        String unionString = "SELECT DISTINCT * FROM (" + queryStrings.get("firstQueryString") + " UNION ALL "
+                + queryStrings.get("secondQueryString") + " UNION ALL " + queryStrings.get("thirdQueryString")
+                + ") tmpTable";
         combinedString.add(unionString);
         List<String> secondResultSet = ComparatorHelper.getResultSetFirstColumnAsString(unionString, errors, state);
-        ComparatorHelper.assumeResultSetsAreEqual(resultSet, secondResultSet, originalQueryString, combinedString,
-                state, ComparatorHelper::canonicalizeResultValue);
+        ComparatorHelper.assumeResultSetsAreEqual(resultSet, secondResultSet, queryStrings.get("originalQueryString"),
+                combinedString, state, ComparatorHelper::canonicalizeResultValue);
     }
 
 }

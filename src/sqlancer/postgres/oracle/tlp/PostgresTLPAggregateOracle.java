@@ -76,8 +76,6 @@ public class PostgresTLPAggregateOracle extends PostgresTLPBase implements TestO
         map.put("originalQuery", originalQuery);
         map.put("metamorphicQuery", metamorphicQuery);
         AggregateOracleCommon.aggregateCheckCommon(state, map);
-        // AggregateOracleCommon.aggregateCheckCommon(state, Map.of("firstResult", firstResult, "secondResult",
-        // secondResult, "originalQuery", originalQuery, "metamorphicQuery", metamorphicQuery));
     }
 
     private String createMetamorphicUnionQuery(PostgresSelect select, PostgresAggregate aggregate,
