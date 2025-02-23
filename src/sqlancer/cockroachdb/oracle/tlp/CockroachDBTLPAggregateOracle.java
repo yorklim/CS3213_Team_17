@@ -65,7 +65,7 @@ public class CockroachDBTLPAggregateOracle implements TestOracle<CockroachDBGlob
         }
         select.setFetchColumns(Arrays.asList(aggregate));
         List<CockroachDBTableReference> tableList = targetTables.getTables().stream()
-                .map(t -> new CockroachDBTableReference(t)).collect(Collectors.toList());
+                .map(CockroachDBTableReference::new).collect(Collectors.toList());
         List<CockroachDBExpression> from = CockroachDBCommon.getTableReferences(tableList);
         if (Randomly.getBooleanWithRatherLowProbability()) {
             select.setJoinList(CockroachDBTLPBase.getJoins(from, state));

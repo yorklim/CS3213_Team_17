@@ -39,8 +39,8 @@ public class DorisProvider extends SQLProviderAdapter<DorisGlobalState, DorisOpt
         CREATE_INDEX(DorisIndexGenerator::getQuery), INSERT(DorisInsertGenerator::getQuery),
         DELETE(DorisDeleteGenerator::generate), UPDATE(DorisUpdateGenerator::getQuery),
         ALTER_TABLE(DorisAlterTableGenerator::getQuery),
-        TRUNCATE((g) -> new SQLQueryAdapter(
-                "TRUNCATE TABLE " + g.getSchema().getRandomTable(t -> !t.isView()).getName())),
+        TRUNCATE(
+                g -> new SQLQueryAdapter("TRUNCATE TABLE " + g.getSchema().getRandomTable(t -> !t.isView()).getName())),
         DROP_TABLE(DorisDropTableGenerator::dropTable), DROP_VIEW(DorisDropViewGenerator::dropView);
 
         private final SQLQueryProvider<DorisGlobalState> sqlQueryProvider;
@@ -103,7 +103,7 @@ public class DorisProvider extends SQLProviderAdapter<DorisGlobalState, DorisOpt
             throw new IgnoreMeException();
         }
         StatementExecutor<DorisGlobalState, Action> se = new StatementExecutor<>(globalState, Action.values(),
-                DorisProvider::mapActions, (q) -> {
+                DorisProvider::mapActions, q -> {
                     if (globalState.getSchema().getDatabaseTables().isEmpty()) {
                         throw new IgnoreMeException();
                     }

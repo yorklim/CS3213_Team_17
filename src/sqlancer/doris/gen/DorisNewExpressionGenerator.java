@@ -484,7 +484,7 @@ public class DorisNewExpressionGenerator extends TypedExpressionGenerator<DorisE
 
     @Override
     public List<DorisJoin> getRandomJoinClauses() {
-        List<DorisTableReference> tableList = tables.stream().map(t -> new DorisTableReference(t))
+        List<DorisTableReference> tableList = tables.stream().map(DorisTableReference::new)
                 .collect(Collectors.toList());
         List<DorisJoin> joins = DorisJoin.getJoins(tableList, globalState);
         tables = tableList.stream().map(t -> t.getTable()).collect(Collectors.toList());
@@ -493,7 +493,7 @@ public class DorisNewExpressionGenerator extends TypedExpressionGenerator<DorisE
 
     @Override
     public List<DorisExpression> getTableRefs() {
-        return tables.stream().map(t -> new DorisTableReference(t)).collect(Collectors.toList());
+        return tables.stream().map(DorisTableReference::new).collect(Collectors.toList());
     }
 
     @Override
@@ -507,7 +507,7 @@ public class DorisNewExpressionGenerator extends TypedExpressionGenerator<DorisE
             select.setFetchColumns(List.of(aggr));
 
         } else {
-            List<DorisExpression> allColumns = columns.stream().map((c) -> new DorisColumnReference(c))
+            List<DorisExpression> allColumns = columns.stream().map(DorisColumnReference::new)
                     .collect(Collectors.toList());
             select.setFetchColumns(allColumns);
             if (Randomly.getBooleanWithSmallProbability()) {
@@ -539,7 +539,6 @@ public class DorisNewExpressionGenerator extends TypedExpressionGenerator<DorisE
         if (shouldCreateDummy) {
             return List.of(new DorisColumnReference(new DorisColumn("*", null, false, false)));
         }
-        return Randomly.nonEmptySubset(columns).stream().map(c -> new DorisColumnReference(c))
-                .collect(Collectors.toList());
+        return Randomly.nonEmptySubset(columns).stream().map(DorisColumnReference::new).collect(Collectors.toList());
     }
 }

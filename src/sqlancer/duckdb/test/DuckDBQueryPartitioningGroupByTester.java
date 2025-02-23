@@ -44,7 +44,7 @@ public class DuckDBQueryPartitioningGroupByTester extends DuckDBQueryPartitionin
 
     @Override
     List<DuckDBExpression> generateFetchColumns() {
-        return Randomly.nonEmptySubset(targetTables.getColumns()).stream().map(c -> new DuckDBColumnReference(c))
+        return Randomly.nonEmptySubset(targetTables.getColumns()).stream().map(DuckDBColumnReference::new)
                 .collect(Collectors.toList());
     }
 

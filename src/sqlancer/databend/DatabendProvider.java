@@ -38,7 +38,7 @@ public class DatabendProvider extends SQLProviderAdapter<DatabendGlobalState, Da
         INSERT(DatabendInsertGenerator::getQuery), DELETE(DatabendDeleteGenerator::generate),
         // TODO 等待databend实现update
         // UPDATE(DatabendUpdateGenerator::getQuery), //
-        CREATE_VIEW(DatabendViewGenerator::generate), EXPLAIN((g) -> {
+        CREATE_VIEW(DatabendViewGenerator::generate), EXPLAIN(g -> {
             ExpectedErrors errors = new ExpectedErrors();
             DatabendErrors.addExpressionErrors(errors);
             DatabendErrors.addGroupByErrors(errors);
@@ -101,7 +101,7 @@ public class DatabendProvider extends SQLProviderAdapter<DatabendGlobalState, Da
             throw new IgnoreMeException(); // TODO
         }
         StatementExecutor<DatabendGlobalState, Action> se = new StatementExecutor<>(globalState, Action.values(),
-                DatabendProvider::mapActions, (q) -> {
+                DatabendProvider::mapActions, q -> {
                     if (globalState.getSchema().getDatabaseTables().isEmpty()) {
                         throw new IgnoreMeException();
                     }

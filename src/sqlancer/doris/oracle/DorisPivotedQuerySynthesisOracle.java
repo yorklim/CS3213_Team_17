@@ -51,7 +51,7 @@ public class DorisPivotedQuerySynthesisOracle
                 .map(c -> new DorisColumnValue(getFetchValueAliasedColumn(c), pivotRow.getValues().get(c)))
                 .collect(Collectors.toList()));
         selectStatement.setFromList(
-                randomTables.getTables().stream().map(t -> new DorisTableReference(t)).collect(Collectors.toList()));
+                randomTables.getTables().stream().map(DorisTableReference::new).collect(Collectors.toList()));
         DorisExpression whereClause = generateRectifiedExpression(columns, pivotRow);
         selectStatement.setWhereClause(whereClause);
         List<DorisExpression> groupByClause = generateGroupByClause(columns, pivotRow);

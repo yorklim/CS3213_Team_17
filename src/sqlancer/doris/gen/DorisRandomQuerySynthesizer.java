@@ -45,7 +45,7 @@ public final class DorisRandomQuerySynthesizer {
         }
         select.setFetchColumns(columns);
         List<DorisTable> tables = targetTables.getTables();
-        List<DorisTableReference> tableList = tables.stream().map(t -> new DorisTableReference(t))
+        List<DorisTableReference> tableList = tables.stream().map(DorisTableReference::new)
                 .collect(Collectors.toList());
         List<DorisJoin> joins = DorisJoin.getJoins(tableList, globalState);
         select.setJoinList(joins.stream().collect(Collectors.toList()));

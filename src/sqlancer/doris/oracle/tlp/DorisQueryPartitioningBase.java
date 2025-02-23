@@ -55,7 +55,7 @@ public class DorisQueryPartitioningBase extends TernaryLogicPartitioningOracleBa
         groupByExpression = new ArrayList<>(allColumnValues);
         select.setFetchColumns(generateFetchColumns());
         List<DorisTable> tables = targetTables.getTables();
-        List<DorisTableReference> tableList = tables.stream().map(t -> new DorisTableReference(t))
+        List<DorisTableReference> tableList = tables.stream().map(DorisTableReference::new)
                 .collect(Collectors.toList());
         List<DorisJoin> joins = DorisJoin.getJoins(tableList, state);
         select.setJoinList(joins.stream().collect(Collectors.toList()));
@@ -68,7 +68,7 @@ public class DorisQueryPartitioningBase extends TernaryLogicPartitioningOracleBa
         if (Randomly.getBoolean()) {
             columns.add(new DorisColumnReference(new DorisColumn("*", null, false, false)));
         } else {
-            columns = Randomly.nonEmptySubset(targetTables.getColumns()).stream().map(c -> new DorisColumnReference(c))
+            columns = Randomly.nonEmptySubset(targetTables.getColumns()).stream().map(DorisColumnReference::new)
                     .collect(Collectors.toList());
         }
         return columns;
