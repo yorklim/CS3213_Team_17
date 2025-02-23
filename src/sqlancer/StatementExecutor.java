@@ -37,6 +37,7 @@ public class StatementExecutor<G extends GlobalState<?, ?, ?>, A extends Abstrac
         int total = 0;
         for (int i = 0; i < actions.length; i++) {
             A action = actions[i];
+            // Randomly chooses the number of times the action will be performed
             int nrPerformed = mapping.map(globalState, action);
             if (nrPerformed != 0) {
                 availableActions.add(action);
@@ -49,6 +50,7 @@ public class StatementExecutor<G extends GlobalState<?, ?, ?>, A extends Abstrac
             int selection = r.getInteger(0, total);
             int previousRange = 0;
             int i;
+            // Does a random action from the available actions
             for (i = 0; i < nrRemaining.length; i++) {
                 if (previousRange <= selection && selection < previousRange + nrRemaining[i]) {
                     nextAction = actions[i];
@@ -66,15 +68,20 @@ public class StatementExecutor<G extends GlobalState<?, ?, ?>, A extends Abstrac
                 boolean success;
                 int nrTries = 0;
                 do {
+                    // Gets the query from the action, using gen files in specific databases
                     query = nextAction.getQuery(globalState);
+                    // Executes the query
                     success = globalState.executeStatement(query);
+                    // Tries querying again if the action can be retried and the query was not successful
                 } while (nextAction.canBeRetried() && !success
                         && nrTries++ < globalState.getOptions().getNrStatementRetryCount());
             } catch (IgnoreMeException ignored) {
 
             }
+            // Updates Global state if the query affects the schema
             if (query != null && query.couldAffectSchema()) {
                 globalState.updateSchema();
+                // I do not think this does anything
                 queryConsumer.notify(query);
             }
             total--;

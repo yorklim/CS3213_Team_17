@@ -70,6 +70,7 @@ public class MySQLProvider extends SQLProviderAdapter<MySQLGlobalState, MySQLOpt
             this.sqlQueryProvider = sqlQueryProvider;
         }
 
+        // Generates query with gen
         @Override
         public SQLQueryAdapter getQuery(MySQLGlobalState globalState) throws Exception {
             return sqlQueryProvider.getQuery(globalState);
@@ -135,14 +136,18 @@ public class MySQLProvider extends SQLProviderAdapter<MySQLGlobalState, MySQLOpt
         return nrPerformed;
     }
 
+    // Creates tables randomly modify table options and also randomly insert/update/delete rows
     @Override
     public void generateDatabase(MySQLGlobalState globalState) throws Exception {
+        // Generates a random amount of tables
         while (globalState.getSchema().getDatabaseTables().size() < Randomly.getNotCachedInteger(1, 2)) {
             String tableName = DBMSCommon.createTableName(globalState.getSchema().getDatabaseTables().size());
             SQLQueryAdapter createTable = MySQLTableGenerator.generate(globalState, tableName);
             globalState.executeStatement(createTable);
         }
 
+        // Given all the available actions, randomly choose to execute them a random amount of times (with mapActions),
+        // then executes them in random order
         StatementExecutor<MySQLGlobalState, Action> se = new StatementExecutor<>(globalState, Action.values(),
                 MySQLProvider::mapActions, (q) -> {
                     if (globalState.getSchema().getDatabaseTables().isEmpty()) {
@@ -151,9 +156,11 @@ public class MySQLProvider extends SQLProviderAdapter<MySQLGlobalState, MySQLOpt
                 });
         se.executeStatements();
 
+        // Checks if MySQLOracle is on
         if (globalState.getDbmsSpecificOptions().getTestOracleFactory().stream()
                 .anyMatch((o) -> o == MySQLOracleFactory.CERT)) {
             // Enfore statistic collected for all tables
+            // Add errors to ignore and turn on the collection of statistics
             ExpectedErrors errors = new ExpectedErrors();
             MySQLErrors.addExpressionErrors(errors);
             for (MySQLTable table : globalState.getSchema().getDatabaseTables()) {
@@ -169,6 +176,7 @@ public class MySQLProvider extends SQLProviderAdapter<MySQLGlobalState, MySQLOpt
         }
     }
 
+    //Creates new database
     @Override
     public SQLConnection createDatabase(MySQLGlobalState globalState) throws SQLException {
         String username = globalState.getOptions().getUserName();

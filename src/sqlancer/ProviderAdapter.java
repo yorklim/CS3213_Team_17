@@ -50,14 +50,18 @@ public abstract class ProviderAdapter<G extends GlobalState<O, ? extends Abstrac
     public Reproducer<G> generateAndTestDatabase(G globalState) throws Exception {
         try {
             generateDatabase(globalState);
+            // All DBs use the one implemented provided by the SQLProviderAdapter except for CnosDB
+            // Drop views that are not valid
             checkViewsAreValid(globalState);
             globalState.getManager().incrementCreateDatabase();
 
+            // Run the test oracle
             TestOracle<G> oracle = getTestOracle(globalState);
             for (int i = 0; i < globalState.getOptions().getNrQueries(); i++) {
                 try (OracleRunReproductionState localState = globalState.getState().createLocalState()) {
                     assert localState != null;
                     try {
+                        // Generates a query and checks if it is correct
                         oracle.check();
                         globalState.getManager().incrementSelectQueryCount();
                     } catch (IgnoreMeException ignored) {
@@ -68,6 +72,8 @@ public abstract class ProviderAdapter<G extends GlobalState<O, ? extends Abstrac
                         }
                         throw e;
                     }
+                    // If the query was executed without an error, the local state is closed, the exception will cause
+                    // it to close and when closing it will log out all the query statements in the cycle that failed
                     localState.executedWithoutError();
                 }
             }

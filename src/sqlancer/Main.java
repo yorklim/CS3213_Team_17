@@ -404,6 +404,7 @@ public final class Main {
             }
         }
 
+        // Database Creation and Query Execution
         public void run() throws Exception {
             G state = createGlobalState();
             stateToRepro = provider.getStateToReproduce(databaseName);
@@ -414,6 +415,7 @@ public final class Main {
             state.setDatabaseName(databaseName);
             state.setMainOptions(options);
             state.setDbmsSpecificOptions(command);
+            // Creates a new database
             try (C con = provider.createDatabase(state)) {
                 QueryManager<C> manager = new QueryManager<>(state);
                 try {
@@ -429,8 +431,10 @@ public final class Main {
                 }
                 Reproducer<G> reproducer = null;
                 if (options.enableQPG()) {
+                    // Table creation and testing starts here (with QPG)
                     provider.generateAndTestDatabaseWithQueryPlanGuidance(state);
                 } else {
+                    // Table creation and testing starts here
                     reproducer = provider.generateAndTestDatabase(state);
                 }
                 try {
@@ -440,6 +444,7 @@ public final class Main {
                     throw new AssertionError(e);
                 }
 
+                // Runs reducer
                 if (options.reduceAST() && !options.useReducer()) {
                     throw new AssertionError("To reduce AST, use-reducer option must be enabled first");
                 }
@@ -592,6 +597,7 @@ public final class Main {
         ExecutorService execService = Executors.newFixedThreadPool(options.getNumberConcurrentThreads());
         DBMSExecutorFactory<?, ?, ?> executorFactory = nameToProvider.get(jc.getParsedCommand());
 
+        //Connection Test by trying to create a DB, testConnection calls createDatabase
         if (options.performConnectionTest()) {
             try {
                 executorFactory.getDBMSExecutor(options.getDatabasePrefix() + "connectiontest", new Randomly())
@@ -605,6 +611,7 @@ public final class Main {
         }
         final AtomicBoolean someOneFails = new AtomicBoolean(false);
 
+        // Test DBMS getTotalNumberTries() times, each spawn a new thread
         for (int i = 0; i < options.getTotalNumberTries(); i++) {
             final String databaseName = options.getDatabasePrefix() + i;
             final long seed;
@@ -641,6 +648,7 @@ public final class Main {
                     }
                 }
 
+                // Starts the testing for each try
                 private boolean run(MainOptions options, DBMSExecutorFactory<?, ?, ?> executorFactory, Randomly r,
                         final String databaseName) {
                     DBMSExecutor<?, ?, ?> executor = executorFactory.getDBMSExecutor(databaseName, r);
