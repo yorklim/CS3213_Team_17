@@ -128,7 +128,6 @@ public class CockroachDBProvider extends SQLProviderAdapter<CockroachDBGlobalSta
     @Override
     public void generateDatabase(CockroachDBGlobalState globalState) throws Exception {
         QueryManager<SQLConnection> manager = globalState.getManager();
-        MainOptions options = globalState.getOptions();
         List<String> standardSettings = new ArrayList<>();
         standardSettings.add("--Don't send automatic bug reports");
         standardSettings.add("SET CLUSTER SETTING debug.panic_on_failed_assertions = true;");
