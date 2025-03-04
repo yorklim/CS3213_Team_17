@@ -1,11 +1,12 @@
 package sqlancer.cockroachdb;
 
+import sqlancer.AbstractAction;
 import sqlancer.MainOptions;
 import sqlancer.Randomly;
 import sqlancer.common.TableQueryGenerator;
 import sqlancer.common.query.ExpectedErrors;
 import sqlancer.common.query.SQLQueryAdapter;
-
+import sqlancer.cockroachdb.CockroachDBProvider.CockroachDBGlobalState;
 import sqlancer.cockroachdb.gen.CockroachDBCommentOnGenerator;
 import sqlancer.cockroachdb.gen.CockroachDBCreateStatisticsGenerator;
 import sqlancer.cockroachdb.gen.CockroachDBDeleteGenerator;
@@ -24,7 +25,7 @@ import sqlancer.cockroachdb.gen.CockroachDBViewGenerator;
 import sqlancer.common.query.SQLQueryProvider;
 
 public class CockroachDBTableQueryGenerator implements TableQueryGenerator {
-    public enum Action {
+    public enum Action implements AbstractAction<CockroachDBGlobalState> {
         CREATE_TABLE(CockroachDBTableGenerator::generate), CREATE_INDEX(CockroachDBIndexGenerator::create), //
         CREATE_VIEW(CockroachDBViewGenerator::generate), //
         CREATE_STATISTICS(CockroachDBCreateStatisticsGenerator::create), //
@@ -81,18 +82,18 @@ public class CockroachDBTableQueryGenerator implements TableQueryGenerator {
             return new SQLQueryAdapter(sb.toString(), ExpectedErrors.from("must be of type"));
         });
 
-        private final SQLQueryProvider<CockroachDBProvider.CockroachDBGlobalState> sqlQueryProvider;
+        private final SQLQueryProvider<CockroachDBGlobalState> sqlQueryProvider;
 
-        Action(SQLQueryProvider<CockroachDBProvider.CockroachDBGlobalState> sqlQueryProvider) {
+        Action(SQLQueryProvider<CockroachDBGlobalState> sqlQueryProvider) {
             this.sqlQueryProvider = sqlQueryProvider;
         }
 
-        public SQLQueryAdapter getQuery(CockroachDBProvider.CockroachDBGlobalState state) throws Exception {
+        public SQLQueryAdapter getQuery(CockroachDBGlobalState state) throws Exception {
             return sqlQueryProvider.getQuery(state);
         }
     }
 
-    private final CockroachDBProvider.CockroachDBGlobalState globalState;
+    private final CockroachDBGlobalState globalState;
     private int total;
     private int[] nrActions;
 
@@ -103,52 +104,39 @@ public class CockroachDBTableQueryGenerator implements TableQueryGenerator {
     }
 
     private int mapActions(Action action) {
+        Randomly r = globalState.getRandomly();
         MainOptions options = globalState.getOptions();
-        int nrPerformed = 0;
         switch (action) {
         case INSERT:
-            nrPerformed = globalState.getRandomly().getInteger(0, options.getMaxNumberInserts());
-            break;
+            return r.getInteger(0, options.getMaxNumberInserts());
         case UPDATE:
         case SPLIT:
-            nrPerformed = globalState.getRandomly().getInteger(0, 3);
-            break;
+        case SET_CLUSTER_SETTING:
+            return r.getInteger(0, 3);
         case EXPLAIN:
-            nrPerformed = globalState.getRandomly().getInteger(0, 10);
-            break;
+        case CREATE_INDEX:
+            return r.getInteger(0, 10);
         case SHOW:
         case TRUNCATE:
         case DELETE:
         case CREATE_STATISTICS:
-            nrPerformed = globalState.getRandomly().getInteger(0, 2);
-            break;
         case CREATE_VIEW:
-            nrPerformed = globalState.getRandomly().getInteger(0, 2);
-            break;
+            return r.getInteger(0, 2);
         case SET_SESSION:
-        case SET_CLUSTER_SETTING:
-            nrPerformed = globalState.getRandomly().getInteger(0, 3);
-            break;
-        case CREATE_INDEX:
-            nrPerformed = globalState.getRandomly().getInteger(0, 10);
-            break;
         case COMMENT_ON:
         case SCRUB:
-            nrPerformed = 0; /*
-                              * there are a number of open SCRUB bugs, of which
-                              * https://github.com/cockroachdb/cockroach/issues/47116 crashes the server
-                              */
-            break;
+            return 0; /*
+                       * there are a number of open SCRUB bugs, of which
+                       * https://github.com/cockroachdb/cockroach/issues/47116 crashes the server
+                       */
         case TRANSACTION:
         case CREATE_TABLE:
         case DROP_TABLE:
         case DROP_VIEW:
-            nrPerformed = 0; // r.getInteger(0, 0);
-            break;
+            return 0; // r.getInteger(0, 0);
         default:
             throw new AssertionError(action);
         }
-        return nrPerformed;
     }
 
     private void generateNrActions() {
@@ -157,6 +145,11 @@ public class CockroachDBTableQueryGenerator implements TableQueryGenerator {
             nrActions[action.ordinal()] = nrPerformed;
             total += nrPerformed;
         }
+    }
+
+    @Override
+    public void generate() {
+        generateNrActions();
     }
 
     @Override
@@ -170,6 +163,7 @@ public class CockroachDBTableQueryGenerator implements TableQueryGenerator {
         int previousRange = 0;
         for (int i = 0; i < nrActions.length; i++) {
             if (previousRange <= selection && selection < previousRange + nrActions[i]) {
+                assert nrActions[i] > 0;
                 nrActions[i]--;
                 total--;
                 return Action.values()[i];
@@ -180,8 +174,4 @@ public class CockroachDBTableQueryGenerator implements TableQueryGenerator {
         throw new AssertionError();
     }
 
-    @Override
-    public void generate() {
-        generateNrActions();
-    }
 }

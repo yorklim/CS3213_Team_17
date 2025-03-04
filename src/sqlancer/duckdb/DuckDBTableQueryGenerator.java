@@ -1,22 +1,9 @@
 package sqlancer.duckdb;
 
-import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
-
-import com.google.auto.service.AutoService;
-
 import sqlancer.AbstractAction;
-import sqlancer.DatabaseProvider;
-import sqlancer.IgnoreMeException;
 import sqlancer.MainOptions;
 import sqlancer.Randomly;
-import sqlancer.SQLConnection;
-import sqlancer.SQLGlobalState;
-import sqlancer.SQLProviderAdapter;
-import sqlancer.StatementExecutor;
+import sqlancer.common.TableQueryGenerator;
 import sqlancer.common.query.ExpectedErrors;
 import sqlancer.common.query.SQLQueryAdapter;
 import sqlancer.common.query.SQLQueryProvider;
@@ -25,17 +12,10 @@ import sqlancer.duckdb.gen.DuckDBDeleteGenerator;
 import sqlancer.duckdb.gen.DuckDBIndexGenerator;
 import sqlancer.duckdb.gen.DuckDBInsertGenerator;
 import sqlancer.duckdb.gen.DuckDBRandomQuerySynthesizer;
-import sqlancer.duckdb.gen.DuckDBTableGenerator;
 import sqlancer.duckdb.gen.DuckDBUpdateGenerator;
 import sqlancer.duckdb.gen.DuckDBViewGenerator;
 
-@AutoService(DatabaseProvider.class)
-public class DuckDBProvider extends SQLProviderAdapter<DuckDBGlobalState, DuckDBOptions> {
-
-    public DuckDBProvider() {
-        super(DuckDBGlobalState.class, DuckDBOptions.class);
-    }
-
+public class DuckDBTableQueryGenerator implements TableQueryGenerator {
     public enum Action implements AbstractAction<DuckDBGlobalState> {
 
         INSERT(DuckDBInsertGenerator::getQuery), //
@@ -67,11 +47,22 @@ public class DuckDBProvider extends SQLProviderAdapter<DuckDBGlobalState, DuckDB
         }
     }
 
-    private static int mapActions(DuckDBGlobalState globalState, Action a) {
+    private DuckDBGlobalState globalState;
+    private int total;
+    private int[] nrActions;
+
+    public DuckDBTableQueryGenerator(DuckDBGlobalState globalState) {
+        this.globalState = globalState;
+        this.total = 0;
+        this.nrActions = new int[Action.values().length];
+    }
+
+    private int mapActions(Action action) {
         Randomly r = globalState.getRandomly();
-        switch (a) {
+        MainOptions options = globalState.getOptions();
+        switch (action) {
         case INSERT:
-            return r.getInteger(0, globalState.getOptions().getMaxNumberInserts());
+            return r.getInteger(0, options.getMaxNumberInserts());
         case CREATE_INDEX:
             if (!globalState.getDbmsSpecificOptions().testIndexes) {
                 return 0;
@@ -88,62 +79,43 @@ public class DuckDBProvider extends SQLProviderAdapter<DuckDBGlobalState, DuckDB
         case CREATE_VIEW:
             return r.getInteger(0, globalState.getDbmsSpecificOptions().maxNumViews + 1);
         default:
-            throw new AssertionError(a);
+            throw new AssertionError(action);
         }
     }
 
-    public static class DuckDBGlobalState extends SQLGlobalState<DuckDBOptions, DuckDBSchema> {
-
-        @Override
-        protected DuckDBSchema readSchema() throws SQLException {
-            return DuckDBSchema.fromConnection(getConnection(), getDatabaseName());
+    private void generateNrActions() {
+        for (Action action : Action.values()) {
+            int nrPerformed = mapActions(action);
+            nrActions[action.ordinal()] = nrPerformed;
+            total += nrPerformed;
         }
+    }
+
+    @Override
+    public void generate() {
+        generateNrActions();
 
     }
 
     @Override
-    public void generateDatabase(DuckDBGlobalState globalState) throws Exception {
-        DuckDBTableCreator tableCreator = new DuckDBTableCreator(globalState);
-        tableCreator.create();
-    }
-
-    public void tryDeleteFile(String fname) {
-        try {
-            File f = new File(fname);
-            f.delete();
-        } catch (Exception e) {
-        }
-    }
-
-    public void tryDeleteDatabase(String dbpath) {
-        if (dbpath.equals("") || dbpath.equals(":memory:")) {
-            return;
-        }
-        tryDeleteFile(dbpath);
-        tryDeleteFile(dbpath + ".wal");
+    public boolean isFinished() {
+        return total == 0;
     }
 
     @Override
-    public SQLConnection createDatabase(DuckDBGlobalState globalState) throws SQLException {
-        String databaseFile = System.getProperty("duckdb.database.file", "");
-        String url = "jdbc:duckdb:" + databaseFile;
-        tryDeleteDatabase(databaseFile);
-
-        MainOptions options = globalState.getOptions();
-        if (!(options.isDefaultUsername() && options.isDefaultPassword())) {
-            throw new AssertionError("DuckDB doesn't support credentials (username/password)");
+    public Action getRandNextAction() {
+        int selection = globalState.getRandomly().getInteger(0, total);
+        int previousRange = 0;
+        for (int i = 0; i < nrActions.length; i++) {
+            if (previousRange <= selection && selection < previousRange + nrActions[i]) {
+                assert nrActions[i] > 0;
+                nrActions[i]--;
+                total--;
+                return Action.values()[i];
+            } else {
+                previousRange += nrActions[i];
+            }
         }
-
-        Connection conn = DriverManager.getConnection(url);
-        Statement stmt = conn.createStatement();
-        stmt.execute("PRAGMA checkpoint_threshold='1 byte';");
-        stmt.close();
-        return new SQLConnection(conn);
+        throw new AssertionError();
     }
-
-    @Override
-    public String getDBMSName() {
-        return "duckdb";
-    }
-
 }

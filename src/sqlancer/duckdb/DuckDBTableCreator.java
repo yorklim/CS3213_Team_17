@@ -1,30 +1,26 @@
-package sqlancer.cockroachdb;
+package sqlancer.duckdb;
 
 import sqlancer.IgnoreMeException;
 import sqlancer.Randomly;
-import sqlancer.cockroachdb.gen.CockroachDBTableGenerator;
 import sqlancer.common.TableCreator;
-import sqlancer.cockroachdb.CockroachDBProvider.CockroachDBGlobalState;
-import sqlancer.cockroachdb.CockroachDBTableQueryGenerator.Action;
 import sqlancer.common.query.SQLQueryAdapter;
+import sqlancer.duckdb.DuckDBProvider.DuckDBGlobalState;
+import sqlancer.duckdb.DuckDBTableQueryGenerator.Action;
+import sqlancer.duckdb.gen.DuckDBTableGenerator;
 
-public class CockroachDBTableCreator extends TableCreator {
-    CockroachDBGlobalState globalState;
+public class DuckDBTableCreator extends TableCreator {
+    private DuckDBGlobalState globalState;
 
-    public CockroachDBTableCreator(CockroachDBProvider.CockroachDBGlobalState globalState) {
+    public DuckDBTableCreator(DuckDBGlobalState globalState) {
         this.globalState = globalState;
     }
 
     private void createTable() throws Exception {
-        for (int i = 0; i < Randomly.fromOptions(2, 3); i++) {
-            boolean success = false;
+        for (int i = 0; i < Randomly.fromOptions(1, 2); i++) {
+            boolean success;
             do {
-                try {
-                    SQLQueryAdapter q = CockroachDBTableGenerator.generate(globalState);
-                    success = globalState.executeStatement(q);
-                } catch (IgnoreMeException e) {
-                    // continue trying
-                }
+                SQLQueryAdapter qt = new DuckDBTableGenerator().getQuery(globalState);
+                success = globalState.executeStatement(qt);
             } while (!success);
         }
         if (globalState.getSchema().getDatabaseTables().isEmpty()) {
@@ -37,7 +33,7 @@ public class CockroachDBTableCreator extends TableCreator {
         // Creates tables
         createTable();
         // Generates random queries (Insert, Update, Delete, etc.)
-        CockroachDBTableQueryGenerator generator = new CockroachDBTableQueryGenerator(globalState);
+        DuckDBTableQueryGenerator generator = new DuckDBTableQueryGenerator(globalState);
         generator.generate();
         // Execute queries in random order
         while (!generator.isFinished()) {
@@ -50,11 +46,16 @@ public class CockroachDBTableCreator extends TableCreator {
                 do {
                     query = nextAction.getQuery(globalState);
                     success = globalState.executeStatement(query);
-                } while (!success && nrTries++ < 1000);
+                } while (nextAction.canBeRetried() && !success
+                        && nrTries++ < globalState.getOptions().getNrStatementRetryCount());
             } catch (IgnoreMeException e) {
 
             }
-            if (query != null && query.couldAffectSchema() && globalState.getSchema().getDatabaseTables().isEmpty()) {
+            if (query != null && query.couldAffectSchema()) {
+                globalState.updateSchema();
+                throw new IgnoreMeException();
+            }
+            if (globalState.getSchema().getDatabaseTables().isEmpty()) {
                 throw new IgnoreMeException();
             }
         }
