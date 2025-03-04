@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import com.google.auto.service.AutoService;
 
 import sqlancer.DatabaseProvider;
-import sqlancer.IgnoreMeException;
 import sqlancer.Main.QueryManager;
 import sqlancer.MainOptions;
 import sqlancer.Randomly;
