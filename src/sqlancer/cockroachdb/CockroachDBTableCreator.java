@@ -9,7 +9,7 @@ import sqlancer.common.TableCreator;
 import sqlancer.common.query.SQLQueryAdapter;
 
 public class CockroachDBTableCreator extends TableCreator {
-    final private CockroachDBGlobalState globalState;
+    private final CockroachDBGlobalState globalState;
 
     public CockroachDBTableCreator(CockroachDBProvider.CockroachDBGlobalState globalState) {
         this.globalState = globalState;

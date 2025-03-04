@@ -9,7 +9,7 @@ import sqlancer.duckdb.DuckDBTableQueryGenerator.Action;
 import sqlancer.duckdb.gen.DuckDBTableGenerator;
 
 public class DuckDBTableCreator extends TableCreator {
-    final private DuckDBGlobalState globalState;
+    private final DuckDBGlobalState globalState;
 
     public DuckDBTableCreator(DuckDBGlobalState globalState) {
         this.globalState = globalState;
