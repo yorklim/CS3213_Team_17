@@ -88,6 +88,7 @@ public class CockroachDBTableQueryGenerator implements TableQueryGenerator {
             this.sqlQueryProvider = sqlQueryProvider;
         }
 
+        @Override
         public SQLQueryAdapter getQuery(CockroachDBGlobalState state) throws Exception {
             return sqlQueryProvider.getQuery(state);
         }
