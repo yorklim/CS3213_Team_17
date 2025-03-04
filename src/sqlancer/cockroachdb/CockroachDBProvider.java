@@ -163,93 +163,9 @@ public class CockroachDBProvider extends SQLProviderAdapter<CockroachDBGlobalSta
             } while (!success);
         }
 
-        int[] nrRemaining = new int[Action.values().length];
-        List<Action> actions = new ArrayList<>();
-        int total = 0;
-        for (int i = 0; i < Action.values().length; i++) {
-            Action action = Action.values()[i];
-            int nrPerformed = 0;
-            switch (action) {
-            case INSERT:
-                nrPerformed = globalState.getRandomly().getInteger(0, options.getMaxNumberInserts());
-                break;
-            case UPDATE:
-            case SPLIT:
-                nrPerformed = globalState.getRandomly().getInteger(0, 3);
-                break;
-            case EXPLAIN:
-                nrPerformed = globalState.getRandomly().getInteger(0, 10);
-                break;
-            case SHOW:
-            case TRUNCATE:
-            case DELETE:
-            case CREATE_STATISTICS:
-                nrPerformed = globalState.getRandomly().getInteger(0, 2);
-                break;
-            case CREATE_VIEW:
-                nrPerformed = globalState.getRandomly().getInteger(0, 2);
-                break;
-            case SET_SESSION:
-            case SET_CLUSTER_SETTING:
-                nrPerformed = globalState.getRandomly().getInteger(0, 3);
-                break;
-            case CREATE_INDEX:
-                nrPerformed = globalState.getRandomly().getInteger(0, 10);
-                break;
-            case COMMENT_ON:
-            case SCRUB:
-                nrPerformed = 0; /*
-                                  * there are a number of open SCRUB bugs, of which
-                                  * https://github.com/cockroachdb/cockroach/issues/47116 crashes the server
-                                  */
-                break;
-            case TRANSACTION:
-            case CREATE_TABLE:
-            case DROP_TABLE:
-            case DROP_VIEW:
-                nrPerformed = 0; // r.getInteger(0, 0);
-                break;
-            default:
-                throw new AssertionError(action);
-            }
-            if (nrPerformed != 0) {
-                actions.add(action);
-            }
-            nrRemaining[action.ordinal()] = nrPerformed;
-            total += nrPerformed;
-        }
-
-        while (total != 0) {
-            Action nextAction = null;
-            int selection = globalState.getRandomly().getInteger(0, total);
-            int previousRange = 0;
-            for (int i = 0; i < nrRemaining.length; i++) {
-                if (previousRange <= selection && selection < previousRange + nrRemaining[i]) {
-                    nextAction = Action.values()[i];
-                    break;
-                } else {
-                    previousRange += nrRemaining[i];
-                }
-            }
-            assert nextAction != null;
-            assert nrRemaining[nextAction.ordinal()] > 0;
-            nrRemaining[nextAction.ordinal()]--;
-            SQLQueryAdapter query = null;
-            try {
-                boolean success;
-                int nrTries = 0;
-                do {
-                    query = nextAction.getQuery(globalState);
-                    success = globalState.executeStatement(query);
-                } while (!success && nrTries++ < 1000);
-            } catch (IgnoreMeException e) {
-
-            }
-            if (query != null && query.couldAffectSchema() && globalState.getSchema().getDatabaseTables().isEmpty()) {
-                throw new IgnoreMeException();
-            }
-            total--;
-        }
+        // Table creation (Creates Schema & Insert data into tables)
+        CockroachDBTableCreator tableCreator = new CockroachDBTableCreator(globalState);
+        tableCreator.create();
 
         if (globalState.getDbmsSpecificOptions().getTestOracleFactory().stream()
                 .anyMatch(o -> o == CockroachDBOracleFactory.CERT)) {
