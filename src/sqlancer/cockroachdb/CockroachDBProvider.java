@@ -150,18 +150,6 @@ public class CockroachDBProvider extends SQLProviderAdapter<CockroachDBGlobalSta
             manager.execute(new SQLQueryAdapter(s));
         }
 
-        for (int i = 0; i < Randomly.fromOptions(2, 3); i++) {
-            boolean success = false;
-            do {
-                try {
-                    SQLQueryAdapter q = CockroachDBTableGenerator.generate(globalState);
-                    success = globalState.executeStatement(q);
-                } catch (IgnoreMeException e) {
-                    // continue trying
-                }
-            } while (!success);
-        }
-
         // Table creation (Creates Schema & Insert data into tables)
         CockroachDBTableCreator tableCreator = new CockroachDBTableCreator(globalState);
         tableCreator.create();
