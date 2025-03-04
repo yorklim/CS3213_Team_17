@@ -2,10 +2,10 @@ package sqlancer.cockroachdb;
 
 import sqlancer.IgnoreMeException;
 import sqlancer.Randomly;
-import sqlancer.cockroachdb.gen.CockroachDBTableGenerator;
-import sqlancer.common.TableCreator;
 import sqlancer.cockroachdb.CockroachDBProvider.CockroachDBGlobalState;
 import sqlancer.cockroachdb.CockroachDBTableQueryGenerator.Action;
+import sqlancer.cockroachdb.gen.CockroachDBTableGenerator;
+import sqlancer.common.TableCreator;
 import sqlancer.common.query.SQLQueryAdapter;
 
 public class CockroachDBTableCreator extends TableCreator {

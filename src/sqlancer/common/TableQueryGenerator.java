@@ -1,9 +1,9 @@
 package sqlancer.common;
 
 public interface TableQueryGenerator {
-    public void generate();
+    void generate();
 
-    public boolean isFinished();
+    boolean isFinished();
 
-    public Object getRandNextAction();
+    Object getRandNextAction();
 }

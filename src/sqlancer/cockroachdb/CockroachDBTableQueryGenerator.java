@@ -3,9 +3,6 @@ package sqlancer.cockroachdb;
 import sqlancer.AbstractAction;
 import sqlancer.MainOptions;
 import sqlancer.Randomly;
-import sqlancer.common.TableQueryGenerator;
-import sqlancer.common.query.ExpectedErrors;
-import sqlancer.common.query.SQLQueryAdapter;
 import sqlancer.cockroachdb.CockroachDBProvider.CockroachDBGlobalState;
 import sqlancer.cockroachdb.gen.CockroachDBCommentOnGenerator;
 import sqlancer.cockroachdb.gen.CockroachDBCreateStatisticsGenerator;
@@ -22,6 +19,9 @@ import sqlancer.cockroachdb.gen.CockroachDBTableGenerator;
 import sqlancer.cockroachdb.gen.CockroachDBTruncateGenerator;
 import sqlancer.cockroachdb.gen.CockroachDBUpdateGenerator;
 import sqlancer.cockroachdb.gen.CockroachDBViewGenerator;
+import sqlancer.common.TableQueryGenerator;
+import sqlancer.common.query.ExpectedErrors;
+import sqlancer.common.query.SQLQueryAdapter;
 import sqlancer.common.query.SQLQueryProvider;
 
 public class CockroachDBTableQueryGenerator implements TableQueryGenerator {
