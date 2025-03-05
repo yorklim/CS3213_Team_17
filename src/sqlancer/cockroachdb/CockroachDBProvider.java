@@ -14,30 +14,15 @@ import com.google.auto.service.AutoService;
 import sqlancer.DatabaseProvider;
 import sqlancer.Main.QueryManager;
 import sqlancer.MainOptions;
-import sqlancer.Randomly;
 import sqlancer.SQLConnection;
 import sqlancer.SQLGlobalState;
 import sqlancer.SQLProviderAdapter;
 import sqlancer.cockroachdb.CockroachDBProvider.CockroachDBGlobalState;
 import sqlancer.cockroachdb.CockroachDBSchema.CockroachDBTable;
-import sqlancer.cockroachdb.gen.CockroachDBCommentOnGenerator;
-import sqlancer.cockroachdb.gen.CockroachDBCreateStatisticsGenerator;
-import sqlancer.cockroachdb.gen.CockroachDBDeleteGenerator;
-import sqlancer.cockroachdb.gen.CockroachDBDropTableGenerator;
-import sqlancer.cockroachdb.gen.CockroachDBDropViewGenerator;
-import sqlancer.cockroachdb.gen.CockroachDBIndexGenerator;
+import sqlancer.cockroachdb.CockroachDBTableQueryGenerator.Action;
 import sqlancer.cockroachdb.gen.CockroachDBInsertGenerator;
-import sqlancer.cockroachdb.gen.CockroachDBRandomQuerySynthesizer;
-import sqlancer.cockroachdb.gen.CockroachDBSetClusterSettingGenerator;
-import sqlancer.cockroachdb.gen.CockroachDBSetSessionGenerator;
-import sqlancer.cockroachdb.gen.CockroachDBShowGenerator;
-import sqlancer.cockroachdb.gen.CockroachDBTableGenerator;
-import sqlancer.cockroachdb.gen.CockroachDBTruncateGenerator;
-import sqlancer.cockroachdb.gen.CockroachDBUpdateGenerator;
-import sqlancer.cockroachdb.gen.CockroachDBViewGenerator;
 import sqlancer.common.query.ExpectedErrors;
 import sqlancer.common.query.SQLQueryAdapter;
-import sqlancer.common.query.SQLQueryProvider;
 import sqlancer.common.query.SQLancerResultSet;
 
 @AutoService(DatabaseProvider.class)
@@ -45,74 +30,6 @@ public class CockroachDBProvider extends SQLProviderAdapter<CockroachDBGlobalSta
 
     public CockroachDBProvider() {
         super(CockroachDBGlobalState.class, CockroachDBOptions.class);
-    }
-
-    public enum Action {
-        CREATE_TABLE(CockroachDBTableGenerator::generate), CREATE_INDEX(CockroachDBIndexGenerator::create), //
-        CREATE_VIEW(CockroachDBViewGenerator::generate), //
-        CREATE_STATISTICS(CockroachDBCreateStatisticsGenerator::create), //
-        INSERT(CockroachDBInsertGenerator::insert), //
-        UPDATE(CockroachDBUpdateGenerator::gen), //
-        SET_SESSION(CockroachDBSetSessionGenerator::create), //
-        SET_CLUSTER_SETTING(CockroachDBSetClusterSettingGenerator::create), //
-        DELETE(CockroachDBDeleteGenerator::delete), //
-        TRUNCATE(CockroachDBTruncateGenerator::truncate), //
-        DROP_TABLE(CockroachDBDropTableGenerator::drop), //
-        DROP_VIEW(CockroachDBDropViewGenerator::drop), //
-        COMMENT_ON(CockroachDBCommentOnGenerator::comment), //
-        SHOW(CockroachDBShowGenerator::show), //
-        TRANSACTION(g -> {
-            String s = Randomly.fromOptions("BEGIN", "ROLLBACK", "COMMIT");
-            return new SQLQueryAdapter(s, ExpectedErrors.from("there is no transaction in progress",
-                    "there is already a transaction in progress", "current transaction is aborted"));
-        }), EXPLAIN(g -> {
-            StringBuilder sb = new StringBuilder("EXPLAIN ");
-            ExpectedErrors errors = new ExpectedErrors();
-            if (Randomly.getBoolean()) {
-                sb.append("(");
-                sb.append(Randomly.fromOptions("VERBOSE", "TYPES", "OPT", "DISTSQL", "VEC"));
-                sb.append(") ");
-                errors.add("cannot set EXPLAIN mode more than once");
-                errors.add("unable to vectorize execution plan");
-                errors.add("unsupported type");
-                errors.add("vectorize is set to 'off'");
-            }
-            sb.append(CockroachDBRandomQuerySynthesizer.generate(g, Randomly.smallNumber() + 1));
-            CockroachDBErrors.addExpressionErrors(errors);
-            return new SQLQueryAdapter(sb.toString(), errors);
-        }), //
-        SCRUB(g -> new SQLQueryAdapter(
-                "EXPERIMENTAL SCRUB table " + g.getSchema().getRandomTable(t -> !t.isView()).getName(),
-                // https://github.com/cockroachdb/cockroach/issues/46401
-                ExpectedErrors.from("scrub-fk: column \"t.rowid\" does not exist",
-                        "check-constraint: cannot access temporary tables of other sessions" /*
-                                                                                              * https:// github. com/
-                                                                                              * cockroachdb / cockroach
-                                                                                              * /issues/ 47031
-                                                                                              */))), //
-        SPLIT(g -> {
-            StringBuilder sb = new StringBuilder("ALTER INDEX ");
-            CockroachDBTable randomTable = g.getSchema().getRandomTable();
-            sb.append(randomTable.getName());
-            sb.append("@");
-            sb.append(randomTable.getRandomIndex());
-            if (Randomly.getBoolean()) {
-                sb.append(" SPLIT AT VALUES (true), (false);");
-            } else {
-                sb.append(" SPLIT AT VALUES (NULL);");
-            }
-            return new SQLQueryAdapter(sb.toString(), ExpectedErrors.from("must be of type"));
-        });
-
-        private final SQLQueryProvider<CockroachDBGlobalState> sqlQueryProvider;
-
-        Action(SQLQueryProvider<CockroachDBGlobalState> sqlQueryProvider) {
-            this.sqlQueryProvider = sqlQueryProvider;
-        }
-
-        public SQLQueryAdapter getQuery(CockroachDBGlobalState state) throws Exception {
-            return sqlQueryProvider.getQuery(state);
-        }
     }
 
     public static class CockroachDBGlobalState extends SQLGlobalState<CockroachDBOptions, CockroachDBSchema> {

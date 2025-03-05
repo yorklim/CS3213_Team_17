@@ -8,23 +8,12 @@ import java.sql.Statement;
 
 import com.google.auto.service.AutoService;
 
-import sqlancer.AbstractAction;
 import sqlancer.DatabaseProvider;
 import sqlancer.MainOptions;
-import sqlancer.Randomly;
 import sqlancer.SQLConnection;
 import sqlancer.SQLGlobalState;
 import sqlancer.SQLProviderAdapter;
-import sqlancer.common.query.ExpectedErrors;
-import sqlancer.common.query.SQLQueryAdapter;
-import sqlancer.common.query.SQLQueryProvider;
 import sqlancer.duckdb.DuckDBProvider.DuckDBGlobalState;
-import sqlancer.duckdb.gen.DuckDBDeleteGenerator;
-import sqlancer.duckdb.gen.DuckDBIndexGenerator;
-import sqlancer.duckdb.gen.DuckDBInsertGenerator;
-import sqlancer.duckdb.gen.DuckDBRandomQuerySynthesizer;
-import sqlancer.duckdb.gen.DuckDBUpdateGenerator;
-import sqlancer.duckdb.gen.DuckDBViewGenerator;
 
 @AutoService(DatabaseProvider.class)
 public class DuckDBProvider extends SQLProviderAdapter<DuckDBGlobalState, DuckDBOptions> {
@@ -33,44 +22,12 @@ public class DuckDBProvider extends SQLProviderAdapter<DuckDBGlobalState, DuckDB
         super(DuckDBGlobalState.class, DuckDBOptions.class);
     }
 
-    public enum Action implements AbstractAction<DuckDBGlobalState> {
-
-        INSERT(DuckDBInsertGenerator::getQuery), //
-        CREATE_INDEX(DuckDBIndexGenerator::getQuery), //
-        VACUUM(g -> new SQLQueryAdapter("VACUUM;")), //
-        ANALYZE(g -> new SQLQueryAdapter("ANALYZE;")), //
-        DELETE(DuckDBDeleteGenerator::generate), //
-        UPDATE(DuckDBUpdateGenerator::getQuery), //
-        CREATE_VIEW(DuckDBViewGenerator::generate), //
-        EXPLAIN(g -> {
-            ExpectedErrors errors = new ExpectedErrors();
-            DuckDBErrors.addExpressionErrors(errors);
-            DuckDBErrors.addGroupByErrors(errors);
-            return new SQLQueryAdapter(
-                    "EXPLAIN " + DuckDBToStringVisitor
-                            .asString(DuckDBRandomQuerySynthesizer.generateSelect(g, Randomly.smallNumber() + 1)),
-                    errors);
-        });
-
-        private final SQLQueryProvider<DuckDBGlobalState> sqlQueryProvider;
-
-        Action(SQLQueryProvider<DuckDBGlobalState> sqlQueryProvider) {
-            this.sqlQueryProvider = sqlQueryProvider;
-        }
-
-        @Override
-        public SQLQueryAdapter getQuery(DuckDBGlobalState state) throws Exception {
-            return sqlQueryProvider.getQuery(state);
-        }
-    }
-
     public static class DuckDBGlobalState extends SQLGlobalState<DuckDBOptions, DuckDBSchema> {
 
         @Override
         protected DuckDBSchema readSchema() throws SQLException {
             return DuckDBSchema.fromConnection(getConnection(), getDatabaseName());
         }
-
     }
 
     @Override

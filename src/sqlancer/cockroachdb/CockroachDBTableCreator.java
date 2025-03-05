@@ -11,7 +11,7 @@ import sqlancer.common.query.SQLQueryAdapter;
 public class CockroachDBTableCreator extends TableCreator {
     private final CockroachDBGlobalState globalState;
 
-    public CockroachDBTableCreator(CockroachDBProvider.CockroachDBGlobalState globalState) {
+    public CockroachDBTableCreator(CockroachDBGlobalState globalState) {
         this.globalState = globalState;
     }
 
