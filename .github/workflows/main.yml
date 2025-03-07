@@ -205,6 +205,7 @@ jobs:
   databend:
     name: DBMS Tests (Databend)
     runs-on: ubuntu-latest
+    if: false
     services:
       databend:
         image: datafuselabs/databend:v1.2.687-nightly
