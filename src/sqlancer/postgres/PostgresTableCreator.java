@@ -57,6 +57,12 @@ public class PostgresTableCreator extends TableCreator {
             if (query != null && query.couldAffectSchema()) {
                 globalState.updateSchema();
             }
+            if (globalState.getSchema().getDatabaseTables().isEmpty()) {
+                throw new IgnoreMeException();
+            }
         }
+
+        globalState.executeStatement(new SQLQueryAdapter("COMMIT", true));
+        globalState.executeStatement(new SQLQueryAdapter("SET SESSION statement_timeout = 5000;\n", true));
     }
 }
