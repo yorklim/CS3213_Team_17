@@ -205,7 +205,6 @@ jobs:
   databend:
     name: DBMS Tests (Databend)
     runs-on: ubuntu-latest
-    if: false
     services:
       databend:
         image: datafuselabs/databend:v1.2.687-nightly
@@ -236,6 +235,7 @@ jobs:
   datafusion:
     name: DBMS Tests (DataFusion)
     runs-on: ubuntu-latest
+    if: false
     steps:
       - uses: actions/checkout@v3
         with:
