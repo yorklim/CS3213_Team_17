@@ -12,7 +12,7 @@ public abstract class TableCreator {
 
     public abstract void create() throws Exception;
 
-    public static void runQueryFromFile(String file, SQLGlobalState globalState) {
+    public static void runQueryFromFile(String file, SQLGlobalState<?,?> globalState) {
         try {
             FileReader fr = new FileReader(file);
             BufferedReader br = new BufferedReader(fr);
@@ -21,6 +21,8 @@ public abstract class TableCreator {
                 globalState.executeStatement(new SQLQueryAdapter(cur));
                 cur = br.readLine();
             }
+            br.close();
+            fr.close();
         } catch (FileNotFoundException e) {
 
         } catch (IOException e) {
