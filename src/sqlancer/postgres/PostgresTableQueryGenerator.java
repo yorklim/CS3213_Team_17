@@ -92,7 +92,7 @@ public class PostgresTableQueryGenerator implements TableQueryGenerator {
     public PostgresTableQueryGenerator(PostgresGlobalState globalState) {
         this.globalState = globalState;
         this.total = 0;
-        this.nrActions = new int[0];
+        this.nrActions = new int[Action.values().length];
     }
 
     // For Citus coupling...
