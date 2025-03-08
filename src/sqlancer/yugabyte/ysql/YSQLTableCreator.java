@@ -19,6 +19,7 @@ public class YSQLTableCreator extends TableCreator {
             for (int i = 0; i < Randomly.fromOptions(4, 5, 6); i++) {
                 boolean success = false;
                 do {
+                    YSQLProvider.exceptionLessSleep(5000);
                     try {
                         String tableName = DBMSCommon
                                 .createTableName(globalState.getSchema().getDatabaseTables().size());
@@ -26,7 +27,7 @@ public class YSQLTableCreator extends TableCreator {
                                 YSQLProvider.generateOnlyKnown, globalState);
                         success = globalState.executeStatement(createTable);
                     } catch (IgnoreMeException e) {
-                        YSQLProvider.exceptionLessSleep(5000);
+
                     }
                 } while (!success);
             }
