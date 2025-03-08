@@ -41,6 +41,7 @@ import sqlancer.postgres.PostgresSchema;
 import sqlancer.postgres.PostgresSchema.PostgresColumn;
 import sqlancer.postgres.PostgresSchema.PostgresTable;
 import sqlancer.postgres.PostgresSchema.PostgresTable.TableType;
+import sqlancer.postgres.PostgresTableQueryGenerator;
 import sqlancer.postgres.gen.PostgresAnalyzeGenerator;
 import sqlancer.postgres.gen.PostgresClusterGenerator;
 import sqlancer.postgres.gen.PostgresCommentGenerator;
@@ -215,7 +216,6 @@ public class CitusProvider extends PostgresProvider {
         distributeTable(columns, tableName, globalState);
     }
 
-    @Override
     protected void createTables(PostgresGlobalState globalState, int numTables) throws Exception {
         while (globalState.getSchema().getDatabaseTables().size() < numTables) {
             try {
@@ -384,10 +384,10 @@ public class CitusProvider extends PostgresProvider {
         }
     }
 
-    @Override
     protected void prepareTables(PostgresGlobalState globalState) throws Exception {
-        StatementExecutor<PostgresGlobalState, PostgresProvider.Action> se = new StatementExecutor<>(globalState,
-                PostgresProvider.Action.values(), PostgresProvider::mapActions, q -> {
+        PostgresTableQueryGenerator generator = new PostgresTableQueryGenerator(globalState);
+        StatementExecutor<PostgresGlobalState, PostgresTableQueryGenerator.Action> se = new StatementExecutor<>(
+                globalState, PostgresTableQueryGenerator.Action.values(), generator::mapActions, q -> {
                     if (globalState.getSchema().getDatabaseTables().isEmpty()) {
                         throw new IgnoreMeException();
                     }

@@ -15,7 +15,6 @@ import sqlancer.common.schema.AbstractSchema;
 import sqlancer.common.schema.AbstractTableColumn;
 import sqlancer.common.schema.AbstractTables;
 import sqlancer.common.schema.TableIndex;
-import sqlancer.yugabyte.ycql.YCQLProvider.YCQLGlobalState;
 import sqlancer.yugabyte.ycql.YCQLSchema.YCQLTable;
 
 public class YCQLSchema extends AbstractSchema<YCQLGlobalState, YCQLTable> {

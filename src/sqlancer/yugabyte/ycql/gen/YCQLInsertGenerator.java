@@ -8,7 +8,7 @@ import sqlancer.common.query.ExpectedErrors;
 import sqlancer.common.query.SQLQueryAdapter;
 import sqlancer.common.schema.AbstractTableColumn;
 import sqlancer.yugabyte.ycql.YCQLErrors;
-import sqlancer.yugabyte.ycql.YCQLProvider.YCQLGlobalState;
+import sqlancer.yugabyte.ycql.YCQLGlobalState;
 import sqlancer.yugabyte.ycql.YCQLSchema.YCQLColumn;
 import sqlancer.yugabyte.ycql.YCQLSchema.YCQLTable;
 import sqlancer.yugabyte.ycql.YCQLToStringVisitor;

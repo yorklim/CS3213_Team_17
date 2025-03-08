@@ -11,7 +11,7 @@ import sqlancer.Randomly;
 import sqlancer.common.ast.BinaryOperatorNode.Operator;
 import sqlancer.common.ast.newast.NewOrderingTerm.Ordering;
 import sqlancer.common.gen.UntypedExpressionGenerator;
-import sqlancer.yugabyte.ycql.YCQLProvider.YCQLGlobalState;
+import sqlancer.yugabyte.ycql.YCQLGlobalState;
 import sqlancer.yugabyte.ycql.YCQLSchema.YCQLColumn;
 import sqlancer.yugabyte.ycql.YCQLSchema.YCQLDataType;
 import sqlancer.yugabyte.ycql.ast.YCQLBetweenOperation;
