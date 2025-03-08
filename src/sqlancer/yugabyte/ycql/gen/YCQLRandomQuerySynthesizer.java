@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import sqlancer.Randomly;
-import sqlancer.yugabyte.ycql.YCQLProvider.YCQLGlobalState;
+import sqlancer.yugabyte.ycql.YCQLGlobalState;
 import sqlancer.yugabyte.ycql.YCQLSchema.YCQLTable;
 import sqlancer.yugabyte.ycql.YCQLSchema.YCQLTables;
 import sqlancer.yugabyte.ycql.ast.YCQLConstant;
