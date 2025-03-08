@@ -50,7 +50,7 @@ public class PostgresProvider extends SQLProviderAdapter<PostgresGlobalState, Po
     @Override
     public void generateDatabase(PostgresGlobalState globalState) throws Exception {
         readFunctions(globalState);
-        PostgresTableCreator tableCreator = new PostgresTableCreator(globalState, generateOnlyKnown);
+        PostgresTableCreator tableCreator = new PostgresTableCreator(globalState);
         tableCreator.create();
 
         extensionsList = globalState.getDbmsSpecificOptions().extensions;

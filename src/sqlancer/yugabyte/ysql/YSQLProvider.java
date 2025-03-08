@@ -49,7 +49,7 @@ public class YSQLProvider extends SQLProviderAdapter<YSQLGlobalState, YSQLOption
     public void generateDatabase(YSQLGlobalState globalState) throws Exception {
         readFunctions(globalState);
 
-        YSQLTableCreator tableCreator = new YSQLTableCreator(globalState, generateOnlyKnown);
+        YSQLTableCreator tableCreator = new YSQLTableCreator(globalState);
         tableCreator.create();
     }
 

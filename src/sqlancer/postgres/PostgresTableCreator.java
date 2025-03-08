@@ -9,11 +9,9 @@ import sqlancer.postgres.gen.PostgresTableGenerator;
 
 public class PostgresTableCreator extends TableCreator {
     private final PostgresGlobalState globalState;
-    private final boolean generateOnlyKnown;
 
-    public PostgresTableCreator(PostgresGlobalState globalState, Boolean generateOnlyKnown) {
+    public PostgresTableCreator(PostgresGlobalState globalState) {
         this.globalState = globalState;
-        this.generateOnlyKnown = generateOnlyKnown;
     }
 
     private void createTable() throws Exception {
@@ -23,7 +21,7 @@ public class PostgresTableCreator extends TableCreator {
                 try {
                     String tableName = DBMSCommon.createTableName(globalState.getSchema().getDatabaseTables().size());
                     SQLQueryAdapter createTable = PostgresTableGenerator.generate(tableName, globalState.getSchema(),
-                            generateOnlyKnown, globalState);
+                            PostgresProvider.generateOnlyKnown, globalState);
                     success = globalState.executeStatement(createTable);
                 } catch (IgnoreMeException e) {
 

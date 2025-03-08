@@ -9,11 +9,9 @@ import sqlancer.yugabyte.ysql.gen.YSQLTableGenerator;
 
 public class YSQLTableCreator extends TableCreator {
     private final YSQLGlobalState globalState;
-    private final boolean generateOnlyKnown;
 
-    public YSQLTableCreator(YSQLGlobalState globalState, boolean generateOnlyKnown) {
+    public YSQLTableCreator(YSQLGlobalState globalState) {
         this.globalState = globalState;
-        this.generateOnlyKnown = generateOnlyKnown;
     }
 
     private void createTable() throws Exception {
@@ -24,8 +22,8 @@ public class YSQLTableCreator extends TableCreator {
                     try {
                         String tableName = DBMSCommon
                                 .createTableName(globalState.getSchema().getDatabaseTables().size());
-                        SQLQueryAdapter createTable = YSQLTableGenerator.generate(tableName, generateOnlyKnown,
-                                globalState);
+                        SQLQueryAdapter createTable = YSQLTableGenerator.generate(tableName,
+                                YSQLProvider.generateOnlyKnown, globalState);
                         success = globalState.executeStatement(createTable);
                     } catch (IgnoreMeException e) {
                         YSQLProvider.exceptionLessSleep(5000);
