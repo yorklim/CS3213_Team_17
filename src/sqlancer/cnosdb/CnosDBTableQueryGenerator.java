@@ -1,13 +1,13 @@
 package sqlancer.cnosdb;
 
+import java.util.Objects;
+
 import sqlancer.AbstractAction;
 import sqlancer.Randomly;
 import sqlancer.cnosdb.gen.CnosDBInsertGenerator;
 import sqlancer.cnosdb.query.CnosDBOtherQuery;
 import sqlancer.cnosdb.query.CnosDBQueryProvider;
 import sqlancer.common.TableQueryGenerator;
-
-import java.util.Objects;
 
 public class CnosDBTableQueryGenerator implements TableQueryGenerator {
     public enum Action implements AbstractAction<CnosDBGlobalState> {

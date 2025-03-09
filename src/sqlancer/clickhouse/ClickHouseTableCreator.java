@@ -2,9 +2,9 @@ package sqlancer.clickhouse;
 
 import sqlancer.IgnoreMeException;
 import sqlancer.Randomly;
+import sqlancer.clickhouse.ClickHouseTableQueryGenerator.Action;
 import sqlancer.clickhouse.gen.ClickHouseCommon;
 import sqlancer.clickhouse.gen.ClickHouseTableGenerator;
-import sqlancer.clickhouse.ClickHouseTableQueryGenerator.Action;
 import sqlancer.common.TableCreator;
 import sqlancer.common.query.SQLQueryAdapter;
 
