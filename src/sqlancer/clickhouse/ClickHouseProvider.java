@@ -52,24 +52,6 @@ public class ClickHouseProvider extends SQLProviderAdapter<ClickHouseGlobalState
 
     @Override
     public void generateDatabase(ClickHouseGlobalState globalState) throws Exception {
-        // for (int i = 0; i < Randomly.fromOptions(1, 2, 3, 4, 5); i++) {
-        // boolean success;
-        // do {
-        // String tableName = ClickHouseCommon.createTableName(i);
-        // SQLQueryAdapter qt = ClickHouseTableGenerator.createTableStatement(tableName, globalState);
-        // success = globalState.executeStatement(qt);
-        // } while (!success);
-        // }
-        //
-        // // TODO: add more Actions to populate table
-        // StatementExecutor<ClickHouseGlobalState, Action> se = new StatementExecutor<>(globalState, Action.values(),
-        // ClickHouseProvider::mapActions, q -> {
-        // if (globalState.getSchema().getDatabaseTables().isEmpty()) {
-        // throw new IgnoreMeException();
-        // }
-        // });
-        // se.executeStatements();
-
         ClickHouseTableCreator tableCreator = new ClickHouseTableCreator(globalState);
         tableCreator.create();
     }
