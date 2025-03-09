@@ -8,53 +8,18 @@ import java.util.stream.Collectors;
 
 import com.google.auto.service.AutoService;
 
-import sqlancer.AbstractAction;
 import sqlancer.DatabaseProvider;
-import sqlancer.IgnoreMeException;
 import sqlancer.MainOptions;
-import sqlancer.Randomly;
 import sqlancer.SQLConnection;
 import sqlancer.SQLGlobalState;
 import sqlancer.SQLProviderAdapter;
-import sqlancer.StatementExecutor;
 import sqlancer.clickhouse.ClickHouseProvider.ClickHouseGlobalState;
-import sqlancer.clickhouse.gen.ClickHouseCommon;
-import sqlancer.clickhouse.gen.ClickHouseInsertGenerator;
-import sqlancer.clickhouse.gen.ClickHouseTableGenerator;
-import sqlancer.common.query.SQLQueryAdapter;
-import sqlancer.common.query.SQLQueryProvider;
 
 @AutoService(DatabaseProvider.class)
 public class ClickHouseProvider extends SQLProviderAdapter<ClickHouseGlobalState, ClickHouseOptions> {
 
     public ClickHouseProvider() {
         super(ClickHouseGlobalState.class, ClickHouseOptions.class);
-    }
-
-    public enum Action implements AbstractAction<ClickHouseGlobalState> {
-
-        INSERT(ClickHouseInsertGenerator::getQuery);
-
-        private final SQLQueryProvider<ClickHouseGlobalState> sqlQueryProvider;
-
-        Action(SQLQueryProvider<ClickHouseGlobalState> sqlQueryProvider) {
-            this.sqlQueryProvider = sqlQueryProvider;
-        }
-
-        @Override
-        public SQLQueryAdapter getQuery(ClickHouseGlobalState state) throws Exception {
-            return sqlQueryProvider.getQuery(state);
-        }
-    }
-
-    private static int mapActions(ClickHouseGlobalState globalState, Action a) {
-        Randomly r = globalState.getRandomly();
-        switch (a) {
-        case INSERT:
-            return r.getInteger(0, globalState.getOptions().getMaxNumberInserts());
-        default:
-            throw new AssertionError(a);
-        }
     }
 
     public static class ClickHouseGlobalState extends SQLGlobalState<ClickHouseOptions, ClickHouseSchema> {
@@ -87,23 +52,26 @@ public class ClickHouseProvider extends SQLProviderAdapter<ClickHouseGlobalState
 
     @Override
     public void generateDatabase(ClickHouseGlobalState globalState) throws Exception {
-        for (int i = 0; i < Randomly.fromOptions(1, 2, 3, 4, 5); i++) {
-            boolean success;
-            do {
-                String tableName = ClickHouseCommon.createTableName(i);
-                SQLQueryAdapter qt = ClickHouseTableGenerator.createTableStatement(tableName, globalState);
-                success = globalState.executeStatement(qt);
-            } while (!success);
-        }
+        // for (int i = 0; i < Randomly.fromOptions(1, 2, 3, 4, 5); i++) {
+        // boolean success;
+        // do {
+        // String tableName = ClickHouseCommon.createTableName(i);
+        // SQLQueryAdapter qt = ClickHouseTableGenerator.createTableStatement(tableName, globalState);
+        // success = globalState.executeStatement(qt);
+        // } while (!success);
+        // }
+        //
+        // // TODO: add more Actions to populate table
+        // StatementExecutor<ClickHouseGlobalState, Action> se = new StatementExecutor<>(globalState, Action.values(),
+        // ClickHouseProvider::mapActions, q -> {
+        // if (globalState.getSchema().getDatabaseTables().isEmpty()) {
+        // throw new IgnoreMeException();
+        // }
+        // });
+        // se.executeStatements();
 
-        // TODO: add more Actions to populate table
-        StatementExecutor<ClickHouseGlobalState, Action> se = new StatementExecutor<>(globalState, Action.values(),
-                ClickHouseProvider::mapActions, q -> {
-                    if (globalState.getSchema().getDatabaseTables().isEmpty()) {
-                        throw new IgnoreMeException();
-                    }
-                });
-        se.executeStatements();
+        ClickHouseTableCreator tableCreator = new ClickHouseTableCreator(globalState);
+        tableCreator.create();
     }
 
     @Override
