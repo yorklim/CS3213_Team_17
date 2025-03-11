@@ -4,6 +4,7 @@ import sys
 import xml.etree.ElementTree as ET
 
 dependency_map = {
+    'citus': [('org.postgresql', 'postgresql', '42.5.1')],
     'postgres': [('org.postgresql', 'postgresql', '42.5.1')],
     'yugabyte': [('org.postgresql', 'postgresql', '42.5.1')],
     'materialize': [('org.postgresql', 'postgresql', '42.5.1')],
@@ -11,7 +12,8 @@ dependency_map = {
     'clickhouse': [('ru.yandex.clickhouse', 'clickhouse-jdbc', '0.3.2')],
     'cnosdb': [
         ('com.arangodb', 'arangodb-java-driver', '6.9.0'),
-        ('org.apache.commons', 'commons-csv', '1.9.0')
+        ('org.apache.commons', 'commons-csv', '1.9.0'),
+        ('ru.yandex.clickhouse', 'clickhouse-jdbc', '0.3.2')
     ]
 }
 ns = {"mvn": "http://maven.apache.org/POM/4.0.0"}
@@ -19,7 +21,8 @@ ET.register_namespace("", ns['mvn'])
 
 def clean_dep(tree):
     dependencies = tree.getroot().find("./mvn:dependencies", ns)
-    to_remove = set([artifact_id for dep in dependency_map.values() for _, artifact_id, _ in dep])
+    # Very ugly, but required to maintain pom.xml file
+    to_remove = sorted(list(set([artifact_id for dep in dependency_map.values() for _, artifact_id, _ in dep])))
     removed_dep = []
 
     for remove_dep in to_remove:
@@ -33,6 +36,7 @@ def clean_dep(tree):
 def insert_dep(profile, db):
     db_dependencies = ET.Element("dependencies")
     for group_id, artifact_id, version in dependency_map[db]:
+        print(f"Inserting {artifact_id}")
         db_dependency = ET.Element("dependency")
         ET.SubElement(db_dependency, 'groupId').text = group_id
         ET.SubElement(db_dependency, 'artifactId').text = artifact_id
