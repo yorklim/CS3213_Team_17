@@ -1,6 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version='1.0' encoding='utf-8'?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.sqlancer</groupId>
   <artifactId>sqlancer</artifactId>
@@ -282,7 +281,6 @@
       </plugin>
     </plugins>
   </build>
-
   <dependencies>
     <dependency>
       <groupId>com.google.auto.service</groupId>
@@ -293,46 +291,6 @@
       <groupId>com.beust</groupId>
       <artifactId>jcommander</artifactId>
       <version>1.82</version>
-    </dependency>
-    <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>42.5.1</version>
-    </dependency>
-    <dependency>
-      <groupId>com.ing.data</groupId>
-      <artifactId>cassandra-jdbc-wrapper</artifactId>
-      <version>4.7.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.yugabyte</groupId>
-      <artifactId>jdbc-yugabytedb</artifactId>
-      <version>42.3.5-yb-1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.xerial</groupId>
-      <artifactId>sqlite-jdbc</artifactId>
-      <version>3.47.2.0</version>
-    </dependency>
-    <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
-      <version>8.0.30</version>
-    </dependency>
-    <dependency>
-      <groupId>org.mariadb.jdbc</groupId>
-      <artifactId>mariadb-java-client</artifactId>
-      <version>3.1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.duckdb</groupId>
-      <artifactId>duckdb_jdbc</artifactId>
-      <version>1.1.3</version>
-    </dependency>
-    <dependency>
-      <groupId>com.facebook.presto</groupId>
-      <artifactId>presto-jdbc</artifactId>
-      <version>0.283</version>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -346,19 +304,14 @@
       <version>2.0.6</version>
     </dependency>
     <dependency>
-      <groupId>ru.yandex.clickhouse</groupId>
-      <artifactId>clickhouse-jdbc</artifactId>
-      <version>0.3.2</version>
+      <groupId>com.github.jsqlparser</groupId>
+      <artifactId>jsqlparser</artifactId>
+      <version>4.6</version>
     </dependency>
     <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-      <version>2.3.232</version>
-    </dependency>
-    <dependency>
-      <groupId>org.mongodb</groupId>
-      <artifactId>mongodb-driver-sync</artifactId>
-      <version>4.1.1</version>
+      <groupId>com.ing.data</groupId>
+      <artifactId>cassandra-jdbc-wrapper</artifactId>
+      <version>4.7.0</version>
     </dependency>
     <dependency>
       <groupId>com.arangodb</groupId>
@@ -366,30 +319,19 @@
       <version>6.9.0</version>
     </dependency>
     <dependency>
-      <groupId>org.questdb</groupId>
-      <artifactId>questdb</artifactId>
-      <version>6.5.3</version>
+      <groupId>ru.yandex.clickhouse</groupId>
+      <artifactId>clickhouse-jdbc</artifactId>
+      <version>0.3.2</version>
     </dependency>
     <dependency>
-      <groupId>org.hsqldb</groupId>
-      <artifactId>hsqldb</artifactId>
-      <version>2.7.1</version>
-      <scope>runtime</scope>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.5.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-csv</artifactId>
       <version>1.9.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.github.jsqlparser</groupId>
-      <artifactId>jsqlparser</artifactId>
-      <version>4.6</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.arrow</groupId>
-      <artifactId>flight-sql-jdbc-driver</artifactId>
-      <version>16.1.0</version>
     </dependency>
   </dependencies>
   <reporting>
@@ -538,9 +480,6 @@
         </plugins>
       </build>
     </profile>
-
-
-    <!-- Specific DB Profile -->
     <profile>
       <id>Isolate</id>
       <activation>
@@ -576,8 +515,6 @@
         </plugins>
       </build>
     </profile>
-
-    <!-- Citus Profile, special case -->
     <profile>
       <id>citus</id>
       <activation>
