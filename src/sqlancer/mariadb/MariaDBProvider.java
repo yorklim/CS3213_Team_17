@@ -4,28 +4,15 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.google.auto.service.AutoService;
 
 import sqlancer.DatabaseProvider;
-import sqlancer.IgnoreMeException;
 import sqlancer.MainOptions;
-import sqlancer.Randomly;
 import sqlancer.SQLConnection;
 import sqlancer.SQLGlobalState;
 import sqlancer.SQLProviderAdapter;
-import sqlancer.common.DBMSCommon;
-import sqlancer.common.query.SQLQueryAdapter;
 import sqlancer.mariadb.MariaDBProvider.MariaDBGlobalState;
-import sqlancer.mariadb.gen.MariaDBIndexGenerator;
-import sqlancer.mariadb.gen.MariaDBInsertGenerator;
-import sqlancer.mariadb.gen.MariaDBSetGenerator;
-import sqlancer.mariadb.gen.MariaDBTableAdminCommandGenerator;
-import sqlancer.mariadb.gen.MariaDBTableGenerator;
-import sqlancer.mariadb.gen.MariaDBTruncateGenerator;
-import sqlancer.mariadb.gen.MariaDBUpdateGenerator;
 
 @AutoService(DatabaseProvider.class)
 public class MariaDBProvider extends SQLProviderAdapter<MariaDBGlobalState, MariaDBOptions> {
@@ -35,8 +22,6 @@ public class MariaDBProvider extends SQLProviderAdapter<MariaDBGlobalState, Mari
     public MariaDBProvider() {
         super(MariaDBGlobalState.class, MariaDBOptions.class);
     }
-
-
 
     @Override
     public void generateDatabase(MariaDBGlobalState globalState) throws Exception {

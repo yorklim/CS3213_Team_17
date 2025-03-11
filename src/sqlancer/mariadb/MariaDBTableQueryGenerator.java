@@ -1,25 +1,20 @@
 package sqlancer.mariadb;
 
+import sqlancer.AbstractAction;
 import sqlancer.IgnoreMeException;
 import sqlancer.MainOptions;
-import sqlancer.common.DBMSCommon;
 import sqlancer.common.TableQueryGenerator;
 import sqlancer.common.query.SQLQueryAdapter;
 import sqlancer.common.query.SQLQueryProvider;
-import sqlancer.doris.DorisProvider;
 import sqlancer.mariadb.gen.MariaDBIndexGenerator;
 import sqlancer.mariadb.gen.MariaDBInsertGenerator;
 import sqlancer.mariadb.gen.MariaDBSetGenerator;
 import sqlancer.mariadb.gen.MariaDBTableAdminCommandGenerator;
-import sqlancer.mariadb.gen.MariaDBTableGenerator;
 import sqlancer.mariadb.gen.MariaDBTruncateGenerator;
 import sqlancer.mariadb.gen.MariaDBUpdateGenerator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MariaDBTableQueryGenerator implements TableQueryGenerator {
-    public enum Action {
+    public enum Action implements AbstractAction<MariaDBProvider.MariaDBGlobalState> {
         ANALYZE_TABLE, //
         CHECKSUM, //
         CHECK_TABLE, //
@@ -29,17 +24,23 @@ public class MariaDBTableQueryGenerator implements TableQueryGenerator {
         REPAIR_TABLE, //
         SET, //
         TRUNCATE, //
-        UPDATE, //
+        UPDATE,
+        ; //
         private final SQLQueryProvider<MariaDBProvider.MariaDBGlobalState> sqlQueryProvider;
 
         Action(SQLQueryProvider<MariaDBProvider.MariaDBGlobalState> sqlQueryProvider) {
             this.sqlQueryProvider = sqlQueryProvider;
         }
 
+        Action() {
+            sqlQueryProvider = null;
+        }
+
         public SQLQueryAdapter getQuery(MariaDBProvider.MariaDBGlobalState state) throws Exception {
             return sqlQueryProvider.getQuery(state);
         }
     }
+
     private final MariaDBProvider.MariaDBGlobalState globalState;
     private int total;
     private int[] nrActions;
@@ -71,13 +72,6 @@ public class MariaDBTableQueryGenerator implements TableQueryGenerator {
         }
     }
 
-
-//        while (globalState.getSchema().getDatabaseTables().size() < Randomly.getNotCachedInteger(1, 3)) {
-//        String tableName = DBMSCommon.createTableName(globalState.getSchema().getDatabaseTables().size());
-//        SQLQueryAdapter createTable = MariaDBTableGenerator.generate(tableName, globalState.getRandomly(),
-//                globalState.getSchema());
-//        globalState.executeStatement(createTable);
-//    }
     private void generateNrActions() {
         for (int i = 0; i < Action.values().length; i++) {
             int nrPerformed = mapActions(Action.values()[i]);
@@ -98,74 +92,64 @@ public class MariaDBTableQueryGenerator implements TableQueryGenerator {
     }
 
     @Override
-    public Action getRandNextAction() {
-        MainOptions options = globalState.getOptions();
+    public SQLQueryAdapter getRandNextAction() {
+        SQLQueryAdapter query = null;
         while (total != 0) {
             Action nextAction = null;
             int selection = globalState.getRandomly().getInteger(0, total);
             int previousRange = 0;
             for (int i = 0; i < nrActions.length; i++) {
                 if (previousRange <= selection && selection < previousRange + nrActions[i]) {
-                    assert nrActions[nextAction.ordinal()] > 0;
                     nextAction = Action.values()[i];
-                    nrActions[i]--;
-                    total--;
-                    return nextAction;
+                    break;
                 } else {
                     previousRange += nrActions[i];
                 }
             }
-            throw new AssertionError();
+            assert nextAction != null;
+            assert nrActions[nextAction.ordinal()] > 0;
+            nrActions[nextAction.ordinal()]--;
+            try {
+                switch (nextAction) {
+                    case CHECKSUM:
+                        query = MariaDBTableAdminCommandGenerator.checksumTable(globalState.getSchema());
+                        break;
+                    case CHECK_TABLE:
+                        query = MariaDBTableAdminCommandGenerator.checkTable(globalState.getSchema());
+                        break;
+                    case TRUNCATE:
+                        query = MariaDBTruncateGenerator.truncate(globalState.getSchema());
+                        break;
+                    case REPAIR_TABLE:
+                        query = MariaDBTableAdminCommandGenerator.repairTable(globalState.getSchema());
+                        break;
+                    case INSERT:
+                        query = MariaDBInsertGenerator.insert(globalState.getSchema(), globalState.getRandomly());
+                        break;
+                    case OPTIMIZE:
+                        query = MariaDBTableAdminCommandGenerator.optimizeTable(globalState.getSchema());
+                        break;
+                    case ANALYZE_TABLE:
+                        query = MariaDBTableAdminCommandGenerator.analyzeTable(globalState.getSchema());
+                        break;
+                    case UPDATE:
+                        query = MariaDBUpdateGenerator.update(globalState.getSchema(), globalState.getRandomly());
+                        break;
+                    case CREATE_INDEX:
+                        query = MariaDBIndexGenerator.generate(globalState.getSchema());
+                        break;
+                    case SET:
+                        query = MariaDBSetGenerator.set(globalState.getRandomly(), globalState.getOptions());
+                        break;
+                    default:
+                        throw new AssertionError(nextAction);
+                }
+            } catch (IgnoreMeException e) {
+                total--;
+                continue;
+            }
+            total--;
         }
-//
-//            nrActions[nextAction.ordinal()]--;
-        SQLQueryAdapter query;
-//        try {
-//            switch (nextAction) {
-//                case CHECKSUM:
-//                    query = MariaDBTableAdminCommandGenerator.checksumTable(globalState.getSchema());
-//                    break;
-//                case CHECK_TABLE:
-//                    query = MariaDBTableAdminCommandGenerator.checkTable(globalState.getSchema());
-//                    break;
-//                case TRUNCATE:
-//                    query = MariaDBTruncateGenerator.truncate(globalState.getSchema());
-//                    break;
-//                case REPAIR_TABLE:
-//                    query = MariaDBTableAdminCommandGenerator.repairTable(globalState.getSchema());
-//                    break;
-//                case INSERT:
-//                    query = MariaDBInsertGenerator.insert(globalState.getSchema(), globalState.getRandomly());
-//                    break;
-//                case OPTIMIZE:
-//                    query = MariaDBTableAdminCommandGenerator.optimizeTable(globalState.getSchema());
-//                    break;
-//                case ANALYZE_TABLE:
-//                    query = MariaDBTableAdminCommandGenerator.analyzeTable(globalState.getSchema());
-//                    break;
-//                case UPDATE:
-//                    query = MariaDBUpdateGenerator.update(globalState.getSchema(), globalState.getRandomly());
-//                    break;
-//                case CREATE_INDEX:
-//                    query = MariaDBIndexGenerator.generate(globalState.getSchema());
-//                    break;
-//                case SET:
-//                    query = MariaDBSetGenerator.set(globalState.getRandomly(), options);
-//                    break;
-//                default:
-//                    throw new AssertionError(nextAction);
-//            }
-//        } catch (IgnoreMeException e) {
-//            total--;
-//            continue;
-//        }
-//        try {
-//            globalState.executeStatement(query);
-//        } catch (Throwable t) {
-//            System.err.println(query.getQueryString());
-////            throw t;
-//        }
-//        total--;
-//    }
+        return query;
     }
 }

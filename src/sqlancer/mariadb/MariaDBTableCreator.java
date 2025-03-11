@@ -1,7 +1,6 @@
 package sqlancer.mariadb;
 
 import sqlancer.IgnoreMeException;
-import sqlancer.MainOptions;
 import sqlancer.Randomly;
 import sqlancer.common.DBMSCommon;
 import sqlancer.common.TableCreator;
@@ -27,25 +26,23 @@ public class MariaDBTableCreator extends TableCreator {
     @Override
     public void create() throws Exception {
         createTable();
+        // Generates random queries (Insert, Update, Delete, etc.)
         MariaDBTableQueryGenerator generator = new MariaDBTableQueryGenerator(globalState);
+        generator.generate();
+        // Generates Random Queries
         while (!generator.isFinished()) {
-            MariaDBTableQueryGenerator.Action nextAction = generator.getRandNextAction();
+            SQLQueryAdapter nextAction = generator.getRandNextAction();
             assert nextAction != null;
             SQLQueryAdapter query = null;
             try {
                 boolean success = false;
                 int nrTries = 0;
                 do {
-                    query = nextAction.getQuery(globalState);
+                    query = nextAction;
                     success = globalState.executeStatement(query);
-                } while (nextAction.canBeRetried() && !success
-                        && nrTries++ < globalState.getOptions().getNrStatementRetryCount());
+                } while (!success && nrTries++ < 1000);
             } catch (IgnoreMeException e) {
 
-            }
-            if (query != null && query.couldAffectSchema()) {
-                globalState.updateSchema();
-                throw new IgnoreMeException();
             }
             if (globalState.getSchema().getDatabaseTables().isEmpty()) {
                 throw new IgnoreMeException();
