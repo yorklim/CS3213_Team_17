@@ -23,7 +23,7 @@ import sqlancer.mysql.gen.tblmaintenance.MySQLOptimize;
 import sqlancer.mysql.gen.tblmaintenance.MySQLRepair;
 
 public class MySQLTableQueryGenerator implements TableQueryGenerator {
-        enum Action implements AbstractAction<MySQLGlobalState> {
+    enum Action implements AbstractAction<MySQLGlobalState> {
         SHOW_TABLES((g) -> new SQLQueryAdapter("SHOW TABLES")), //
         INSERT(MySQLInsertGenerator::insertRow), //
         SET_VARIABLE(MySQLSetGenerator::set), //
@@ -57,7 +57,6 @@ public class MySQLTableQueryGenerator implements TableQueryGenerator {
     private final MySQLGlobalState globalState;
     private int total;
     private int[] nrActions;
-
 
     public MySQLTableQueryGenerator(MySQLGlobalState globalState) {
         this.globalState = globalState;

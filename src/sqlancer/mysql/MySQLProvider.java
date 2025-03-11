@@ -45,8 +45,6 @@ public class MySQLProvider extends SQLProviderAdapter<MySQLGlobalState, MySQLOpt
         super(MySQLGlobalState.class, MySQLOptions.class);
     }
 
-
-
     @Override
     public void generateDatabase(MySQLGlobalState globalState) throws Exception {
         MySQLTableCreator tableCreator = new MySQLTableCreator(globalState);

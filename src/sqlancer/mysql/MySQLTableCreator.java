@@ -9,6 +9,7 @@ import sqlancer.mysql.gen.MySQLTableGenerator;
 
 public class MySQLTableCreator extends TableCreator {
     private final MySQLGlobalState globalState;
+
     public MySQLTableCreator(MySQLGlobalState globalState) {
         this.globalState = globalState;
     }

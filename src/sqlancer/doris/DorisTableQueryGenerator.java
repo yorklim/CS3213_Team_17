@@ -17,28 +17,25 @@ import sqlancer.doris.gen.DorisViewGenerator;
 
 public class DorisTableQueryGenerator implements TableQueryGenerator {
     public enum Action implements AbstractAction<DorisProvider.DorisGlobalState> {
-         CREATE_TABLE(DorisTableGenerator::createRandomTableStatement), CREATE_VIEW(DorisViewGenerator::getQuery),
-         CREATE_INDEX(DorisIndexGenerator::getQuery), INSERT(DorisInsertGenerator::getQuery),
-         DELETE(DorisDeleteGenerator::generate), UPDATE(DorisUpdateGenerator::getQuery),
-         ALTER_TABLE(DorisAlterTableGenerator::getQuery),
-         TRUNCATE(
-                 g -> new SQLQueryAdapter("TRUNCATE TABLE " + g.getSchema().getRandomTable(t -> !t.isView()).getName())),
-         DROP_TABLE(DorisDropTableGenerator::dropTable), DROP_VIEW(DorisDropViewGenerator::dropView);
+        CREATE_TABLE(DorisTableGenerator::createRandomTableStatement), CREATE_VIEW(DorisViewGenerator::getQuery),
+        CREATE_INDEX(DorisIndexGenerator::getQuery), INSERT(DorisInsertGenerator::getQuery),
+        DELETE(DorisDeleteGenerator::generate), UPDATE(DorisUpdateGenerator::getQuery),
+        ALTER_TABLE(DorisAlterTableGenerator::getQuery),
+        TRUNCATE(
+                g -> new SQLQueryAdapter("TRUNCATE TABLE " + g.getSchema().getRandomTable(t -> !t.isView()).getName())),
+        DROP_TABLE(DorisDropTableGenerator::dropTable), DROP_VIEW(DorisDropViewGenerator::dropView);
 
-         private final SQLQueryProvider<DorisProvider.DorisGlobalState> sqlQueryProvider;
+        private final SQLQueryProvider<DorisProvider.DorisGlobalState> sqlQueryProvider;
 
-         Action(SQLQueryProvider<DorisProvider.DorisGlobalState> sqlQueryProvider) {
-             this.sqlQueryProvider = sqlQueryProvider;
-         }
+        Action(SQLQueryProvider<DorisProvider.DorisGlobalState> sqlQueryProvider) {
+            this.sqlQueryProvider = sqlQueryProvider;
+        }
 
-         @Override
-         public SQLQueryAdapter getQuery(DorisProvider.DorisGlobalState state) throws Exception {
-             return sqlQueryProvider.getQuery(state);
-         }
-     }
-
-
-
+        @Override
+        public SQLQueryAdapter getQuery(DorisProvider.DorisGlobalState state) throws Exception {
+            return sqlQueryProvider.getQuery(state);
+        }
+    }
 
     private final DorisProvider.DorisGlobalState globalState;
     private int total;
@@ -50,29 +47,29 @@ public class DorisTableQueryGenerator implements TableQueryGenerator {
         this.nrActions = new int[Action.values().length];
     }
 
-     private int mapActions(Action a) {
-         Randomly r = globalState.getRandomly();
-         switch (a) {
-         case INSERT:
-             return r.getInteger(0, globalState.getOptions().getMaxNumberInserts());
-         case DELETE:
-             return r.getInteger(0, globalState.getDbmsSpecificOptions().maxNumDeletes);
-         case UPDATE:
-             return r.getInteger(0, globalState.getDbmsSpecificOptions().maxNumUpdates);
-         case ALTER_TABLE:
-             return r.getInteger(0, globalState.getDbmsSpecificOptions().maxNumTableAlters);
-         case TRUNCATE:
-             return r.getInteger(0, 2);
-         case CREATE_TABLE:
-         case CREATE_INDEX:
-         case CREATE_VIEW:
-         case DROP_TABLE:
-         case DROP_VIEW:
-             return 0;
-         default:
-             throw new AssertionError(a);
-         }
-     }
+    private int mapActions(Action a) {
+        Randomly r = globalState.getRandomly();
+        switch (a) {
+        case INSERT:
+            return r.getInteger(0, globalState.getOptions().getMaxNumberInserts());
+        case DELETE:
+            return r.getInteger(0, globalState.getDbmsSpecificOptions().maxNumDeletes);
+        case UPDATE:
+            return r.getInteger(0, globalState.getDbmsSpecificOptions().maxNumUpdates);
+        case ALTER_TABLE:
+            return r.getInteger(0, globalState.getDbmsSpecificOptions().maxNumTableAlters);
+        case TRUNCATE:
+            return r.getInteger(0, 2);
+        case CREATE_TABLE:
+        case CREATE_INDEX:
+        case CREATE_VIEW:
+        case DROP_TABLE:
+        case DROP_VIEW:
+            return 0;
+        default:
+            throw new AssertionError(a);
+        }
+    }
 
     private void generateNrActions() {
         for (Action action : Action.values()) {
