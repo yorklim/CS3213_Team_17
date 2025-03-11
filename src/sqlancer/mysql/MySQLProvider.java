@@ -6,37 +6,14 @@ import java.util.stream.Collectors;
 
 import com.google.auto.service.AutoService;
 
-import sqlancer.AbstractAction;
 import sqlancer.DatabaseProvider;
-import sqlancer.IgnoreMeException;
 import sqlancer.MainOptions;
-import sqlancer.Randomly;
 import sqlancer.SQLConnection;
 import sqlancer.SQLProviderAdapter;
-import sqlancer.StatementExecutor;
-import sqlancer.common.DBMSCommon;
 import sqlancer.common.DatabaseUtils;
-import sqlancer.common.query.ExpectedErrors;
 import sqlancer.common.query.SQLQueryAdapter;
-import sqlancer.common.query.SQLQueryProvider;
-import sqlancer.mysql.MySQLSchema.MySQLColumn;
 import sqlancer.mysql.MySQLSchema.MySQLTable;
-import sqlancer.mysql.gen.MySQLAlterTable;
-import sqlancer.mysql.gen.MySQLDeleteGenerator;
-import sqlancer.mysql.gen.MySQLDropIndex;
 import sqlancer.mysql.gen.MySQLInsertGenerator;
-import sqlancer.mysql.gen.MySQLSetGenerator;
-import sqlancer.mysql.gen.MySQLTableGenerator;
-import sqlancer.mysql.gen.MySQLTruncateTableGenerator;
-import sqlancer.mysql.gen.MySQLUpdateGenerator;
-import sqlancer.mysql.gen.admin.MySQLFlush;
-import sqlancer.mysql.gen.admin.MySQLReset;
-import sqlancer.mysql.gen.datadef.MySQLIndexGenerator;
-import sqlancer.mysql.gen.tblmaintenance.MySQLAnalyzeTable;
-import sqlancer.mysql.gen.tblmaintenance.MySQLCheckTable;
-import sqlancer.mysql.gen.tblmaintenance.MySQLChecksum;
-import sqlancer.mysql.gen.tblmaintenance.MySQLOptimize;
-import sqlancer.mysql.gen.tblmaintenance.MySQLRepair;
 
 @AutoService(DatabaseProvider.class)
 public class MySQLProvider extends SQLProviderAdapter<MySQLGlobalState, MySQLOptions> {

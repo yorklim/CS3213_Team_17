@@ -2,7 +2,6 @@ package sqlancer.mysql;
 
 import sqlancer.AbstractAction;
 import sqlancer.Randomly;
-import sqlancer.cnosdb.CnosDBGlobalState;
 import sqlancer.common.TableQueryGenerator;
 import sqlancer.common.query.SQLQueryAdapter;
 import sqlancer.common.query.SQLQueryProvider;

@@ -27,7 +27,6 @@ public class MariaDBProvider extends SQLProviderAdapter<MariaDBGlobalState, Mari
     public void generateDatabase(MariaDBGlobalState globalState) throws Exception {
         MariaDBTableCreator tableCreator = new MariaDBTableCreator(globalState);
         tableCreator.create();
-
     }
 
     public static class MariaDBGlobalState extends SQLGlobalState<MariaDBOptions, MariaDBSchema> {
