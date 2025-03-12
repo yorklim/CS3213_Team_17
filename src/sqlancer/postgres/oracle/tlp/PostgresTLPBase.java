@@ -65,8 +65,8 @@ public class PostgresTLPBase extends TernaryLogicPartitioningOracleBase<Postgres
         // JOIN subqueries
         for (int i = 0; i < Randomly.smallNumber(); i++) {
             PostgresTables subqueryTables = globalState.getSchema().getRandomTableNonEmptyTables();
-            PostgresSubquery subquery = PostgresExpressionGenerator.createSubquery(globalState, String.format("sub%d", i),
-                    subqueryTables);
+            PostgresSubquery subquery = PostgresExpressionGenerator.createSubquery(globalState,
+                    String.format("sub%d", i), subqueryTables);
             PostgresExpression joinClause = gen.generateExpression(PostgresDataType.BOOLEAN);
             PostgresJoinType options = PostgresJoinType.getRandom();
             PostgresJoin j = new PostgresJoin(subquery, joinClause, options);
