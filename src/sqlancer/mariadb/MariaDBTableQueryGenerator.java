@@ -32,6 +32,7 @@ public class MariaDBTableQueryGenerator implements TableQueryGenerator {
             this.sqlQueryProvider = sqlQueryProvider;
         }
 
+        @Override
         public SQLQueryAdapter getQuery(MariaDBGlobalState state) throws Exception {
             return sqlQueryProvider.getQuery(state);
         }
