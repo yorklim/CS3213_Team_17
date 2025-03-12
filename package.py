@@ -8,7 +8,10 @@ dependency_map = {
     'postgres': [('org.postgresql', 'postgresql', '42.5.1')],
     'yugabyte': [('org.postgresql', 'postgresql', '42.5.1')],
     'materialize': [('org.postgresql', 'postgresql', '42.5.1')],
-    'presto': [('com.ing.data', 'cassandra-jdbc-wrapper', '4.7.0')],
+    'presto': [
+        ('com.ing.data', 'cassandra-jdbc-wrapper', '4.7.0'),
+        ('com.facebook.presto', 'presto-jdbc', '0.283')
+    ],
     'clickhouse': [('ru.yandex.clickhouse', 'clickhouse-jdbc', '0.3.2')],
     'cnosdb': [
         ('com.arangodb', 'arangodb-java-driver', '6.9.0'),

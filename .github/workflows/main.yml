@@ -48,7 +48,7 @@ jobs:
   citus:
     name: DBMS Tests (Citus)
     runs-on: ubuntu-latest
-    if: false
+#    if: false
     steps:
       - uses: actions/checkout@v3
         with:
@@ -59,8 +59,12 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
           cache: 'maven'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
       - name: Build SQLancer
-        run: mvn -B package -DskipTests=true
+        run: python package.py citus
       - name: Set up Citus
         run: |
           echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" | sudo tee  /etc/apt/sources.list.d/pgdg.list
@@ -107,8 +111,12 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
           cache: 'maven'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
       - name: Build SQLancer
-        run: mvn -B package -DskipTests=true
+        run: python package.py cnosdb
       - name: Set up ClickHouse
         run: |
           docker pull cnosdb/cnosdb:community-latest
@@ -133,8 +141,12 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
           cache: 'maven'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
       - name: Build SQLancer
-        run: mvn -B package -DskipTests=true
+        run: python package.py clickhouse
       - name: Set up ClickHouse
         run: |
           docker pull clickhouse/clickhouse-server:24.3.1.2672
@@ -162,8 +174,12 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
           cache: 'maven'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
       - name: Build SQLancer
-        run: mvn -B package -DskipTests=true
+        run: python package.py cockroachdb
       - name: Set up CockroachDB
         run: |
           wget -qO- https://binaries.cockroachdb.com/cockroach-v24.2.0.linux-amd64.tgz | tar  xvz
@@ -235,7 +251,7 @@ jobs:
   datafusion:
     name: DBMS Tests (DataFusion)
     runs-on: ubuntu-latest
-    if: false
+#    if: false
     steps:
       - uses: actions/checkout@v3
         with:
@@ -482,8 +498,12 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
           cache: 'maven'
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
       - name: Build SQLancer
-        run: mvn -B package -DskipTests=true
+        run: python package.py postgres
       - name: Run Tests
         run: |
           POSTGRES_AVAILABLE=true mvn -Dtest=TestPostgresPQS test
@@ -510,8 +530,12 @@ jobs:
           echo "connector.name=memory" >> memory.properties
           docker run -p 8080:8080 -d -v ./memory.properties:/opt/presto-server/etc/catalog/memory.properties --name presto prestodb/presto:latest
           sleep 30
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
       - name: Build SQLancer
-        run: mvn -B package -DskipTests=true
+        run: python package.py presto
       - name: Run Tests
         run: |
           PRESTO_AVAILABLE=true mvn -Dtest=TestPrestoNoREC test

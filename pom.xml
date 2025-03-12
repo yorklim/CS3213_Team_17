@@ -333,6 +333,11 @@
       <artifactId>postgresql</artifactId>
       <version>42.5.1</version>
     </dependency>
+    <dependency>
+      <groupId>com.facebook.presto</groupId>
+      <artifactId>presto-jdbc</artifactId>
+      <version>0.283</version>
+    </dependency>
   </dependencies>
   <reporting>
     <plugins>
