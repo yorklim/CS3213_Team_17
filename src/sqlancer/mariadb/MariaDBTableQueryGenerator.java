@@ -89,19 +89,19 @@ public class MariaDBTableQueryGenerator implements TableQueryGenerator {
 
     @Override
     public Action getRandNextAction() {
-            Action nextAction = null;
-            int selection = globalState.getRandomly().getInteger(0, total);
-            int previousRange = 0;
-            for (int i = 0; i < nrActions.length; i++) {
-                if (previousRange <= selection && selection < previousRange + nrActions[i]) {
-                    nextAction = Action.values()[i];
-                    nrActions[i]--;
-                    total--;
-                    return nextAction;
-                } else {
-                    previousRange += nrActions[i];
-                }
+        Action nextAction = null;
+        int selection = globalState.getRandomly().getInteger(0, total);
+        int previousRange = 0;
+        for (int i = 0; i < nrActions.length; i++) {
+            if (previousRange <= selection && selection < previousRange + nrActions[i]) {
+                nextAction = Action.values()[i];
+                nrActions[i]--;
+                total--;
+                return nextAction;
+            } else {
+                previousRange += nrActions[i];
             }
-            throw new AssertionError();
+        }
+        throw new AssertionError();
     }
 }

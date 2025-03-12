@@ -8,7 +8,6 @@ import sqlancer.mariadb.MariaDBProvider.MariaDBGlobalState;
 import sqlancer.mariadb.MariaDBSchema.MariaDBTable;
 import sqlancer.mariadb.ast.MariaDBVisitor;
 
-
 public final class MariaDBInsertGenerator {
 
     private MariaDBInsertGenerator() {
