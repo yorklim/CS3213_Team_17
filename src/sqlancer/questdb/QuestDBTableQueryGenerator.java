@@ -45,7 +45,7 @@ public class QuestDBTableQueryGenerator implements TableQueryGenerator {
     @Override
     public void generate() {
         for (Action action : Action.values()) {
-            int nrPerformed = mapActions(globalState, action);
+            int nrPerformed = mapActions(action);
             nrActions[action.ordinal()] = nrPerformed;
             total += nrPerformed;
         }
@@ -73,7 +73,7 @@ public class QuestDBTableQueryGenerator implements TableQueryGenerator {
         throw new AssertionError();
     }
 
-    private static int mapActions(QuestDBGlobalState globalState, Action a) {
+    private int mapActions(Action a) {
         Randomly r = globalState.getRandomly();
         switch (a) {
         case INSERT:
