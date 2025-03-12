@@ -73,7 +73,7 @@ public class TiDBTableQueryGenerator implements TableQueryGenerator {
     }
 
     @Override
-    public Object getRandNextAction() {
+    public Action getRandNextAction() {
         int selection = globalState.getRandomly().getInteger(0, total);
         int previousRange = 0;
         for (int i = 0; i < nrActions.length; i++) {
