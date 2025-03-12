@@ -9,7 +9,7 @@ import sqlancer.common.query.ExpectedErrors;
 import sqlancer.common.query.SQLQueryAdapter;
 import sqlancer.yugabyte.ysql.YSQLErrors;
 import sqlancer.yugabyte.ysql.YSQLGlobalState;
-import sqlancer.yugabyte.ysql.YSQLProvider;
+import sqlancer.yugabyte.ysql.YSQLTableQueryGenerator;
 import sqlancer.yugabyte.ysql.YSQLVisitor;
 import sqlancer.yugabyte.ysql.gen.YSQLRandomQueryGenerator;
 
@@ -38,9 +38,9 @@ public class YSQLFuzzer implements TestOracle<YSQLGlobalState> {
         testQueries = new ArrayList<>();
 
         testQueries.add(new SelectQuery());
-        testQueries.add(new ActionQuery(YSQLProvider.Action.UPDATE));
-        testQueries.add(new ActionQuery(YSQLProvider.Action.DELETE));
-        testQueries.add(new ActionQuery(YSQLProvider.Action.INSERT));
+        testQueries.add(new ActionQuery(YSQLTableQueryGenerator.Action.UPDATE));
+        testQueries.add(new ActionQuery(YSQLTableQueryGenerator.Action.DELETE));
+        testQueries.add(new ActionQuery(YSQLTableQueryGenerator.Action.INSERT));
     }
 
     @Override
@@ -57,9 +57,9 @@ public class YSQLFuzzer implements TestOracle<YSQLGlobalState> {
     }
 
     private static class ActionQuery extends Query {
-        private final YSQLProvider.Action action;
+        private final YSQLTableQueryGenerator.Action action;
 
-        ActionQuery(YSQLProvider.Action action) {
+        ActionQuery(YSQLTableQueryGenerator.Action action) {
             this.action = action;
         }
 
