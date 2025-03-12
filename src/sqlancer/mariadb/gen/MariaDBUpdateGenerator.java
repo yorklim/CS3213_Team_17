@@ -8,8 +8,6 @@ import sqlancer.mariadb.MariaDBProvider.MariaDBGlobalState;
 import sqlancer.mariadb.MariaDBSchema.MariaDBTable;
 import sqlancer.mariadb.ast.MariaDBVisitor;
 
-import java.util.Random;
-
 public final class MariaDBUpdateGenerator {
 
     private MariaDBUpdateGenerator() {
