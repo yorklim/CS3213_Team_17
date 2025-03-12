@@ -255,7 +255,6 @@
             <configuration>
               <failurePriority>2</failurePriority>
               <failOnViolation>true</failOnViolation>
-              <printFailingErrors>true</printFailingErrors>
               <rulesets>
                 <ruleset>configs/pmd-rules.xml</ruleset>
               </rulesets>
