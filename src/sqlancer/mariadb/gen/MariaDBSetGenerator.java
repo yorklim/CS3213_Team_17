@@ -26,7 +26,9 @@ public class MariaDBSetGenerator {
         this.isSingleThreaded = options.getNumberConcurrentThreads() == 1;
     }
 
-    public static SQLQueryAdapter set(Randomly r, MainOptions options) {
+    public static SQLQueryAdapter set(MariaDBGlobalState globalState) {
+        Randomly r = globalState.getRandomly();
+        MainOptions options = globalState.getOptions();
         return new MariaDBSetGenerator(r, options).get();
     }
 

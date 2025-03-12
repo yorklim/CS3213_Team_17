@@ -4,18 +4,20 @@ import sqlancer.Randomly;
 import sqlancer.common.query.ExpectedErrors;
 import sqlancer.common.query.SQLQueryAdapter;
 import sqlancer.mariadb.MariaDBErrors;
-import sqlancer.mariadb.MariaDBSchema;
+import sqlancer.mariadb.MariaDBProvider.MariaDBGlobalState;
 import sqlancer.mariadb.MariaDBSchema.MariaDBTable;
 import sqlancer.mariadb.ast.MariaDBVisitor;
+
 
 public final class MariaDBInsertGenerator {
 
     private MariaDBInsertGenerator() {
     }
 
-    public static SQLQueryAdapter insert(MariaDBSchema s, Randomly r) {
-        MariaDBTable randomTable = s.getRandomTable();
+    public static SQLQueryAdapter insert(MariaDBGlobalState globalState) {
+        MariaDBTable randomTable = globalState.getSchema().getRandomTable();
         StringBuilder sb = new StringBuilder();
+        Randomly r = globalState.getRandomly();
         sb.append("INSERT INTO ");
         sb.append(randomTable.getName());
         sb.append(" VALUES (");

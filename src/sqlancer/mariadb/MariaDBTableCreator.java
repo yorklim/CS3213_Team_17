@@ -31,14 +31,14 @@ public class MariaDBTableCreator extends TableCreator {
         generator.generate();
         // Generates Random Queries
         while (!generator.isFinished()) {
-            SQLQueryAdapter nextAction = generator.getRandNextAction();
+            MariaDBTableQueryGenerator.Action nextAction = generator.getRandNextAction();
             assert nextAction != null;
             SQLQueryAdapter query = null;
             try {
                 boolean success = false;
                 int nrTries = 0;
                 do {
-                    query = nextAction;
+                    query = nextAction.getQuery(globalState);
                     success = globalState.executeStatement(query);
                 } while (!success && nrTries++ < 1000);
             } catch (IgnoreMeException e) {

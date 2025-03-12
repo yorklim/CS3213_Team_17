@@ -4,18 +4,21 @@ import sqlancer.Randomly;
 import sqlancer.common.query.ExpectedErrors;
 import sqlancer.common.query.SQLQueryAdapter;
 import sqlancer.mariadb.MariaDBErrors;
-import sqlancer.mariadb.MariaDBSchema;
+import sqlancer.mariadb.MariaDBProvider.MariaDBGlobalState;
 import sqlancer.mariadb.MariaDBSchema.MariaDBTable;
 import sqlancer.mariadb.ast.MariaDBVisitor;
+
+import java.util.Random;
 
 public final class MariaDBUpdateGenerator {
 
     private MariaDBUpdateGenerator() {
     }
 
-    public static SQLQueryAdapter update(MariaDBSchema s, Randomly r) {
-        MariaDBTable randomTable = s.getRandomTable();
+    public static SQLQueryAdapter update(MariaDBGlobalState globalState) {
+        MariaDBTable randomTable = globalState.getSchema().getRandomTable();
         StringBuilder sb = new StringBuilder("UPDATE ");
+        Randomly r = globalState.getRandomly();
         if (Randomly.getBoolean()) {
             sb.append("LOW_PRIORITY ");
         }
