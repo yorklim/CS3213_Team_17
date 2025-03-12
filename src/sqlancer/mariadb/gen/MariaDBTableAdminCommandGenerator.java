@@ -8,11 +8,11 @@ import java.util.stream.Collectors;
 import sqlancer.Randomly;
 import sqlancer.common.query.SQLQueryAdapter;
 import sqlancer.common.query.SQLQueryResultCheckAdapter;
+import sqlancer.mariadb.MariaDBProvider.MariaDBGlobalState;
 import sqlancer.mariadb.MariaDBBugs;
 import sqlancer.mariadb.MariaDBProvider;
 import sqlancer.mariadb.MariaDBSchema;
 import sqlancer.mariadb.MariaDBSchema.MariaDBTable;
-import sqlancer.mariadb.MariaDBProvider.MariaDBGlobalState;
 
 public final class MariaDBTableAdminCommandGenerator {
 

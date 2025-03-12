@@ -5,13 +5,13 @@ import sqlancer.MainOptions;
 import sqlancer.common.TableQueryGenerator;
 import sqlancer.common.query.SQLQueryAdapter;
 import sqlancer.common.query.SQLQueryProvider;
+import sqlancer.mariadb.MariaDBProvider.MariaDBGlobalState;
 import sqlancer.mariadb.gen.MariaDBIndexGenerator;
 import sqlancer.mariadb.gen.MariaDBInsertGenerator;
 import sqlancer.mariadb.gen.MariaDBSetGenerator;
 import sqlancer.mariadb.gen.MariaDBTableAdminCommandGenerator;
 import sqlancer.mariadb.gen.MariaDBTruncateGenerator;
 import sqlancer.mariadb.gen.MariaDBUpdateGenerator;
-import sqlancer.mariadb.MariaDBProvider.MariaDBGlobalState;
 
 public class MariaDBTableQueryGenerator implements TableQueryGenerator {
     public enum Action implements AbstractAction<MariaDBProvider.MariaDBGlobalState> {
