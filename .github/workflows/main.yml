@@ -224,14 +224,8 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
           cache: 'maven'
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
       - name: Build SQLancer
-        run: python package.py databend
-#      - name: Build SQLancer
-#        run: mvn -B package -DskipTests=true
+        run: mvn -B package -DskipTests=true
       - name: Run Tests
         run: |
           DATABEND_AVAILABLE=true mvn -Dtest=TestDatabendTLP test
@@ -241,7 +235,7 @@ jobs:
   datafusion:
     name: DBMS Tests (DataFusion)
     runs-on: ubuntu-latest
-#    if: false
+    if: false
     steps:
       - uses: actions/checkout@v3
         with:
@@ -261,14 +255,8 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
           cache: 'maven'
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
       - name: Build SQLancer
-        run: python package.py datafusion
-#      - name: Build SQLancer
-#        run: mvn -B package -DskipTests=true
+        run: mvn -B package -DskipTests=true
       - name: Run Tests
         run: |
           DATAFUSION_AVAILABLE=true mvn test -Pdatafusion-tests
@@ -287,14 +275,8 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
           cache: 'maven'
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - name: Build SQLancer
-        run: python package.py duckdb
-#      - name: Build
-#        run: mvn -B package -DskipTests=true
+      - name: Build
+        run: mvn -B package -DskipTests=true
       - name: DuckDB Tests
         run: |
           mvn -Dtest=TestDuckDBTLP test
@@ -313,14 +295,8 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
           cache: 'maven'
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
       - name: Build SQLancer
-        run: python package.py h2
-#      - name: Build SQLancer
-#        run: mvn -B package -DskipTests=true
+        run: mvn -B package -DskipTests=true
       - name: Run Tests
         run: mvn -Dtest=TestH2 test
 
@@ -337,14 +313,8 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
           cache: 'maven'
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
       - name: Build SQLancer
-        run: python package.py hsqldb
-#      - name: Build SQLancer
-#        run: mvn -B package -DskipTests=true
+        run: mvn -B package -DskipTests=true
       - name: Run Tests
         run: |
           mvn -Dtest=TestHSQLDBNoREC test
@@ -372,14 +342,8 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
           cache: 'maven'
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
       - name: Build SQLancer
-        run: python package.py mariadb
-#      - name: Build SQLancer
-#        run: mvn -B package -DskipTests=true
+        run: mvn -B package -DskipTests=true
       - name: Create SQLancer User
         run: sudo mysql -h 127.0.0.1 -uroot -proot -e "CREATE USER 'sqlancer'@'%' IDENTIFIED BY 'sqlancer'; GRANT ALL PRIVILEGES ON * . * TO 'sqlancer'@'%';"
       - name: Run Tests
@@ -387,7 +351,7 @@ jobs:
 
   materialize:
     name: DBMS Tests (Materialize)
-#    if: false
+    if: false
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -406,14 +370,8 @@ jobs:
         distribution: 'temurin'
         java-version: '11'
         cache: 'maven'
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
     - name: Build SQLancer
-      run: python package.py materialize
-#    - name: Build SQLancer
-#      run: mvn -B package -DskipTests=true
+      run: mvn -B package -DskipTests=true
     - name: Run Tests
       run: |
         MATERIALIZE_AVAILABLE=true mvn test -Dtest=TestMaterializeNoREC
@@ -469,14 +427,8 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
           cache: 'maven'
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
       - name: Build SQLancer
-        run: python package.py mysql
-#      - name: Build SQLancer
-#        run: mvn -B package -DskipTests=true
+        run: mvn -B package -DskipTests=true
       - name: Create SQLancer user
         run: mysql -h 127.0.0.1  -uroot -proot -e "CREATE USER 'sqlancer'@'%' IDENTIFIED BY 'sqlancer'; GRANT ALL PRIVILEGES ON * . * TO 'sqlancer'@'%';"
       - name: Run Tests
@@ -498,14 +450,8 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
           cache: 'maven'
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
       - name: Build SQLancer
-        run: python package.py oceanbase
-#      - name: Build SQLancer
-#        run: mvn -B package -DskipTests=true
+        run: mvn -B package -DskipTests=true
       - name: Set up OceanBase
         run: |
           docker run -p 2881:2881 --name oceanbase-ce -e MODE=mini -d oceanbase/oceanbase-ce:4.2.1-lts
@@ -585,14 +531,8 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
           cache: 'maven'
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - name: Build SQLancer
-        run: python package.py sqlite3
-#      - name: Build
-#        run: mvn -B package -DskipTests=true
+      - name: Build
+        run: mvn -B package -DskipTests=true
       - name: SQLite Tests
         run: |
           mvn -Dtest=TestSQLitePQS test
@@ -632,14 +572,8 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
           cache: 'maven'
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
       - name: Build SQLancer
-        run: python package.py tidb
-#      - name: Build SQLancer
-#        run: mvn -B package -DskipTests=true
+        run: mvn -B package -DskipTests=true
       - name: Set up TiDB
         run: |
           docker pull pingcap/tidb:latest
@@ -690,14 +624,8 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
           cache: 'maven'
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
       - name: Build SQLancer
-        run: python package.py yugabyte
-#      - name: Build SQLancer
-#        run: mvn -B package -DskipTests=true
+        run: mvn -B package -DskipTests=true
       - name: Set up Yugabyte
         run: |
           docker pull yugabytedb/yugabyte:latest
@@ -743,14 +671,8 @@ jobs:
           IP=$(hostname -I | awk '{print $1}')
           mysql -u root -h 127.0.0.1 --port 9030 -e "ALTER SYSTEM ADD BACKEND '${IP}:9050';"
           mysql -u root -h 127.0.0.1 --port 9030 -e "CREATE USER 'sqlancer' IDENTIFIED BY 'sqlancer'; GRANT ALL ON *.* TO sqlancer;"
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
       - name: Build SQLancer
-        run: python package.py doris
-#      - name: Build SQLancer
-#        run: mvn -B package -DskipTests=true
+        run: mvn -B package -DskipTests=true
       - name: Run Tests
         run: |
           DORIS_AVAILABLE=true mvn -Dtest=TestDorisNoREC test
