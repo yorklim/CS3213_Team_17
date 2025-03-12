@@ -25,7 +25,7 @@ public class TiDBTableCreator extends TableCreator {
         TiDBTableQueryGenerator generator = new TiDBTableQueryGenerator(globalState);
         generator.generate();
 
-        while(!generator.isFinished()) {
+        while (!generator.isFinished()) {
             TiDBTableQueryGenerator.Action nextAction = generator.getRandNextAction();
             assert nextAction != null;
             SQLQueryAdapter query = null;
