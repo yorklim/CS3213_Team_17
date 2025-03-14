@@ -49,6 +49,5 @@ public class CnosDBTableCreator extends TableCreator {
                 throw new IgnoreMeException();
             }
         }
-
     }
 }

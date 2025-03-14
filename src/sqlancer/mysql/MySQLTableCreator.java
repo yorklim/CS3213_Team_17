@@ -24,10 +24,12 @@ public class MySQLTableCreator extends TableCreator {
 
     @Override
     public void create() throws Exception {
+        // Creates tables
         createTable();
+        // Generates random queries (Insert, Update, Delete, etc.)
         MySQLTableQueryGenerator generator = new MySQLTableQueryGenerator(globalState);
         generator.generate();
-        // Generates Random Queries
+        // Execute queries in random order
         while (!generator.isFinished()) {
             MySQLTableQueryGenerator.Action nextAction = generator.getRandNextAction();
             assert nextAction != null;
@@ -38,12 +40,16 @@ public class MySQLTableCreator extends TableCreator {
                 do {
                     query = nextAction.getQuery(globalState);
                     success = globalState.executeStatement(query);
-                } while (!success && nrTries++ < 1000);
+                } while (nextAction.canBeRetried() && !success
+                        && nrTries++ < globalState.getOptions().getNrStatementRetryCount());
             } catch (IgnoreMeException e) {
 
             }
-            if (globalState.getSchema().getDatabaseTables().isEmpty()) {
-                throw new IgnoreMeException();
+            if (query != null && query.couldAffectSchema()) {
+                globalState.updateSchema();
+                if (globalState.getSchema().getDatabaseTables().isEmpty()) {
+                    throw new IgnoreMeException();
+                }
             }
         }
 
