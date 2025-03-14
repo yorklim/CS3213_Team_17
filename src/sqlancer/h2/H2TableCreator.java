@@ -57,7 +57,7 @@ public class H2TableCreator extends TableCreator {
                 }
             }
             // if (globalState.getSchema().getDatabaseTables().isEmpty()) {
-            //     throw new IgnoreMeException();
+            // throw new IgnoreMeException();
             // }
         }
     }
