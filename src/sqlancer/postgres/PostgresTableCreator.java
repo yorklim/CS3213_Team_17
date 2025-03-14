@@ -15,18 +15,16 @@ public class PostgresTableCreator extends TableCreator {
     }
 
     private void createTable() throws Exception {
-        for (int i = 0; i < Randomly.fromOptions(4, 5, 6); i++) {
-            boolean success = false;
-            do {
-                try {
-                    String tableName = DBMSCommon.createTableName(globalState.getSchema().getDatabaseTables().size());
-                    SQLQueryAdapter createTable = PostgresTableGenerator.generate(tableName, globalState.getSchema(),
-                            PostgresProvider.generateOnlyKnown, globalState);
-                    success = globalState.executeStatement(createTable);
-                } catch (IgnoreMeException e) {
+        int numTables = Randomly.fromOptions(4, 5, 6);
+        while (globalState.getSchema().getDatabaseTables().size() < numTables) {
+            try {
+                String tableName = DBMSCommon.createTableName(globalState.getSchema().getDatabaseTables().size());
+                SQLQueryAdapter createTable = PostgresTableGenerator.generate(tableName, globalState.getSchema(),
+                        PostgresProvider.generateOnlyKnown, globalState);
+                globalState.executeStatement(createTable);
+            } catch (IgnoreMeException e) {
 
-                }
-            } while (!success);
+            }
         }
     }
 
@@ -54,10 +52,9 @@ public class PostgresTableCreator extends TableCreator {
             }
             if (query != null && query.couldAffectSchema()) {
                 globalState.updateSchema();
-                throw new IgnoreMeException();
-            }
-            if (globalState.getSchema().getDatabaseTables().isEmpty()) {
-                throw new IgnoreMeException();
+                if (globalState.getSchema().getDatabaseTables().isEmpty()) {
+                    throw new IgnoreMeException();
+                }
             }
         }
 

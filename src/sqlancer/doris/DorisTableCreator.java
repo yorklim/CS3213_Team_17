@@ -49,8 +49,11 @@ public class DorisTableCreator extends TableCreator {
             } catch (IgnoreMeException e) {
 
             }
-            if (globalState.getSchema().getDatabaseTables().isEmpty()) {
-                throw new IgnoreMeException();
+            if (query != null && query.couldAffectSchema()) {
+                globalState.updateSchema();
+                if (globalState.getSchema().getDatabaseTables().isEmpty()) {
+                    throw new IgnoreMeException();
+                }
             }
         }
     }
