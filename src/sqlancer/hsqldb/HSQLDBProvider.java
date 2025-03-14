@@ -7,20 +7,11 @@ import java.sql.Statement;
 
 import com.google.auto.service.AutoService;
 
-import sqlancer.AbstractAction;
 import sqlancer.DatabaseProvider;
-import sqlancer.IgnoreMeException;
 import sqlancer.MainOptions;
-import sqlancer.Randomly;
 import sqlancer.SQLConnection;
 import sqlancer.SQLGlobalState;
 import sqlancer.SQLProviderAdapter;
-import sqlancer.StatementExecutor;
-import sqlancer.common.query.SQLQueryAdapter;
-import sqlancer.common.query.SQLQueryProvider;
-import sqlancer.hsqldb.gen.HSQLDBInsertGenerator;
-import sqlancer.hsqldb.gen.HSQLDBTableGenerator;
-import sqlancer.hsqldb.gen.HSQLDBUpdateGenerator;
 
 @AutoService(DatabaseProvider.class)
 public class HSQLDBProvider extends SQLProviderAdapter<HSQLDBProvider.HSQLDBGlobalState, HSQLDBOptions> {
@@ -29,21 +20,6 @@ public class HSQLDBProvider extends SQLProviderAdapter<HSQLDBProvider.HSQLDBGlob
 
     public HSQLDBProvider() {
         super(HSQLDBGlobalState.class, HSQLDBOptions.class);
-    }
-
-    public enum Action implements AbstractAction<HSQLDBGlobalState> {
-        INSERT(HSQLDBInsertGenerator::getQuery), UPDATE(HSQLDBUpdateGenerator::getQuery);
-
-        private final SQLQueryProvider<HSQLDBProvider.HSQLDBGlobalState> sqlQueryProvider;
-
-        Action(SQLQueryProvider<HSQLDBProvider.HSQLDBGlobalState> sqlQueryProvider) {
-            this.sqlQueryProvider = sqlQueryProvider;
-        }
-
-        @Override
-        public SQLQueryAdapter getQuery(HSQLDBProvider.HSQLDBGlobalState state) throws Exception {
-            return sqlQueryProvider.getQuery(state);
-        }
     }
 
     @Override
@@ -68,35 +44,8 @@ public class HSQLDBProvider extends SQLProviderAdapter<HSQLDBProvider.HSQLDBGlob
 
     @Override
     public void generateDatabase(HSQLDBGlobalState globalState) throws Exception {
-        for (int i = 0; i < Randomly.fromOptions(1, 2); i++) {
-            boolean success;
-            do {
-                SQLQueryAdapter qt = new HSQLDBTableGenerator().getQuery(globalState, null);
-                success = globalState.executeStatement(qt);
-            } while (!success);
-        }
-        if (globalState.getSchema().getDatabaseTables().isEmpty()) {
-            throw new IgnoreMeException();
-        }
-        StatementExecutor<HSQLDBGlobalState, Action> se = new StatementExecutor<>(globalState,
-                HSQLDBProvider.Action.values(), HSQLDBProvider::mapActions, (q) -> {
-                    if (globalState.getSchema().getDatabaseTables().isEmpty()) {
-                        throw new IgnoreMeException();
-                    }
-                });
-        se.executeStatements();
-    }
-
-    private static int mapActions(HSQLDBProvider.HSQLDBGlobalState globalState, HSQLDBProvider.Action a) {
-        Randomly r = globalState.getRandomly();
-        switch (a) {
-        case INSERT:
-            return r.getInteger(0, globalState.getOptions().getMaxNumberInserts());
-        case UPDATE:
-            return r.getInteger(0, 10);
-        default:
-            throw new AssertionError(a);
-        }
+        HSQLDBTableCreator tableCreator = new HSQLDBTableCreator(globalState);
+        tableCreator.create();
     }
 
     public static class HSQLDBGlobalState extends SQLGlobalState<HSQLDBOptions, HSQLDBSchema> {
