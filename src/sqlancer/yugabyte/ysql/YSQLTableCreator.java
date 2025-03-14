@@ -16,20 +16,22 @@ public class YSQLTableCreator extends TableCreator {
 
     private void createTable() throws Exception {
         synchronized (YSQLProvider.DDL_LOCK) {
-            for (int i = 0; i < Randomly.fromOptions(4, 5, 6); i++) {
-                boolean success = false;
-                do {
+            boolean prevCreationFailed = false; // small optimization - wait only after failed requests
+            int numTables = Randomly.fromOptions(4, 5, 6);
+            while (globalState.getSchema().getDatabaseTables().size() < numTables) {
+                if (!prevCreationFailed) {
                     YSQLProvider.exceptionLessSleep(5000);
-                    try {
-                        String tableName = DBMSCommon
-                                .createTableName(globalState.getSchema().getDatabaseTables().size());
-                        SQLQueryAdapter createTable = YSQLTableGenerator.generate(tableName,
-                                YSQLProvider.generateOnlyKnown, globalState);
-                        success = globalState.executeStatement(createTable);
-                    } catch (IgnoreMeException e) {
+                }
 
-                    }
-                } while (!success);
+                try {
+                    String tableName = DBMSCommon.createTableName(globalState.getSchema().getDatabaseTables().size());
+                    SQLQueryAdapter createTable = YSQLTableGenerator.generate(tableName, YSQLProvider.generateOnlyKnown,
+                            globalState);
+                    globalState.executeStatement(createTable);
+                    prevCreationFailed = false;
+                } catch (IgnoreMeException e) {
+                    prevCreationFailed = true;
+                }
             }
         }
     }
