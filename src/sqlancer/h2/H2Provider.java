@@ -37,19 +37,19 @@ public class H2Provider extends SQLProviderAdapter<H2GlobalState, H2Options> {
 
         tableCreator.create();
         tableQueryGenerator.generateNExecute();
-//        // For Future Custom Queries for Testing (Table Creation)
-//        if (true) {
-//            tableCreator.create();
-//        } else {
-//            tableCreator.runQueryFromFile("placeholder", globalState);
-//        }
-//
-//        // For Future Custom Queries for Testing (Table Query Generation)
-//        if (true) {
-//            tableQueryGenerator.generateNExecute();
-//        } else {
-//            tableQueryGenerator.runQueryFromFile("placeholder", globalState);
-//        }
+        // // For Future Custom Queries for Testing (Table Creation)
+        // if (true) {
+        // tableCreator.create();
+        // } else {
+        // tableCreator.runQueryFromFile("placeholder", globalState);
+        // }
+        //
+        // // For Future Custom Queries for Testing (Table Query Generation)
+        // if (true) {
+        // tableQueryGenerator.generateNExecute();
+        // } else {
+        // tableQueryGenerator.runQueryFromFile("placeholder", globalState);
+        // }
     }
 
     @Override

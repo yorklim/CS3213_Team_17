@@ -10,9 +10,9 @@ import sqlancer.common.query.Query;
 public abstract class TableQueryGenerator {
     protected int total;
     protected int[] nrActions;
-    protected GlobalState<?,?,?> globalState;
+    protected GlobalState<?, ?, ?> globalState;
 
-    public TableQueryGenerator(int actionsLength, GlobalState<?,?,?> globalState) {
+    public TableQueryGenerator(int actionsLength, GlobalState<?, ?, ?> globalState) {
         this.total = 0;
         this.nrActions = new int[actionsLength];
         this.globalState = globalState;
@@ -39,7 +39,9 @@ public abstract class TableQueryGenerator {
         return total == 0;
     }
 
-    public <T extends SQLancerDBConnection> void runQueryFromFile(String file, GlobalState<?,?,SQLancerDBConnection> globalState, Class<? extends Query<SQLancerDBConnection>> queryType) {
+    public <T extends SQLancerDBConnection> void runQueryFromFile(String file,
+            GlobalState<?, ?, SQLancerDBConnection> globalState,
+            Class<? extends Query<SQLancerDBConnection>> queryType) {
         try {
             FileReader fr = new FileReader(file);
             BufferedReader br = new BufferedReader(fr);

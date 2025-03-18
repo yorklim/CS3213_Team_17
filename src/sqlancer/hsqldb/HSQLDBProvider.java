@@ -52,19 +52,19 @@ public class HSQLDBProvider extends SQLProviderAdapter<HSQLDBProvider.HSQLDBGlob
         tableCreator.create();
         tableQueryGenerator.generateNExecute();
 
-//        // For Future Custom Queries for Testing (Table Creation)
-//        if (true) {
-//            tableCreator.create();
-//        } else {
-//            tableCreator.runQueryFromFile("placeholder", globalState);
-//        }
-//
-//        // For Future Custom Queries for Testing (Table Query Generation)
-//        if (true) {
-//            tableQueryGenerator.generateNExecute();
-//        } else {
-//            tableQueryGenerator.runQueryFromFile("placeholder", globalState);
-//        }
+        // // For Future Custom Queries for Testing (Table Creation)
+        // if (true) {
+        // tableCreator.create();
+        // } else {
+        // tableCreator.runQueryFromFile("placeholder", globalState);
+        // }
+        //
+        // // For Future Custom Queries for Testing (Table Query Generation)
+        // if (true) {
+        // tableQueryGenerator.generateNExecute();
+        // } else {
+        // tableQueryGenerator.runQueryFromFile("placeholder", globalState);
+        // }
     }
 
     public static class HSQLDBGlobalState extends SQLGlobalState<HSQLDBOptions, HSQLDBSchema> {

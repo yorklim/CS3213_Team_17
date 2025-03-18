@@ -73,19 +73,19 @@ public class CockroachDBProvider extends SQLProviderAdapter<CockroachDBGlobalSta
 
         tableCreator.create();
         tableQueryGenerator.generateNExecute();
-//        // For Future Custom Queries for Testing (Table Creation)
-//        if (true) {
-//            tableCreator.create();
-//        } else {
-//            tableCreator.runQueryFromFile("placeholder", globalState);
-//        }
-//
-//        // For Future Custom Queries for Testing (Table Query Generation)
-//        if (true) {
-//            tableQueryGenerator.generateNExecute();
-//        } else {
-//            tableQueryGenerator.runQueryFromFile("placeholder", globalState);
-//        }
+        // // For Future Custom Queries for Testing (Table Creation)
+        // if (true) {
+        // tableCreator.create();
+        // } else {
+        // tableCreator.runQueryFromFile("placeholder", globalState);
+        // }
+        //
+        // // For Future Custom Queries for Testing (Table Query Generation)
+        // if (true) {
+        // tableQueryGenerator.generateNExecute();
+        // } else {
+        // tableQueryGenerator.runQueryFromFile("placeholder", globalState);
+        // }
 
         if (globalState.getDbmsSpecificOptions().getTestOracleFactory().stream()
                 .anyMatch(o -> o == CockroachDBOracleFactory.CERT)) {

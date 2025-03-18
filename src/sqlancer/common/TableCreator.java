@@ -11,7 +11,8 @@ public abstract class TableCreator {
 
     public abstract void create() throws Exception;
 
-    public void runQueryFromFile(String file, GlobalState<?,?,SQLancerDBConnection> globalState, Class<? extends Query<SQLancerDBConnection>> queryType) {
+    public void runQueryFromFile(String file, GlobalState<?, ?, SQLancerDBConnection> globalState,
+            Class<? extends Query<SQLancerDBConnection>> queryType) {
         try {
             FileReader fr = new FileReader(file);
             BufferedReader br = new BufferedReader(fr);
