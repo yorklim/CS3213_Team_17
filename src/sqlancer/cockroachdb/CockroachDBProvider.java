@@ -68,7 +68,22 @@ public class CockroachDBProvider extends SQLProviderAdapter<CockroachDBGlobalSta
 
         // Table creation (Creates Schema & Insert data into tables)
         CockroachDBTableCreator tableCreator = new CockroachDBTableCreator(globalState);
-        tableCreator.create();
+        // Generate random queries (Insert, Update, Delete, etc.)
+        CockroachDBTableQueryGenerator tableQueryGenerator = new CockroachDBTableQueryGenerator(globalState);
+
+        // For Future Custom Queries for Testing (Table Creation)
+        if (true) {
+            tableCreator.create();
+        } else {
+            tableCreator.runQueryFromFile("placeholder", globalState);
+        }
+
+        // For Future Custom Queries for Testing (Table Query Generation)
+        if (true) {
+            tableQueryGenerator.generateNExecute();
+        } else {
+            tableQueryGenerator.runQueryFromFile("placeholder", globalState);
+        }
 
         if (globalState.getDbmsSpecificOptions().getTestOracleFactory().stream()
                 .anyMatch(o -> o == CockroachDBOracleFactory.CERT)) {

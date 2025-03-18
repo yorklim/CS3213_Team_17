@@ -1,6 +1,7 @@
 package sqlancer.mysql;
 
 import sqlancer.AbstractAction;
+import sqlancer.IgnoreMeException;
 import sqlancer.Randomly;
 import sqlancer.common.TableQueryGenerator;
 import sqlancer.common.query.SQLQueryAdapter;
@@ -21,7 +22,7 @@ import sqlancer.mysql.gen.tblmaintenance.MySQLChecksum;
 import sqlancer.mysql.gen.tblmaintenance.MySQLOptimize;
 import sqlancer.mysql.gen.tblmaintenance.MySQLRepair;
 
-public class MySQLTableQueryGenerator implements TableQueryGenerator {
+public class MySQLTableQueryGenerator extends TableQueryGenerator {
     enum Action implements AbstractAction<MySQLGlobalState> {
         SHOW_TABLES((g) -> new SQLQueryAdapter("SHOW TABLES")), //
         INSERT(MySQLInsertGenerator::insertRow), //
@@ -53,14 +54,8 @@ public class MySQLTableQueryGenerator implements TableQueryGenerator {
         }
     }
 
-    private final MySQLGlobalState globalState;
-    private int total;
-    private int[] nrActions;
-
     public MySQLTableQueryGenerator(MySQLGlobalState globalState) {
-        this.globalState = globalState;
-        this.total = 0;
-        this.nrActions = new int[Action.values().length];
+        super(Action.values().length, globalState);
     }
 
     private int mapActions(Action a) {
@@ -122,7 +117,7 @@ public class MySQLTableQueryGenerator implements TableQueryGenerator {
         return nrPerformed;
     }
 
-    private void generateNrActions() {
+    private void generate() {
         for (Action action : Action.values()) {
             int nrPerformed = mapActions(action);
             nrActions[action.ordinal()] = nrPerformed;
@@ -131,29 +126,29 @@ public class MySQLTableQueryGenerator implements TableQueryGenerator {
     }
 
     @Override
-    public void generate() {
-        generateNrActions();
-    }
+    public void generateNExecute() throws Exception {
+        generate();
+        // Generates Random Queries
+        while (!isFinished()) {
+            MySQLTableQueryGenerator.Action nextAction = Action.values()[getRandNextAction()];
+            assert nextAction != null;
+            SQLQueryAdapter query = null;
+            try {
+                boolean success = false;
+                int nrTries = 0;
+                do {
+                    query = nextAction.getQuery((MySQLGlobalState) globalState);
+                    success = globalState.executeStatement(query);
+                } while (!success && nrTries++ < 1000);
+            } catch (IgnoreMeException e) {
 
-    @Override
-    public boolean isFinished() {
-        return total == 0;
-    }
-
-    @Override
-    public Action getRandNextAction() {
-        int selection = globalState.getRandomly().getInteger(0, total);
-        int previousRange = 0;
-        for (int i = 0; i < nrActions.length; i++) {
-            if (previousRange <= selection && selection < previousRange + nrActions[i]) {
-                assert nrActions[i] > 0;
-                nrActions[i]--;
-                total--;
-                return Action.values()[i];
-            } else {
-                previousRange += nrActions[i];
+            }
+            if (query != null && query.couldAffectSchema()) {
+                globalState.updateSchema();
+                if (globalState.getSchema().getDatabaseTables().isEmpty()) {
+                    throw new IgnoreMeException();
+                }
             }
         }
-        throw new AssertionError();
     }
 }

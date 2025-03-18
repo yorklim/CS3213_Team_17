@@ -1,40 +1,36 @@
 package sqlancer.clickhouse;
 
 import sqlancer.AbstractAction;
+import sqlancer.IgnoreMeException;
 import sqlancer.Randomly;
+import sqlancer.clickhouse.ClickHouseProvider.ClickHouseGlobalState;
 import sqlancer.clickhouse.gen.ClickHouseInsertGenerator;
 import sqlancer.common.TableQueryGenerator;
 import sqlancer.common.query.SQLQueryAdapter;
 import sqlancer.common.query.SQLQueryProvider;
 
-public class ClickHouseTableQueryGenerator implements TableQueryGenerator {
-    public enum Action implements AbstractAction<ClickHouseProvider.ClickHouseGlobalState> {
+public class ClickHouseTableQueryGenerator extends TableQueryGenerator {
+    public enum Action implements AbstractAction<ClickHouseGlobalState> {
 
         INSERT(ClickHouseInsertGenerator::getQuery);
 
-        private final SQLQueryProvider<ClickHouseProvider.ClickHouseGlobalState> sqlQueryProvider;
+        private final SQLQueryProvider<ClickHouseGlobalState> sqlQueryProvider;
 
-        Action(SQLQueryProvider<ClickHouseProvider.ClickHouseGlobalState> sqlQueryProvider) {
+        Action(SQLQueryProvider<ClickHouseGlobalState> sqlQueryProvider) {
             this.sqlQueryProvider = sqlQueryProvider;
         }
 
         @Override
-        public SQLQueryAdapter getQuery(ClickHouseProvider.ClickHouseGlobalState state) throws Exception {
+        public SQLQueryAdapter getQuery(ClickHouseGlobalState state) throws Exception {
             return sqlQueryProvider.getQuery(state);
         }
     }
 
-    private final ClickHouseProvider.ClickHouseGlobalState globalState;
-    private int total;
-    private int[] nrActions;
-
-    public ClickHouseTableQueryGenerator(ClickHouseProvider.ClickHouseGlobalState globalState) {
-        this.globalState = globalState;
-        this.total = 0;
-        this.nrActions = new int[Action.values().length];
+    public ClickHouseTableQueryGenerator(ClickHouseGlobalState globalState) {
+        super(Action.values().length, globalState);
     }
 
-    private int mapActions(Action a) {
+    protected int mapActions(Action a) {
         Randomly r = globalState.getRandomly();
         switch (a) {
         case INSERT:
@@ -44,7 +40,7 @@ public class ClickHouseTableQueryGenerator implements TableQueryGenerator {
         }
     }
 
-    private void generateNrActions() {
+    private void generate() {
         for (Action action : Action.values()) {
             int nrPerformed = mapActions(action);
             nrActions[action.ordinal()] = nrPerformed;
@@ -53,29 +49,31 @@ public class ClickHouseTableQueryGenerator implements TableQueryGenerator {
     }
 
     @Override
-    public void generate() {
-        generateNrActions();
-    }
+    public void generateNExecute() throws Exception {
+        // Generates random queries (Insert, Update, Delete, etc.)
+        generate();
+        // Execute queries in random order
+        while (!isFinished()) {
+            Action nextAction = Action.values()[getRandNextAction()];
+            assert nextAction != null;
+            SQLQueryAdapter query = null;
+            try {
+                boolean success = false;
+                int nrTries = 0;
+                do {
+                    query = nextAction.getQuery((ClickHouseGlobalState) globalState);
+                    success = globalState.executeStatement(query);
+                } while (nextAction.canBeRetried() && !success
+                        && nrTries++ < globalState.getOptions().getNrStatementRetryCount());
+            } catch (IgnoreMeException e) {
 
-    @Override
-    public boolean isFinished() {
-        return total == 0;
-    }
-
-    @Override
-    public Action getRandNextAction() {
-        int selection = globalState.getRandomly().getInteger(0, total);
-        int previousRange = 0;
-        for (int i = 0; i < nrActions.length; i++) {
-            if (previousRange <= selection && selection < previousRange + nrActions[i]) {
-                assert nrActions[i] > 0;
-                nrActions[i]--;
-                total--;
-                return Action.values()[i];
-            } else {
-                previousRange += nrActions[i];
+            }
+            if (query != null && query.couldAffectSchema()) {
+                globalState.updateSchema();
+                if (globalState.getSchema().getDatabaseTables().isEmpty()) {
+                    throw new IgnoreMeException();
+                }
             }
         }
-        throw new AssertionError();
     }
 }

@@ -34,7 +34,22 @@ public class DatabendProvider extends SQLProviderAdapter<DatabendGlobalState, Da
     public void generateDatabase(DatabendGlobalState globalState) throws Exception {
         // Table creation (Creates Schema * Insert data into tables)
         DatabendTableCreator tableCreator = new DatabendTableCreator(globalState);
-        tableCreator.create();
+        // Generate random queries (Insert, Update, Delete, etc.)
+        DatabendTableQueryGenerator tableQueryGenerator = new DatabendTableQueryGenerator(globalState);
+
+        // For Future Custom Queries for Testing (Table Creation)
+        if (true) {
+            tableCreator.create();
+        } else {
+            tableCreator.runQueryFromFile("placeholder", globalState);
+        }
+
+        // For Future Custom Queries for Testing (Table Query Generation)
+        if (true) {
+            tableQueryGenerator.generateNExecute();
+        } else {
+            tableQueryGenerator.runQueryFromFile("placeholder", globalState);
+        }
     }
 
     @Override

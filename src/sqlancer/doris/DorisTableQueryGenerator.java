@@ -1,10 +1,12 @@
 package sqlancer.doris;
 
 import sqlancer.AbstractAction;
+import sqlancer.IgnoreMeException;
 import sqlancer.Randomly;
 import sqlancer.common.TableQueryGenerator;
 import sqlancer.common.query.SQLQueryAdapter;
 import sqlancer.common.query.SQLQueryProvider;
+import sqlancer.doris.DorisProvider.DorisGlobalState;
 import sqlancer.doris.gen.DorisAlterTableGenerator;
 import sqlancer.doris.gen.DorisDeleteGenerator;
 import sqlancer.doris.gen.DorisDropTableGenerator;
@@ -15,8 +17,8 @@ import sqlancer.doris.gen.DorisTableGenerator;
 import sqlancer.doris.gen.DorisUpdateGenerator;
 import sqlancer.doris.gen.DorisViewGenerator;
 
-public class DorisTableQueryGenerator implements TableQueryGenerator {
-    public enum Action implements AbstractAction<DorisProvider.DorisGlobalState> {
+public class DorisTableQueryGenerator extends TableQueryGenerator {
+    public enum Action implements AbstractAction<DorisGlobalState> {
         CREATE_TABLE(DorisTableGenerator::createRandomTableStatement), CREATE_VIEW(DorisViewGenerator::getQuery),
         CREATE_INDEX(DorisIndexGenerator::getQuery), INSERT(DorisInsertGenerator::getQuery),
         DELETE(DorisDeleteGenerator::generate), UPDATE(DorisUpdateGenerator::getQuery),
@@ -25,26 +27,20 @@ public class DorisTableQueryGenerator implements TableQueryGenerator {
                 g -> new SQLQueryAdapter("TRUNCATE TABLE " + g.getSchema().getRandomTable(t -> !t.isView()).getName())),
         DROP_TABLE(DorisDropTableGenerator::dropTable), DROP_VIEW(DorisDropViewGenerator::dropView);
 
-        private final SQLQueryProvider<DorisProvider.DorisGlobalState> sqlQueryProvider;
+        private final SQLQueryProvider<DorisGlobalState> sqlQueryProvider;
 
-        Action(SQLQueryProvider<DorisProvider.DorisGlobalState> sqlQueryProvider) {
+        Action(SQLQueryProvider<DorisGlobalState> sqlQueryProvider) {
             this.sqlQueryProvider = sqlQueryProvider;
         }
 
         @Override
-        public SQLQueryAdapter getQuery(DorisProvider.DorisGlobalState state) throws Exception {
+        public SQLQueryAdapter getQuery(DorisGlobalState state) throws Exception {
             return sqlQueryProvider.getQuery(state);
         }
     }
 
-    private final DorisProvider.DorisGlobalState globalState;
-    private int total;
-    private int[] nrActions;
-
-    public DorisTableQueryGenerator(DorisProvider.DorisGlobalState globalState) {
-        this.globalState = globalState;
-        this.total = 0;
-        this.nrActions = new int[Action.values().length];
+    public DorisTableQueryGenerator(DorisGlobalState globalState) {
+        super(Action.values().length, globalState);
     }
 
     private int mapActions(Action a) {
@@ -53,11 +49,11 @@ public class DorisTableQueryGenerator implements TableQueryGenerator {
         case INSERT:
             return r.getInteger(0, globalState.getOptions().getMaxNumberInserts());
         case DELETE:
-            return r.getInteger(0, globalState.getDbmsSpecificOptions().maxNumDeletes);
+            return r.getInteger(0, ((DorisGlobalState) globalState).getDbmsSpecificOptions().maxNumDeletes);
         case UPDATE:
-            return r.getInteger(0, globalState.getDbmsSpecificOptions().maxNumUpdates);
+            return r.getInteger(0, ((DorisGlobalState) globalState).getDbmsSpecificOptions().maxNumUpdates);
         case ALTER_TABLE:
-            return r.getInteger(0, globalState.getDbmsSpecificOptions().maxNumTableAlters);
+            return r.getInteger(0, ((DorisGlobalState) globalState).getDbmsSpecificOptions().maxNumTableAlters);
         case TRUNCATE:
             return r.getInteger(0, 2);
         case CREATE_TABLE:
@@ -71,7 +67,7 @@ public class DorisTableQueryGenerator implements TableQueryGenerator {
         }
     }
 
-    private void generateNrActions() {
+    private void generate() {
         for (Action action : Action.values()) {
             int nrPerformed = mapActions(action);
             nrActions[action.ordinal()] = nrPerformed;
@@ -80,29 +76,29 @@ public class DorisTableQueryGenerator implements TableQueryGenerator {
     }
 
     @Override
-    public void generate() {
-        generateNrActions();
-    }
+    public void generateNExecute() throws Exception {
+        generate();
+        // Generates Random Queries
+        while (!isFinished()) {
+            DorisTableQueryGenerator.Action nextAction = Action.values()[getRandNextAction()];
+            assert nextAction != null;
+            SQLQueryAdapter query = null;
+            try {
+                boolean success = false;
+                int nrTries = 0;
+                do {
+                    query = nextAction.getQuery((DorisGlobalState) globalState);
+                    success = globalState.executeStatement(query);
+                } while (!success && nrTries++ < 1000);
+            } catch (IgnoreMeException e) {
 
-    @Override
-    public boolean isFinished() {
-        return total == 0;
-    }
-
-    @Override
-    public Action getRandNextAction() {
-        int selection = globalState.getRandomly().getInteger(0, total);
-        int previousRange = 0;
-        for (int i = 0; i < nrActions.length; i++) {
-            if (previousRange <= selection && selection < previousRange + nrActions[i]) {
-                assert nrActions[i] > 0;
-                nrActions[i]--;
-                total--;
-                return Action.values()[i];
-            } else {
-                previousRange += nrActions[i];
+            }
+            if (query != null && query.couldAffectSchema()) {
+                globalState.updateSchema();
+                if (globalState.getSchema().getDatabaseTables().isEmpty()) {
+                    throw new IgnoreMeException();
+                }
             }
         }
-        throw new AssertionError();
     }
 }

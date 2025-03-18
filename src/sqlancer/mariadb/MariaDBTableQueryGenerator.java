@@ -1,6 +1,7 @@
 package sqlancer.mariadb;
 
 import sqlancer.AbstractAction;
+import sqlancer.IgnoreMeException;
 import sqlancer.MainOptions;
 import sqlancer.common.TableQueryGenerator;
 import sqlancer.common.query.SQLQueryAdapter;
@@ -13,7 +14,7 @@ import sqlancer.mariadb.gen.MariaDBTableAdminCommandGenerator;
 import sqlancer.mariadb.gen.MariaDBTruncateGenerator;
 import sqlancer.mariadb.gen.MariaDBUpdateGenerator;
 
-public class MariaDBTableQueryGenerator implements TableQueryGenerator {
+public class MariaDBTableQueryGenerator extends TableQueryGenerator {
     public enum Action implements AbstractAction<MariaDBProvider.MariaDBGlobalState> {
         ANALYZE_TABLE(MariaDBTableAdminCommandGenerator::analyzeTable), //
         CHECKSUM(MariaDBTableAdminCommandGenerator::checksumTable), //
@@ -38,14 +39,8 @@ public class MariaDBTableQueryGenerator implements TableQueryGenerator {
         }
     }
 
-    private final MariaDBGlobalState globalState;
-    private int total;
-    private int[] nrActions;
-
     public MariaDBTableQueryGenerator(MariaDBGlobalState globalState) {
-        this.globalState = globalState;
-        this.total = 0;
-        this.nrActions = new int[Action.values().length];
+        super(Action.values().length, globalState);
     }
 
     private int mapActions(Action a) {
@@ -69,7 +64,7 @@ public class MariaDBTableQueryGenerator implements TableQueryGenerator {
         }
     }
 
-    private void generateNrActions() {
+    public void generate() {
         for (int i = 0; i < Action.values().length; i++) {
             int nrPerformed = mapActions(Action.values()[i]);
             Action action = Action.values()[i];
@@ -79,30 +74,27 @@ public class MariaDBTableQueryGenerator implements TableQueryGenerator {
     }
 
     @Override
-    public void generate() {
-        generateNrActions();
-    }
+    public void generateNExecute() throws Exception {
+        generate();
+        // Generates Random Queries
+        while (!isFinished()) {
+            MariaDBTableQueryGenerator.Action nextAction = Action.values()[getRandNextAction()];
+            assert nextAction != null;
+            SQLQueryAdapter query = null;
+            try {
+                boolean success = false;
+                int nrTries = 0;
+                do {
+                    query = nextAction.getQuery((MariaDBGlobalState) globalState);
+                    success = globalState.executeStatement(query);
+                } while (!success && nrTries++ < 1000);
+            } catch (IgnoreMeException e) {
 
-    @Override
-    public boolean isFinished() {
-        return total == 0;
-    }
-
-    @Override
-    public Action getRandNextAction() {
-        Action nextAction = null;
-        int selection = globalState.getRandomly().getInteger(0, total);
-        int previousRange = 0;
-        for (int i = 0; i < nrActions.length; i++) {
-            if (previousRange <= selection && selection < previousRange + nrActions[i]) {
-                nextAction = Action.values()[i];
-                nrActions[i]--;
-                total--;
-                return nextAction;
-            } else {
-                previousRange += nrActions[i];
+            }
+            if (globalState.getSchema().getDatabaseTables().isEmpty()) {
+                throw new IgnoreMeException();
             }
         }
-        throw new AssertionError();
     }
+
 }

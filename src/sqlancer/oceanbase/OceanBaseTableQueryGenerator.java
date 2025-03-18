@@ -1,6 +1,7 @@
 package sqlancer.oceanbase;
 
 import sqlancer.AbstractAction;
+import sqlancer.IgnoreMeException;
 import sqlancer.Randomly;
 import sqlancer.common.DBMSCommon;
 import sqlancer.common.TableQueryGenerator;
@@ -15,7 +16,7 @@ import sqlancer.oceanbase.gen.OceanBaseTruncateTableGenerator;
 import sqlancer.oceanbase.gen.OceanBaseUpdateGenerator;
 import sqlancer.oceanbase.gen.datadef.OceanBaseIndexGenerator;
 
-public class OceanBaseTableQueryGenerator implements TableQueryGenerator {
+public class OceanBaseTableQueryGenerator extends TableQueryGenerator {
 
     public enum Action implements AbstractAction<OceanBaseGlobalState> {
         SHOW_TABLES((g) -> new SQLQueryAdapter("SHOW TABLES")), INSERT(OceanBaseInsertGenerator::insertRow),
@@ -43,14 +44,8 @@ public class OceanBaseTableQueryGenerator implements TableQueryGenerator {
         }
     }
 
-    private final OceanBaseGlobalState globalState;
-    private int total;
-    private int[] nrActions;
-
     public OceanBaseTableQueryGenerator(OceanBaseGlobalState globalState) {
-        this.globalState = globalState;
-        this.total = 0;
-        this.nrActions = new int[Action.values().length];
+        super(Action.values().length, globalState);
     }
 
     private int mapActions(Action action) {
@@ -76,7 +71,7 @@ public class OceanBaseTableQueryGenerator implements TableQueryGenerator {
         }
     }
 
-    private void generateNrActions() {
+    private void generate() {
         for (Action action : Action.values()) {
             int nrPerformed = mapActions(action);
             nrActions[action.ordinal()] = nrPerformed;
@@ -85,29 +80,30 @@ public class OceanBaseTableQueryGenerator implements TableQueryGenerator {
     }
 
     @Override
-    public void generate() {
-        generateNrActions();
-    }
+    public void generateNExecute() throws Exception {
+        generate();
 
-    @Override
-    public boolean isFinished() {
-        return total == 0;
-    }
+        while (!isFinished()) {
+            OceanBaseTableQueryGenerator.Action nextAction = Action.values()[getRandNextAction()];
+            assert nextAction != null;
+            SQLQueryAdapter query = null;
+            try {
+                boolean success = false;
+                int nrTries = 0;
+                do {
+                    query = nextAction.getQuery((OceanBaseGlobalState) globalState);
+                    success = globalState.executeStatement(query);
+                } while (nextAction.canBeRetried() && !success
+                        && nrTries++ < globalState.getOptions().getNrStatementRetryCount());
+            } catch (IgnoreMeException e) {
 
-    @Override
-    public Action getRandNextAction() {
-        int selection = globalState.getRandomly().getInteger(0, total);
-        int previousRange = 0;
-        for (int i = 0; i < nrActions.length; i++) {
-            if (previousRange <= selection && selection < previousRange + nrActions[i]) {
-                assert nrActions[i] > 0;
-                nrActions[i]--;
-                total--;
-                return Action.values()[i];
-            } else {
-                previousRange += nrActions[i];
+            }
+            if (query != null && query.couldAffectSchema()) {
+                globalState.updateSchema();
+                if (globalState.getSchema().getDatabaseTables().isEmpty()) {
+                    throw new IgnoreMeException();
+                }
             }
         }
-        throw new AssertionError();
     }
 }

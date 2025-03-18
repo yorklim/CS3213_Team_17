@@ -1,6 +1,7 @@
 package sqlancer.cockroachdb;
 
 import sqlancer.AbstractAction;
+import sqlancer.IgnoreMeException;
 import sqlancer.MainOptions;
 import sqlancer.Randomly;
 import sqlancer.cockroachdb.CockroachDBProvider.CockroachDBGlobalState;
@@ -24,7 +25,7 @@ import sqlancer.common.query.ExpectedErrors;
 import sqlancer.common.query.SQLQueryAdapter;
 import sqlancer.common.query.SQLQueryProvider;
 
-public class CockroachDBTableQueryGenerator implements TableQueryGenerator {
+public class CockroachDBTableQueryGenerator extends TableQueryGenerator {
     public enum Action implements AbstractAction<CockroachDBGlobalState> {
         CREATE_TABLE(CockroachDBTableGenerator::generate), CREATE_INDEX(CockroachDBIndexGenerator::create), //
         CREATE_VIEW(CockroachDBViewGenerator::generate), //
@@ -94,14 +95,9 @@ public class CockroachDBTableQueryGenerator implements TableQueryGenerator {
         }
     }
 
-    private final CockroachDBGlobalState globalState;
-    private int total;
-    private int[] nrActions;
+    public CockroachDBTableQueryGenerator(CockroachDBGlobalState globalState) {
+        super(Action.values().length, globalState);
 
-    public CockroachDBTableQueryGenerator(CockroachDBProvider.CockroachDBGlobalState globalState) {
-        this.globalState = globalState;
-        this.total = 0;
-        this.nrActions = new int[Action.values().length];
     }
 
     private int mapActions(Action action) {
@@ -140,7 +136,7 @@ public class CockroachDBTableQueryGenerator implements TableQueryGenerator {
         }
     }
 
-    private void generateNrActions() {
+    private void generate() {
         for (Action action : Action.values()) {
             int nrPerformed = mapActions(action);
             nrActions[action.ordinal()] = nrPerformed;
@@ -149,30 +145,26 @@ public class CockroachDBTableQueryGenerator implements TableQueryGenerator {
     }
 
     @Override
-    public void generate() {
-        generateNrActions();
-    }
+    public void generateNExecute() throws Exception {
+        generate();
+        // Execute queries in random order
+        while (!isFinished()) {
+            Action nextAction = Action.values()[getRandNextAction()];
+            assert nextAction != null;
+            SQLQueryAdapter query = null;
+            try {
+                boolean success = false;
+                int nrTries = 0;
+                do {
+                    query = nextAction.getQuery((CockroachDBGlobalState) globalState);
+                    success = globalState.executeStatement(query);
+                } while (!success && nrTries++ < 1000);
+            } catch (IgnoreMeException e) {
 
-    @Override
-    public boolean isFinished() {
-        return total == 0;
-    }
-
-    @Override
-    public Action getRandNextAction() {
-        int selection = globalState.getRandomly().getInteger(0, total);
-        int previousRange = 0;
-        for (int i = 0; i < nrActions.length; i++) {
-            if (previousRange <= selection && selection < previousRange + nrActions[i]) {
-                assert nrActions[i] > 0;
-                nrActions[i]--;
-                total--;
-                return Action.values()[i];
-            } else {
-                previousRange += nrActions[i];
+            }
+            if (query != null && query.couldAffectSchema() && globalState.getSchema().getDatabaseTables().isEmpty()) {
+                throw new IgnoreMeException();
             }
         }
-        throw new AssertionError();
     }
-
 }

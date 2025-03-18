@@ -44,8 +44,24 @@ public class HSQLDBProvider extends SQLProviderAdapter<HSQLDBProvider.HSQLDBGlob
 
     @Override
     public void generateDatabase(HSQLDBGlobalState globalState) throws Exception {
+        // Table creation (Creates Schema & Insert data into tables)
         HSQLDBTableCreator tableCreator = new HSQLDBTableCreator(globalState);
-        tableCreator.create();
+        // Generate random queries (Insert, Update, Delete, etc.)
+        HSQLDBTableQueryGenerator tableQueryGenerator = new HSQLDBTableQueryGenerator(globalState);
+
+        // For Future Custom Queries for Testing (Table Creation)
+        if (true) {
+            tableCreator.create();
+        } else {
+            tableCreator.runQueryFromFile("placeholder", globalState);
+        }
+
+        // For Future Custom Queries for Testing (Table Query Generation)
+        if (true) {
+            tableQueryGenerator.generateNExecute();
+        } else {
+            tableQueryGenerator.runQueryFromFile("placeholder", globalState);
+        }
     }
 
     public static class HSQLDBGlobalState extends SQLGlobalState<HSQLDBOptions, HSQLDBSchema> {
