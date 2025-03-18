@@ -53,6 +53,7 @@ public class CnosDBTableQueryGenerator extends TableQueryGenerator {
     @Override
     public void generateNExecute() throws Exception {
         generate();
+        CnosDBGlobalState globalState = (CnosDBGlobalState) this.globalState;
         while (!isFinished()) {
             CnosDBTableQueryGenerator.Action nextAction = Action.values()[getRandNextAction()];
             assert nextAction != null;
@@ -61,7 +62,7 @@ public class CnosDBTableQueryGenerator extends TableQueryGenerator {
                 boolean success = false;
                 int nrTries = 0;
                 do {
-                    query = nextAction.getQuery((CnosDBGlobalState) globalState);
+                    query = nextAction.getQuery(globalState);
                     success = globalState.executeStatement(query);
                 } while (!success && nrTries++ < 1000);
             } catch (IgnoreMeException e) {

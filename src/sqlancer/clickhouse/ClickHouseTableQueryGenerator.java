@@ -52,6 +52,7 @@ public class ClickHouseTableQueryGenerator extends TableQueryGenerator {
     public void generateNExecute() throws Exception {
         // Generates random queries (Insert, Update, Delete, etc.)
         generate();
+        ClickHouseGlobalState globalState = (ClickHouseGlobalState) super.globalState;
         // Execute queries in random order
         while (!isFinished()) {
             Action nextAction = Action.values()[getRandNextAction()];
@@ -61,7 +62,7 @@ public class ClickHouseTableQueryGenerator extends TableQueryGenerator {
                 boolean success = false;
                 int nrTries = 0;
                 do {
-                    query = nextAction.getQuery((ClickHouseGlobalState) globalState);
+                    query = nextAction.getQuery(globalState);
                     success = globalState.executeStatement(query);
                 } while (nextAction.canBeRetried() && !success
                         && nrTries++ < globalState.getOptions().getNrStatementRetryCount());

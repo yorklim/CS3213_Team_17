@@ -56,19 +56,22 @@ public class PostgresProvider extends SQLProviderAdapter<PostgresGlobalState, Po
         // Generate random queries (Insert, Update, Delete, etc.)
         PostgresTableQueryGenerator tableQueryGenerator = new PostgresTableQueryGenerator(globalState);
 
-        // For Future Custom Queries for Testing (Table Creation)
-        if (true) {
-            tableCreator.create();
-        } else {
-            tableCreator.runQueryFromFile("placeholder", globalState);
-        }
+        tableCreator.create();
+        tableQueryGenerator.generateNExecute();
 
-        // For Future Custom Queries for Testing (Table Query Generation)
-        if (true) {
-            tableQueryGenerator.generateNExecute();
-        } else {
-            tableQueryGenerator.runQueryFromFile("placeholder", globalState);
-        }
+//        // For Future Custom Queries for Testing (Table Creation)
+//        if (true) {
+//            tableCreator.create();
+//        } else {
+//            tableCreator.runQueryFromFile("placeholder", globalState);
+//        }
+//
+//        // For Future Custom Queries for Testing (Table Query Generation)
+//        if (true) {
+//            tableQueryGenerator.generateNExecute();
+//        } else {
+//            tableQueryGenerator.runQueryFromFile("placeholder", globalState);
+//        }
 
         extensionsList = globalState.getDbmsSpecificOptions().extensions;
         if (!extensionsList.isEmpty()) {

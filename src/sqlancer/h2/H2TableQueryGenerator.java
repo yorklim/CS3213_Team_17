@@ -68,6 +68,8 @@ public class H2TableQueryGenerator extends TableQueryGenerator {
     public void generateNExecute() throws Exception {
         generate();
 
+        H2GlobalState globalState = (H2GlobalState) super.globalState;
+
         while (!isFinished()) {
             H2TableQueryGenerator.Action nextAction = Action.values()[getRandNextAction()];
             assert nextAction != null;
@@ -76,7 +78,7 @@ public class H2TableQueryGenerator extends TableQueryGenerator {
                 boolean success = false;
                 int nrTries = 0;
                 do {
-                    query = nextAction.getQuery((H2GlobalState) globalState);
+                    query = nextAction.getQuery(globalState);
                     success = globalState.executeStatement(query);
                 } while (nextAction.canBeRetried() && !success
                         && nrTries++ < globalState.getOptions().getNrStatementRetryCount());

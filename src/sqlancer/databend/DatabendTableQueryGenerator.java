@@ -77,6 +77,7 @@ public class DatabendTableQueryGenerator extends TableQueryGenerator {
         // Generates random queries (Insert, Update, Delete, etc.)
         generate();
 
+        DatabendGlobalState globalState = (DatabendGlobalState) super.globalState;
         // Execute queries in random order
         while (isFinished()) {
             Action nextAction = Action.values()[getRandNextAction()];
@@ -86,7 +87,7 @@ public class DatabendTableQueryGenerator extends TableQueryGenerator {
                 boolean success = false;
                 int nrTries = 0;
                 do {
-                    query = nextAction.getQuery((DatabendGlobalState) globalState);
+                    query = nextAction.getQuery(globalState);
                     success = globalState.executeStatement(query);
                 } while (!success && nrTries++ < 1000);
             } catch (IgnoreMeException e) {

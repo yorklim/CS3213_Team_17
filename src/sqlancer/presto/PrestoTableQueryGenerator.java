@@ -73,6 +73,8 @@ public class PrestoTableQueryGenerator extends TableQueryGenerator {
     public void generateNExecute() throws Exception {
         generate();
 
+        PrestoGlobalState globalState = (PrestoGlobalState) super.globalState;
+
         while (!isFinished()) {
             PrestoTableQueryGenerator.Action nextAction = Action.values()[getRandNextAction()];
             assert nextAction != null;
@@ -81,7 +83,7 @@ public class PrestoTableQueryGenerator extends TableQueryGenerator {
                 boolean success = false;
                 int nrTries = 0;
                 do {
-                    query = nextAction.getQuery((PrestoGlobalState) globalState);
+                    query = nextAction.getQuery(globalState);
                     success = globalState.executeStatement(query);
                 } while (nextAction.canBeRetried() && !success
                         && nrTries++ < globalState.getOptions().getNrStatementRetryCount());

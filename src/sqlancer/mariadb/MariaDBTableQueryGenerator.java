@@ -76,6 +76,9 @@ public class MariaDBTableQueryGenerator extends TableQueryGenerator {
     @Override
     public void generateNExecute() throws Exception {
         generate();
+
+        MariaDBGlobalState globalState = (MariaDBGlobalState) super.globalState;
+
         // Generates Random Queries
         while (!isFinished()) {
             MariaDBTableQueryGenerator.Action nextAction = Action.values()[getRandNextAction()];
@@ -85,7 +88,7 @@ public class MariaDBTableQueryGenerator extends TableQueryGenerator {
                 boolean success = false;
                 int nrTries = 0;
                 do {
-                    query = nextAction.getQuery((MariaDBGlobalState) globalState);
+                    query = nextAction.getQuery(globalState);
                     success = globalState.executeStatement(query);
                 } while (!success && nrTries++ < 1000);
             } catch (IgnoreMeException e) {

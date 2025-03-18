@@ -79,6 +79,9 @@ public class DorisTableQueryGenerator extends TableQueryGenerator {
     public void generateNExecute() throws Exception {
         generate();
         // Generates Random Queries
+
+        DorisGlobalState globalState = (DorisGlobalState) super.globalState;
+
         while (!isFinished()) {
             DorisTableQueryGenerator.Action nextAction = Action.values()[getRandNextAction()];
             assert nextAction != null;
@@ -87,7 +90,7 @@ public class DorisTableQueryGenerator extends TableQueryGenerator {
                 boolean success = false;
                 int nrTries = 0;
                 do {
-                    query = nextAction.getQuery((DorisGlobalState) globalState);
+                    query = nextAction.getQuery(globalState);
                     success = globalState.executeStatement(query);
                 } while (!success && nrTries++ < 1000);
             } catch (IgnoreMeException e) {

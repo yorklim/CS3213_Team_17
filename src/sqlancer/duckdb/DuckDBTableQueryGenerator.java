@@ -89,6 +89,9 @@ public class DuckDBTableQueryGenerator extends TableQueryGenerator {
     @Override
     public void generateNExecute() throws Exception {
         generate();
+
+        DuckDBGlobalState globalState = (DuckDBGlobalState) super.globalState;
+
         // Execute queries in random order
         while (!isFinished()) {
             Action nextAction = Action.values()[getRandNextAction()];
@@ -98,7 +101,7 @@ public class DuckDBTableQueryGenerator extends TableQueryGenerator {
                 boolean success = false;
                 int nrTries = 0;
                 do {
-                    query = nextAction.getQuery((DuckDBGlobalState) globalState);
+                    query = nextAction.getQuery(globalState);
                     success = globalState.executeStatement(query);
                 } while (nextAction.canBeRetried() && !success
                         && nrTries++ < globalState.getOptions().getNrStatementRetryCount());

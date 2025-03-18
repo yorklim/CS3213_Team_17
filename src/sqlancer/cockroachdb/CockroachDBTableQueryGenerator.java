@@ -148,6 +148,9 @@ public class CockroachDBTableQueryGenerator extends TableQueryGenerator {
     public void generateNExecute() throws Exception {
         generate();
         // Execute queries in random order
+
+        CockroachDBGlobalState globalState = (CockroachDBGlobalState) super.globalState;
+
         while (!isFinished()) {
             Action nextAction = Action.values()[getRandNextAction()];
             assert nextAction != null;
@@ -156,7 +159,7 @@ public class CockroachDBTableQueryGenerator extends TableQueryGenerator {
                 boolean success = false;
                 int nrTries = 0;
                 do {
-                    query = nextAction.getQuery((CockroachDBGlobalState) globalState);
+                    query = nextAction.getQuery(globalState);
                     success = globalState.executeStatement(query);
                 } while (!success && nrTries++ < 1000);
             } catch (IgnoreMeException e) {

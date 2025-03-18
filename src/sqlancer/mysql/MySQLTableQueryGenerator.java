@@ -128,6 +128,9 @@ public class MySQLTableQueryGenerator extends TableQueryGenerator {
     @Override
     public void generateNExecute() throws Exception {
         generate();
+
+        MySQLGlobalState globalState = (MySQLGlobalState) super.globalState;
+
         // Generates Random Queries
         while (!isFinished()) {
             MySQLTableQueryGenerator.Action nextAction = Action.values()[getRandNextAction()];
@@ -137,7 +140,7 @@ public class MySQLTableQueryGenerator extends TableQueryGenerator {
                 boolean success = false;
                 int nrTries = 0;
                 do {
-                    query = nextAction.getQuery((MySQLGlobalState) globalState);
+                    query = nextAction.getQuery(globalState);
                     success = globalState.executeStatement(query);
                 } while (!success && nrTries++ < 1000);
             } catch (IgnoreMeException e) {

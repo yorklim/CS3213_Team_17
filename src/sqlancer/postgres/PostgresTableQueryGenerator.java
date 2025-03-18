@@ -146,6 +146,8 @@ public class PostgresTableQueryGenerator extends TableQueryGenerator {
     public void generateNExecute() throws Exception {
         generate();
 
+        PostgresGlobalState globalState = (PostgresGlobalState) super.globalState;
+
         while (!isFinished()) {
             PostgresTableQueryGenerator.Action nextAction = Action.values()[getRandNextAction()];
             assert nextAction != null;
@@ -154,7 +156,7 @@ public class PostgresTableQueryGenerator extends TableQueryGenerator {
                 boolean success = false;
                 int nrTries = 0;
                 do {
-                    query = nextAction.getQuery((PostgresGlobalState) globalState);
+                    query = nextAction.getQuery(globalState);
                     success = globalState.executeStatement(query);
                 } while (nextAction.canBeRetried() && !success
                         && nrTries++ < globalState.getOptions().getNrStatementRetryCount());

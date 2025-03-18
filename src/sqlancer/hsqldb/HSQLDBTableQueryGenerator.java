@@ -55,6 +55,8 @@ public class HSQLDBTableQueryGenerator extends TableQueryGenerator {
     public void generateNExecute() throws Exception {
         generate();
 
+        HSQLDBGlobalState globalState = (HSQLDBGlobalState) super.globalState;
+
         while (!isFinished()) {
             HSQLDBTableQueryGenerator.Action nextAction = Action.values()[getRandNextAction()];
             assert nextAction != null;
@@ -63,7 +65,7 @@ public class HSQLDBTableQueryGenerator extends TableQueryGenerator {
                 boolean success = false;
                 int nrTries = 0;
                 do {
-                    query = nextAction.getQuery((HSQLDBGlobalState) globalState);
+                    query = nextAction.getQuery(globalState);
                     success = globalState.executeStatement(query);
                 } while (nextAction.canBeRetried() && !success
                         && nrTries++ < globalState.getOptions().getNrStatementRetryCount());
