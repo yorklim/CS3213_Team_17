@@ -52,6 +52,5 @@ public class CnosDBTableCreator extends TableCreator {
                 }
             }
         }
-
     }
 }

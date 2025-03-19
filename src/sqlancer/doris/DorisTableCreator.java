@@ -31,10 +31,12 @@ public class DorisTableCreator extends TableCreator {
 
     @Override
     public void create() throws Exception {
+        // Creates tables
         createTable();
+        // Generates random queries (Insert, Update, Delete, etc.)
         DorisTableQueryGenerator generator = new DorisTableQueryGenerator(globalState);
         generator.generate();
-        // Generates Random Queries
+        // Execute queries in random order
         while (!generator.isFinished()) {
             DorisTableQueryGenerator.Action nextAction = generator.getRandNextAction();
             assert nextAction != null;
@@ -45,7 +47,8 @@ public class DorisTableCreator extends TableCreator {
                 do {
                     query = nextAction.getQuery(globalState);
                     success = globalState.executeStatement(query);
-                } while (!success && nrTries++ < 1000);
+                } while (nextAction.canBeRetried() && !success
+                        && nrTries++ < globalState.getOptions().getNrStatementRetryCount());
             } catch (IgnoreMeException e) {
 
             }

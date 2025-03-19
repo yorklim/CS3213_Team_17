@@ -11,7 +11,9 @@ import sqlancer.MainOptions;
 import sqlancer.SQLConnection;
 import sqlancer.SQLProviderAdapter;
 import sqlancer.common.DatabaseUtils;
+import sqlancer.common.query.ExpectedErrors;
 import sqlancer.common.query.SQLQueryAdapter;
+import sqlancer.mysql.MySQLSchema.MySQLColumn;
 import sqlancer.mysql.MySQLSchema.MySQLTable;
 import sqlancer.mysql.gen.MySQLInsertGenerator;
 
@@ -26,6 +28,22 @@ public class MySQLProvider extends SQLProviderAdapter<MySQLGlobalState, MySQLOpt
     public void generateDatabase(MySQLGlobalState globalState) throws Exception {
         MySQLTableCreator tableCreator = new MySQLTableCreator(globalState);
         tableCreator.create();
+        if (globalState.getDbmsSpecificOptions().getTestOracleFactory().stream()
+                .anyMatch((o) -> o == MySQLOracleFactory.CERT)) {
+            // Enfore statistic collected for all tables
+            ExpectedErrors errors = new ExpectedErrors();
+            MySQLErrors.addExpressionErrors(errors);
+            for (MySQLTable table : globalState.getSchema().getDatabaseTables()) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("ANALYZE TABLE ");
+                sb.append(table.getName());
+                sb.append(" UPDATE HISTOGRAM ON ");
+                String columns = table.getColumns().stream().map(MySQLColumn::getName)
+                        .collect(Collectors.joining(", "));
+                sb.append(columns + ";");
+                globalState.executeStatement(new SQLQueryAdapter(sb.toString(), errors));
+            }
+        }
     }
 
     @Override
