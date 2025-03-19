@@ -80,7 +80,7 @@ public class DatabendTableQueryGenerator extends TableQueryGenerator {
 
         DatabendGlobalState globalState = (DatabendGlobalState) super.globalState;
         // Execute queries in random order
-        while (isFinished()) {
+        while (!isFinished()) {
             Action nextAction = Action.values()[getRandNextAction()];
             assert nextAction != null;
             SQLQueryAdapter query = null;

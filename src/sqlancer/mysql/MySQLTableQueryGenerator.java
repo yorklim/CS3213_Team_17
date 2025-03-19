@@ -142,7 +142,8 @@ public class MySQLTableQueryGenerator extends TableQueryGenerator {
                 do {
                     query = nextAction.getQuery(globalState);
                     success = globalState.executeStatement(query);
-                } while (!success && nrTries++ < 1000);
+                } while (nextAction.canBeRetried() && !success
+                        && nrTries++ < globalState.getOptions().getNrStatementRetryCount());
             } catch (IgnoreMeException e) {
 
             }

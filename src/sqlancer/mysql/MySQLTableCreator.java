@@ -21,5 +21,4 @@ public class MySQLTableCreator extends TableCreator {
             globalState.executeStatement(createTable);
         }
     }
-
 }
