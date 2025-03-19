@@ -49,8 +49,27 @@ public class YSQLProvider extends SQLProviderAdapter<YSQLGlobalState, YSQLOption
     public void generateDatabase(YSQLGlobalState globalState) throws Exception {
         readFunctions(globalState);
 
+        // Table creation (Creates Schema & Insert data into tables)
         YSQLTableCreator tableCreator = new YSQLTableCreator(globalState);
+        // Generate random queries (Insert, Update, Delete, etc.)
+        YSQLTableQueryGenerator tableQueryGenerator = new YSQLTableQueryGenerator(globalState);
+
         tableCreator.create();
+        tableQueryGenerator.generateNExecute();
+
+        // // For Future Custom Queries for Testing (Table Creation)
+        // if (true) {
+        // tableCreator.create();
+        // } else {
+        // tableCreator.runQueryFromFile("placeholder", globalState);
+        // }
+        //
+        // // For Future Custom Queries for Testing (Table Query Generation)
+        // if (true) {
+        // tableQueryGenerator.generateNExecute();
+        // } else {
+        // tableQueryGenerator.runQueryFromFile("placeholder", globalState);
+        // }
     }
 
     @Override

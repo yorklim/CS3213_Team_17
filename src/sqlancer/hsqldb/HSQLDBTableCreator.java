@@ -15,7 +15,8 @@ public class HSQLDBTableCreator extends TableCreator {
         this.globalState = globalState;
     }
 
-    private void createTable() throws Exception {
+    @Override
+    public void create() throws Exception {
         for (int i = 0; i < Randomly.fromOptions(1, 2); i++) {
             boolean success;
             do {
@@ -27,36 +28,4 @@ public class HSQLDBTableCreator extends TableCreator {
             throw new IgnoreMeException();
         }
     }
-
-    @Override
-    public void create() throws Exception {
-        createTable();
-
-        HSQLDBTableQueryGenerator generator = new HSQLDBTableQueryGenerator(globalState);
-        generator.generate();
-
-        while (!generator.isFinished()) {
-            HSQLDBTableQueryGenerator.Action nextAction = generator.getRandNextAction();
-            assert nextAction != null;
-            SQLQueryAdapter query = null;
-            try {
-                boolean success = false;
-                int nrTries = 0;
-                do {
-                    query = nextAction.getQuery(globalState);
-                    success = globalState.executeStatement(query);
-                } while (nextAction.canBeRetried() && !success
-                        && nrTries++ < globalState.getOptions().getNrStatementRetryCount());
-            } catch (IgnoreMeException e) {
-
-            }
-            if (query != null && query.couldAffectSchema()) {
-                globalState.updateSchema();
-                if (globalState.getSchema().getDatabaseTables().isEmpty()) {
-                    throw new IgnoreMeException();
-                }
-            }
-        }
-    }
-
 }

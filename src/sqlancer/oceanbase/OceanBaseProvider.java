@@ -21,8 +21,26 @@ public class OceanBaseProvider extends SQLProviderAdapter<OceanBaseGlobalState, 
 
     @Override
     public void generateDatabase(OceanBaseGlobalState globalState) throws Exception {
+        // Table creation (Creates Schema & Insert data into tables)
         OceanBaseTableCreator tableCreator = new OceanBaseTableCreator(globalState);
+        // Generate random queries (Insert, Update, Delete, etc.)
+        OceanBaseTableQueryGenerator tableQueryGenerator = new OceanBaseTableQueryGenerator(globalState);
+
         tableCreator.create();
+        tableQueryGenerator.generateNExecute();
+        // // For Future Custom Queries for Testing (Table Creation)
+        // if (true) {
+        // tableCreator.create();
+        // } else {
+        // tableCreator.runQueryFromFile("placeholder", globalState);
+        // }
+        //
+        // // For Future Custom Queries for Testing (Table Query Generation)
+        // if (true) {
+        // tableQueryGenerator.generateNExecute();
+        // } else {
+        // tableQueryGenerator.runQueryFromFile("placeholder", globalState);
+        // }
     }
 
     @Override

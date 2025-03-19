@@ -25,8 +25,27 @@ public class MariaDBProvider extends SQLProviderAdapter<MariaDBGlobalState, Mari
 
     @Override
     public void generateDatabase(MariaDBGlobalState globalState) throws Exception {
+        // Table creation (Creates Schema & Insert data into tables)
         MariaDBTableCreator tableCreator = new MariaDBTableCreator(globalState);
+        // Generate random queries (Insert, Update, Delete, etc.)
+        MariaDBTableQueryGenerator tableQueryGenerator = new MariaDBTableQueryGenerator(globalState);
+
         tableCreator.create();
+        tableQueryGenerator.generateNExecute();
+
+        // // For Future Custom Queries for Testing (Table Creation)
+        // if (true) {
+        // tableCreator.create();
+        // } else {
+        // tableCreator.runQueryFromFile("placeholder", globalState);
+        // }
+        //
+        // // For Future Custom Queries for Testing (Table Query Generation)
+        // if (true) {
+        // tableQueryGenerator.generateNExecute();
+        // } else {
+        // tableQueryGenerator.runQueryFromFile("placeholder", globalState);
+        // }
     }
 
     public static class MariaDBGlobalState extends SQLGlobalState<MariaDBOptions, MariaDBSchema> {

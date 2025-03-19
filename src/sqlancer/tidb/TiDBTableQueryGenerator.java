@@ -1,8 +1,12 @@
 package sqlancer.tidb;
 
+import java.sql.SQLException;
+
 import sqlancer.AbstractAction;
+import sqlancer.IgnoreMeException;
 import sqlancer.Randomly;
 import sqlancer.common.TableQueryGenerator;
+import sqlancer.common.query.ExpectedErrors;
 import sqlancer.common.query.SQLQueryAdapter;
 import sqlancer.common.query.SQLQueryProvider;
 import sqlancer.tidb.TiDBProvider.TiDBGlobalState;
@@ -18,7 +22,7 @@ import sqlancer.tidb.gen.TiDBTableGenerator;
 import sqlancer.tidb.gen.TiDBUpdateGenerator;
 import sqlancer.tidb.gen.TiDBViewGenerator;
 
-public class TiDBTableQueryGenerator implements TableQueryGenerator {
+public class TiDBTableQueryGenerator extends TableQueryGenerator {
 
     public enum Action implements AbstractAction<TiDBGlobalState> {
         CREATE_TABLE(TiDBTableGenerator::createRandomTableStatement), // 0
@@ -48,45 +52,8 @@ public class TiDBTableQueryGenerator implements TableQueryGenerator {
         }
     }
 
-    private TiDBGlobalState globalState;
-    private int total;
-    private int[] nrActions;
-
     public TiDBTableQueryGenerator(TiDBGlobalState globalState) {
-        this.globalState = globalState;
-        this.total = 0;
-        this.nrActions = new int[Action.values().length];
-    }
-
-    @Override
-    public void generate() {
-        for (Action action : Action.values()) {
-            int nrPerformed = mapActions(action);
-            nrActions[action.ordinal()] = nrPerformed;
-            total += nrPerformed;
-        }
-    }
-
-    @Override
-    public boolean isFinished() {
-        return total == 0;
-    }
-
-    @Override
-    public Action getRandNextAction() {
-        int selection = globalState.getRandomly().getInteger(0, total);
-        int previousRange = 0;
-        for (int i = 0; i < nrActions.length; i++) {
-            if (previousRange <= selection && selection < previousRange + nrActions[i]) {
-                assert nrActions[i] > 0;
-                nrActions[i]--;
-                total--;
-                return Action.values()[i];
-            } else {
-                previousRange += nrActions[i];
-            }
-        }
-        throw new AssertionError();
+        super(Action.values().length, globalState);
     }
 
     private int mapActions(Action a) {
@@ -115,6 +82,83 @@ public class TiDBTableQueryGenerator implements TableQueryGenerator {
             return 0;
         default:
             throw new AssertionError(a);
+        }
+    }
+
+    private void generate() {
+        for (Action action : Action.values()) {
+            int nrPerformed = mapActions(action);
+            nrActions[action.ordinal()] = nrPerformed;
+            total += nrPerformed;
+        }
+    }
+
+    @Override
+    public void generateNExecute() throws Exception {
+        generate();
+
+        TiDBGlobalState globalState = (TiDBGlobalState) super.globalState;
+
+        while (!isFinished()) {
+            TiDBTableQueryGenerator.Action nextAction = Action.values()[getRandNextAction()];
+            assert nextAction != null;
+            SQLQueryAdapter query = null;
+            try {
+                boolean success = false;
+                int nrTries = 0;
+                do {
+                    query = nextAction.getQuery(globalState);
+                    success = globalState.executeStatement(query);
+                } while (nextAction.canBeRetried() && !success
+                        && nrTries++ < globalState.getOptions().getNrStatementRetryCount());
+            } catch (IgnoreMeException e) {
+
+            } catch (SQLException e) {
+                if (e.getMessage().contains(
+                        "references invalid table(s) or column(s) or function(s) or definer/invoker of view lack rights to use them")) {
+                    throw new IgnoreMeException(); // TODO: drop view instead
+                } else {
+                    throw new AssertionError(e);
+                }
+            }
+            if (query != null && query.couldAffectSchema()) {
+                globalState.updateSchema();
+                throw new IgnoreMeException();
+            }
+            if (globalState.getSchema().getDatabaseTables().isEmpty()) {
+                throw new IgnoreMeException();
+            }
+        }
+
+        if (globalState.getDbmsSpecificOptions().getTestOracleFactory().stream()
+                .anyMatch((o) -> o == TiDBOracleFactory.CERT)) {
+            // Disable strict Group By constraints for ROW oracle
+            globalState.executeStatement(new SQLQueryAdapter(
+                    "SET @@sql_mode='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';"));
+
+            // Enfore statistic collected for all tables
+            ExpectedErrors errors = new ExpectedErrors();
+            TiDBErrors.addExpressionErrors(errors);
+            for (TiDBSchema.TiDBTable table : globalState.getSchema().getDatabaseTables()) {
+                if (!table.isView()) {
+                    globalState.executeStatement(new SQLQueryAdapter("ANALYZE TABLE " + table.getName() + ";", errors));
+                }
+            }
+        }
+
+        // TiFlash replication settings
+        if (globalState.getDbmsSpecificOptions().tiflash) {
+            ExpectedErrors errors = new ExpectedErrors();
+            TiDBErrors.addExpressionErrors(errors);
+            for (TiDBSchema.TiDBTable table : globalState.getSchema().getDatabaseTables()) {
+                if (!table.isView()) {
+                    globalState.executeStatement(
+                            new SQLQueryAdapter("ALTER TABLE " + table.getName() + " SET TIFLASH REPLICA 1;", errors));
+                }
+            }
+            if (Randomly.getBoolean()) {
+                globalState.executeStatement(new SQLQueryAdapter("set @@tidb_enforce_mpp=1;"));
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 package sqlancer.databend;
 
 import sqlancer.AbstractAction;
+import sqlancer.IgnoreMeException;
 import sqlancer.Randomly;
 import sqlancer.common.TableQueryGenerator;
 import sqlancer.common.query.ExpectedErrors;
@@ -12,8 +13,8 @@ import sqlancer.databend.gen.DatabendInsertGenerator;
 import sqlancer.databend.gen.DatabendRandomQuerySynthesizer;
 import sqlancer.databend.gen.DatabendViewGenerator;
 
-public class DatabendTableQueryGenerator implements TableQueryGenerator {
-    public enum Action implements AbstractAction<DatabendProvider.DatabendGlobalState> {
+public class DatabendTableQueryGenerator extends TableQueryGenerator {
+    public enum Action implements AbstractAction<DatabendGlobalState> {
 
         INSERT(DatabendInsertGenerator::getQuery), DELETE(DatabendDeleteGenerator::generate),
         // TODO 等待databend实现update
@@ -28,29 +29,24 @@ public class DatabendTableQueryGenerator implements TableQueryGenerator {
                     errors);
         });
 
-        private final SQLQueryProvider<DatabendProvider.DatabendGlobalState> sqlQueryProvider;
+        private final SQLQueryProvider<DatabendGlobalState> sqlQueryProvider;
 
-        Action(SQLQueryProvider<DatabendProvider.DatabendGlobalState> sqlQueryProvider) {
+        Action(SQLQueryProvider<DatabendGlobalState> sqlQueryProvider) {
             this.sqlQueryProvider = sqlQueryProvider;
         }
 
         @Override
-        public SQLQueryAdapter getQuery(DatabendProvider.DatabendGlobalState state) throws Exception {
+        public SQLQueryAdapter getQuery(DatabendGlobalState state) throws Exception {
             return sqlQueryProvider.getQuery(state);
         }
     }
 
-    private final DatabendGlobalState globalState;
-    private int total;
-    private int[] nrActions;
-
     public DatabendTableQueryGenerator(DatabendGlobalState globalState) {
-        this.globalState = globalState;
-        this.total = 0;
-        this.nrActions = new int[Action.values().length];
+        super(Action.values().length, globalState);
     }
 
     private int mapActions(Action a) {
+        DatabendGlobalState globalState = (DatabendGlobalState) super.globalState;
         Randomly r = globalState.getRandomly();
         switch (a) {
         case INSERT:
@@ -69,7 +65,7 @@ public class DatabendTableQueryGenerator implements TableQueryGenerator {
         }
     }
 
-    private void generateNrActions() {
+    private void generate() {
         for (Action action : Action.values()) {
             int nrPerformed = mapActions(action);
             nrActions[action.ordinal()] = nrPerformed;
@@ -78,29 +74,32 @@ public class DatabendTableQueryGenerator implements TableQueryGenerator {
     }
 
     @Override
-    public void generate() {
-        generateNrActions();
-    }
+    public void generateNExecute() throws Exception {
+        // Generates random queries (Insert, Update, Delete, etc.)
+        generate();
 
-    @Override
-    public boolean isFinished() {
-        return total == 0;
-    }
+        DatabendGlobalState globalState = (DatabendGlobalState) super.globalState;
+        // Execute queries in random order
+        while (!isFinished()) {
+            Action nextAction = Action.values()[getRandNextAction()];
+            assert nextAction != null;
+            SQLQueryAdapter query = null;
+            try {
+                boolean success = false;
+                int nrTries = 0;
+                do {
+                    query = nextAction.getQuery(globalState);
+                    success = globalState.executeStatement(query);
+                } while (!success && nrTries++ < 1000);
+            } catch (IgnoreMeException e) {
 
-    @Override
-    public Action getRandNextAction() {
-        int selection = globalState.getRandomly().getInteger(0, total);
-        int previousRange = 0;
-        for (int i = 0; i < nrActions.length; i++) {
-            if (previousRange <= selection && selection < previousRange + nrActions[i]) {
-                assert nrActions[i] > 0;
-                nrActions[i]--;
-                total--;
-                return Action.values()[i];
-            } else {
-                previousRange += nrActions[i];
+            }
+            if (query != null && query.couldAffectSchema()) {
+                globalState.updateSchema();
+                if (globalState.getSchema().getDatabaseTables().isEmpty()) {
+                    throw new IgnoreMeException();
+                }
             }
         }
-        throw new AssertionError();
     }
 }

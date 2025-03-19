@@ -1,13 +1,14 @@
 package sqlancer.h2;
 
 import sqlancer.AbstractAction;
+import sqlancer.IgnoreMeException;
 import sqlancer.Randomly;
 import sqlancer.common.TableQueryGenerator;
 import sqlancer.common.query.SQLQueryAdapter;
 import sqlancer.common.query.SQLQueryProvider;
 import sqlancer.h2.H2Provider.H2GlobalState;
 
-public class H2TableQueryGenerator implements TableQueryGenerator {
+public class H2TableQueryGenerator extends TableQueryGenerator {
 
     public enum Action implements AbstractAction<H2GlobalState> {
 
@@ -31,14 +32,9 @@ public class H2TableQueryGenerator implements TableQueryGenerator {
         }
     }
 
-    private H2GlobalState globalState;
-    private int total;
-    private int[] nrActions;
-
     public H2TableQueryGenerator(H2GlobalState globalState) {
-        this.globalState = globalState;
-        this.total = 0;
-        this.nrActions = new int[Action.values().length];
+        super(Action.values().length, globalState);
+
     }
 
     private int mapActions(Action a) {
@@ -47,7 +43,6 @@ public class H2TableQueryGenerator implements TableQueryGenerator {
         case INSERT:
             return r.getInteger(0, globalState.getOptions().getMaxNumberInserts());
         case ANALYZE:
-            return r.getInteger(0, 5);
         case INDEX:
         case SET:
             return r.getInteger(0, 5);
@@ -61,7 +56,7 @@ public class H2TableQueryGenerator implements TableQueryGenerator {
         }
     }
 
-    private void generateNrActions() {
+    private void generate() {
         for (Action action : Action.values()) {
             int nrPerformed = mapActions(action);
             nrActions[action.ordinal()] = nrPerformed;
@@ -70,30 +65,32 @@ public class H2TableQueryGenerator implements TableQueryGenerator {
     }
 
     @Override
-    public void generate() {
-        generateNrActions();
-    }
+    public void generateNExecute() throws Exception {
+        generate();
 
-    @Override
-    public boolean isFinished() {
-        return total == 0;
-    }
+        H2GlobalState globalState = (H2GlobalState) super.globalState;
 
-    @Override
-    public Action getRandNextAction() {
-        int selection = globalState.getRandomly().getInteger(0, total);
-        int previousRange = 0;
-        for (int i = 0; i < nrActions.length; i++) {
-            if (previousRange <= selection && selection < previousRange + nrActions[i]) {
-                assert nrActions[i] > 0;
-                nrActions[i]--;
-                total--;
-                return Action.values()[i];
-            } else {
-                previousRange += nrActions[i];
+        while (!isFinished()) {
+            H2TableQueryGenerator.Action nextAction = Action.values()[getRandNextAction()];
+            assert nextAction != null;
+            SQLQueryAdapter query = null;
+            try {
+                boolean success = false;
+                int nrTries = 0;
+                do {
+                    query = nextAction.getQuery(globalState);
+                    success = globalState.executeStatement(query);
+                } while (nextAction.canBeRetried() && !success
+                        && nrTries++ < globalState.getOptions().getNrStatementRetryCount());
+            } catch (IgnoreMeException e) {
+
+            }
+            if (query != null && query.couldAffectSchema()) {
+                globalState.updateSchema();
+                if (globalState.getSchema().getDatabaseTables().isEmpty()) {
+                    throw new IgnoreMeException();
+                }
             }
         }
-        throw new AssertionError();
     }
-
 }

@@ -1,6 +1,5 @@
 package sqlancer.h2;
 
-import sqlancer.IgnoreMeException;
 import sqlancer.Randomly;
 import sqlancer.common.TableCreator;
 import sqlancer.common.query.SQLQueryAdapter;
@@ -14,7 +13,8 @@ public class H2TableCreator extends TableCreator {
         this.globalState = globalState;
     }
 
-    private void createTable() throws Exception {
+    @Override
+    public void create() throws Exception {
         if (Randomly.getBoolean()) {
             H2SetGenerator.getQuery(globalState).execute(globalState);
         }
@@ -26,36 +26,4 @@ public class H2TableCreator extends TableCreator {
             } while (!success);
         }
     }
-
-    @Override
-    public void create() throws Exception {
-        createTable();
-
-        H2TableQueryGenerator generator = new H2TableQueryGenerator(globalState);
-        generator.generate();
-
-        while (!generator.isFinished()) {
-            H2TableQueryGenerator.Action nextAction = generator.getRandNextAction();
-            assert nextAction != null;
-            SQLQueryAdapter query = null;
-            try {
-                boolean success = false;
-                int nrTries = 0;
-                do {
-                    query = nextAction.getQuery(globalState);
-                    success = globalState.executeStatement(query);
-                } while (nextAction.canBeRetried() && !success
-                        && nrTries++ < globalState.getOptions().getNrStatementRetryCount());
-            } catch (IgnoreMeException e) {
-
-            }
-            if (query != null && query.couldAffectSchema()) {
-                globalState.updateSchema();
-                if (globalState.getSchema().getDatabaseTables().isEmpty()) {
-                    throw new IgnoreMeException();
-                }
-            }
-        }
-    }
-
 }

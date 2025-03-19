@@ -15,5 +15,4 @@ public interface AbstractAction<G> {
     default boolean canBeRetried() {
         return true;
     }
-
 }
