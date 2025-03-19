@@ -351,7 +351,7 @@ jobs:
         run: MARIADB_AVAILABLE=true mvn -Dtest=TestMariaDB test
 
   materialize:
-    name: DBMS Tests
+    name: DBMS Tests (Materialize)
     if: false
     runs-on: ubuntu-latest
     steps:
