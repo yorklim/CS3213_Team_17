@@ -9,7 +9,7 @@ import java.io.FileReader;
 
 public abstract class FileExecuter {
     public void runQueryFromFile(String file, GlobalState<?, ?, SQLancerDBConnection> globalState,
-                                 Class<? extends Query<SQLancerDBConnection>> queryType) {
+            Class<? extends Query<SQLancerDBConnection>> queryType) {
         try {
             FileReader fr = new FileReader(file);
             BufferedReader br = new BufferedReader(fr);
