@@ -55,7 +55,7 @@ public class CnosDBTableQueryGenerator extends TableQueryGenerator {
         generate();
         CnosDBGlobalState globalState = (CnosDBGlobalState) this.globalState;
         while (!isFinished()) {
-            CnosDBTableQueryGenerator.Action nextAction = Action.values()[getRandNextAction()];
+            Action nextAction = Action.values()[getRandNextAction()];
             assert nextAction != null;
             CnosDBOtherQuery query = null;
             try {

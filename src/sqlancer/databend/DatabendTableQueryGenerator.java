@@ -46,6 +46,7 @@ public class DatabendTableQueryGenerator extends TableQueryGenerator {
     }
 
     private int mapActions(Action a) {
+        DatabendGlobalState globalState = (DatabendGlobalState) super.globalState;
         Randomly r = globalState.getRandomly();
         switch (a) {
         case INSERT:
@@ -56,9 +57,9 @@ public class DatabendTableQueryGenerator extends TableQueryGenerator {
         // case UPDATE:
         // return r.getInteger(0, globalState.getDbmsSpecificOptions().maxNumUpdates + 1);
         case DELETE:
-            return r.getInteger(0, ((DatabendGlobalState) globalState).getDbmsSpecificOptions().maxNumDeletes + 1);
+            return r.getInteger(0, globalState.getDbmsSpecificOptions().maxNumDeletes + 1);
         case CREATE_VIEW:
-            return r.getInteger(0, ((DatabendGlobalState) globalState).getDbmsSpecificOptions().maxNumViews + 1);
+            return r.getInteger(0, globalState.getDbmsSpecificOptions().maxNumViews + 1);
         default:
             throw new AssertionError(a);
         }
