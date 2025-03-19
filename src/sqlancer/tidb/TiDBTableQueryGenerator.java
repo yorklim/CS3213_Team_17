@@ -1,5 +1,7 @@
 package sqlancer.tidb;
 
+import java.sql.SQLException;
+
 import sqlancer.AbstractAction;
 import sqlancer.IgnoreMeException;
 import sqlancer.Randomly;
@@ -19,8 +21,6 @@ import sqlancer.tidb.gen.TiDBSetGenerator;
 import sqlancer.tidb.gen.TiDBTableGenerator;
 import sqlancer.tidb.gen.TiDBUpdateGenerator;
 import sqlancer.tidb.gen.TiDBViewGenerator;
-
-import java.sql.SQLException;
 
 public class TiDBTableQueryGenerator extends TableQueryGenerator {
 
@@ -59,29 +59,29 @@ public class TiDBTableQueryGenerator extends TableQueryGenerator {
     private int mapActions(Action a) {
         Randomly r = globalState.getRandomly();
         switch (a) {
-            case ANALYZE_TABLE:
-            case CREATE_INDEX:
-                return r.getInteger(0, 2);
-            case INSERT:
-                return r.getInteger(0, globalState.getOptions().getMaxNumberInserts());
-            case TRUNCATE:
-            case DELETE:
-            case ADMIN_CHECKSUM_TABLE:
-                return r.getInteger(0, 2);
-            case SET:
-            case UPDATE:
-                return r.getInteger(0, 5);
-            case VIEW_GENERATOR:
-                // https://github.com/tidb-challenge-program/bug-hunting-issue/issues/8
-                return r.getInteger(0, 2);
-            case ALTER_TABLE:
-                return r.getInteger(0, 10); // https://github.com/tidb-challenge-program/bug-hunting-issue/issues/10
-            case CREATE_TABLE:
-            case DROP_TABLE:
-            case DROP_VIEW:
-                return 0;
-            default:
-                throw new AssertionError(a);
+        case ANALYZE_TABLE:
+        case CREATE_INDEX:
+            return r.getInteger(0, 2);
+        case INSERT:
+            return r.getInteger(0, globalState.getOptions().getMaxNumberInserts());
+        case TRUNCATE:
+        case DELETE:
+        case ADMIN_CHECKSUM_TABLE:
+            return r.getInteger(0, 2);
+        case SET:
+        case UPDATE:
+            return r.getInteger(0, 5);
+        case VIEW_GENERATOR:
+            // https://github.com/tidb-challenge-program/bug-hunting-issue/issues/8
+            return r.getInteger(0, 2);
+        case ALTER_TABLE:
+            return r.getInteger(0, 10); // https://github.com/tidb-challenge-program/bug-hunting-issue/issues/10
+        case CREATE_TABLE:
+        case DROP_TABLE:
+        case DROP_VIEW:
+            return 0;
+        default:
+            throw new AssertionError(a);
         }
     }
 

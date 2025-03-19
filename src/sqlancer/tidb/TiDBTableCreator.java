@@ -1,11 +1,7 @@
 package sqlancer.tidb;
 
-import java.sql.SQLException;
-
-import sqlancer.IgnoreMeException;
 import sqlancer.Randomly;
 import sqlancer.common.TableCreator;
-import sqlancer.common.query.ExpectedErrors;
 import sqlancer.common.query.SQLQueryAdapter;
 import sqlancer.tidb.TiDBProvider.TiDBGlobalState;
 import sqlancer.tidb.gen.TiDBTableGenerator;
@@ -17,7 +13,6 @@ public class TiDBTableCreator extends TableCreator {
     public TiDBTableCreator(TiDBGlobalState globalState) {
         this.globalState = globalState;
     }
-
 
     @Override
     public void create() throws Exception {

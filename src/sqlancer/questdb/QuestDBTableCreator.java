@@ -1,6 +1,5 @@
 package sqlancer.questdb;
 
-import sqlancer.IgnoreMeException;
 import sqlancer.Randomly;
 import sqlancer.common.TableCreator;
 import sqlancer.common.query.SQLQueryAdapter;

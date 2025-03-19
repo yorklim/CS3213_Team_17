@@ -40,14 +40,14 @@ public class QuestDBTableQueryGenerator extends TableQueryGenerator {
     private int mapActions(Action a) {
         Randomly r = globalState.getRandomly();
         switch (a) {
-            case INSERT:
-                return r.getInteger(0, globalState.getOptions().getMaxNumberInserts());
-            case ALTER_INDEX:
-                return r.getInteger(0, 3);
-            case TRUNCATE:
-                return r.getInteger(0, 5);
-            default:
-                throw new AssertionError("Unknown action: " + a);
+        case INSERT:
+            return r.getInteger(0, globalState.getOptions().getMaxNumberInserts());
+        case ALTER_INDEX:
+            return r.getInteger(0, 3);
+        case TRUNCATE:
+            return r.getInteger(0, 5);
+        default:
+            throw new AssertionError("Unknown action: " + a);
         }
     }
 
