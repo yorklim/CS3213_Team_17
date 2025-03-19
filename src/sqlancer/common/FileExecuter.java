@@ -1,11 +1,11 @@
 package sqlancer.common;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+
 import sqlancer.GlobalState;
 import sqlancer.SQLancerDBConnection;
 import sqlancer.common.query.Query;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
 
 public abstract class FileExecuter {
     public void runQueryFromFile(String file, GlobalState<?, ?, SQLancerDBConnection> globalState,
