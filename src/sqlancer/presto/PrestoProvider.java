@@ -31,7 +31,7 @@ public class PrestoProvider extends SQLProviderAdapter<PrestoGlobalState, Presto
 
         String staticTable = System.getProperty("staticTable");
         // For Future Custom Queries for Testing (Table Creation)
-        if (!staticTable.equals("true")) {
+        if (staticTable != null && !staticTable.equals("true")) {
             tableCreator.create();
         } else {
             tableCreator.runQueryFromFile("staticTable.sql", globalState);
@@ -39,7 +39,7 @@ public class PrestoProvider extends SQLProviderAdapter<PrestoGlobalState, Presto
 
         String staticQuery = System.getProperty("staticQuery");
         // For Future Custom Queries for Testing (Table Query Generation)
-        if (!staticQuery.equals("true")) {
+        if (staticTable != null && !staticQuery.equals("true")) {
             tableQueryGenerator.generateNExecute();
         } else {
             tableQueryGenerator.runQueryFromFile("staticQuery.sql", globalState);
