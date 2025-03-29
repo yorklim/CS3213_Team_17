@@ -29,21 +29,21 @@ public class PrestoProvider extends SQLProviderAdapter<PrestoGlobalState, Presto
         // Generate random queries (Insert, Update, Delete, etc.)
         PrestoTableQueryGenerator tableQueryGenerator = new PrestoTableQueryGenerator(globalState);
 
-        tableCreator.create();
-        tableQueryGenerator.generateNExecute();
-        // // For Future Custom Queries for Testing (Table Creation)
-        // if (true) {
-        // tableCreator.create();
-        // } else {
-        // tableCreator.runQueryFromFile("placeholder", globalState);
-        // }
-        //
-        // // For Future Custom Queries for Testing (Table Query Generation)
-        // if (true) {
-        // tableQueryGenerator.generateNExecute();
-        // } else {
-        // tableQueryGenerator.runQueryFromFile("placeholder", globalState);
-        // }
+        String staticTable = System.getProperty("staticTable");
+        // For Future Custom Queries for Testing (Table Creation)
+        if (!staticTable.equals("true")) {
+            tableCreator.create();
+        } else {
+            tableCreator.runQueryFromFile("staticTable.sql", globalState);
+        }
+
+        String staticQuery = System.getProperty("staticQuery");
+        // For Future Custom Queries for Testing (Table Query Generation)
+        if (!staticQuery.equals("true")) {
+            tableQueryGenerator.generateNExecute();
+        } else {
+            tableQueryGenerator.runQueryFromFile("staticQuery.sql", globalState);
+        }
     }
 
     @Override
