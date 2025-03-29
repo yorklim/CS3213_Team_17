@@ -1,6 +1,7 @@
 package sqlancer.hsqldb;
 
 import sqlancer.AbstractAction;
+import sqlancer.IgnoreMeException;
 import sqlancer.Randomly;
 import sqlancer.common.TableQueryGenerator;
 import sqlancer.common.query.SQLQueryAdapter;
@@ -9,31 +10,25 @@ import sqlancer.hsqldb.HSQLDBProvider.HSQLDBGlobalState;
 import sqlancer.hsqldb.gen.HSQLDBInsertGenerator;
 import sqlancer.hsqldb.gen.HSQLDBUpdateGenerator;
 
-public class HSQLDBTableQueryGenerator implements TableQueryGenerator {
+public class HSQLDBTableQueryGenerator extends TableQueryGenerator {
 
     public enum Action implements AbstractAction<HSQLDBGlobalState> {
         INSERT(HSQLDBInsertGenerator::getQuery), UPDATE(HSQLDBUpdateGenerator::getQuery);
 
-        private final SQLQueryProvider<HSQLDBProvider.HSQLDBGlobalState> sqlQueryProvider;
+        private final SQLQueryProvider<HSQLDBGlobalState> sqlQueryProvider;
 
-        Action(SQLQueryProvider<HSQLDBProvider.HSQLDBGlobalState> sqlQueryProvider) {
+        Action(SQLQueryProvider<HSQLDBGlobalState> sqlQueryProvider) {
             this.sqlQueryProvider = sqlQueryProvider;
         }
 
         @Override
-        public SQLQueryAdapter getQuery(HSQLDBProvider.HSQLDBGlobalState state) throws Exception {
+        public SQLQueryAdapter getQuery(HSQLDBGlobalState state) throws Exception {
             return sqlQueryProvider.getQuery(state);
         }
     }
 
-    private HSQLDBGlobalState globalState;
-    private int total;
-    private int[] nrActions;
-
     public HSQLDBTableQueryGenerator(HSQLDBGlobalState globalState) {
-        this.globalState = globalState;
-        this.total = 0;
-        this.nrActions = new int[Action.values().length];
+        super(Action.values().length, globalState);
     }
 
     private int mapActions(Action a) {
@@ -48,7 +43,7 @@ public class HSQLDBTableQueryGenerator implements TableQueryGenerator {
         }
     }
 
-    private void generateNrActions() {
+    private void generate() {
         for (Action action : Action.values()) {
             int nrPerformed = mapActions(action);
             nrActions[action.ordinal()] = nrPerformed;
@@ -57,30 +52,33 @@ public class HSQLDBTableQueryGenerator implements TableQueryGenerator {
     }
 
     @Override
-    public void generate() {
-        generateNrActions();
-    }
+    public void generateNExecute() throws Exception {
+        generate();
 
-    @Override
-    public boolean isFinished() {
-        return total == 0;
-    }
+        HSQLDBGlobalState globalState = (HSQLDBGlobalState) super.globalState;
 
-    @Override
-    public Action getRandNextAction() {
-        int selection = globalState.getRandomly().getInteger(0, total);
-        int previousRange = 0;
-        for (int i = 0; i < nrActions.length; i++) {
-            if (previousRange <= selection && selection < previousRange + nrActions[i]) {
-                assert nrActions[i] > 0;
-                nrActions[i]--;
-                total--;
-                return Action.values()[i];
-            } else {
-                previousRange += nrActions[i];
+        while (!isFinished()) {
+            HSQLDBTableQueryGenerator.Action nextAction = Action.values()[getRandNextAction()];
+            assert nextAction != null;
+            SQLQueryAdapter query = null;
+            try {
+                boolean success = false;
+                int nrTries = 0;
+                do {
+                    query = nextAction.getQuery(globalState);
+                    success = globalState.executeStatement(query);
+                } while (nextAction.canBeRetried() && !success
+                        && nrTries++ < globalState.getOptions().getNrStatementRetryCount());
+            } catch (IgnoreMeException e) {
+
+            }
+            if (query != null && query.couldAffectSchema()) {
+                globalState.updateSchema();
+                if (globalState.getSchema().getDatabaseTables().isEmpty()) {
+                    throw new IgnoreMeException();
+                }
             }
         }
-        throw new AssertionError();
     }
 
 }

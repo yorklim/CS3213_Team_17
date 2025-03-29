@@ -3,13 +3,14 @@ package sqlancer.cnosdb;
 import java.util.Objects;
 
 import sqlancer.AbstractAction;
+import sqlancer.IgnoreMeException;
 import sqlancer.Randomly;
 import sqlancer.cnosdb.gen.CnosDBInsertGenerator;
 import sqlancer.cnosdb.query.CnosDBOtherQuery;
 import sqlancer.cnosdb.query.CnosDBQueryProvider;
 import sqlancer.common.TableQueryGenerator;
 
-public class CnosDBTableQueryGenerator implements TableQueryGenerator {
+public class CnosDBTableQueryGenerator extends TableQueryGenerator {
     public enum Action implements AbstractAction<CnosDBGlobalState> {
         INSERT(CnosDBInsertGenerator::insert);
 
@@ -26,14 +27,8 @@ public class CnosDBTableQueryGenerator implements TableQueryGenerator {
         }
     }
 
-    private final CnosDBGlobalState globalState;
-    private int total;
-    private int[] nrActions;
-
     public CnosDBTableQueryGenerator(CnosDBGlobalState globalState) {
-        this.globalState = globalState;
-        this.total = 0;
-        this.nrActions = new int[Action.values().length];
+        super(Action.values().length, globalState);
     }
 
     protected int mapActions(Action a) {
@@ -47,7 +42,7 @@ public class CnosDBTableQueryGenerator implements TableQueryGenerator {
         return nrPerformed;
     }
 
-    private void generateNrActions() {
+    private void generate() {
         for (Action action : Action.values()) {
             int nrPerformed = mapActions(action);
             nrActions[action.ordinal()] = nrPerformed;
@@ -56,29 +51,31 @@ public class CnosDBTableQueryGenerator implements TableQueryGenerator {
     }
 
     @Override
-    public void generate() {
-        generateNrActions();
-    }
+    public void generateNExecute() throws Exception {
+        generate();
+        // Generates Random Queries
+        CnosDBGlobalState globalState = (CnosDBGlobalState) super.globalState;
 
-    @Override
-    public boolean isFinished() {
-        return total == 0;
-    }
+        while (!isFinished()) {
+            CnosDBTableQueryGenerator.Action nextAction = Action.values()[getRandNextAction()];
+            assert nextAction != null;
+            CnosDBOtherQuery query = null;
+            try {
+                boolean success = false;
+                int nrTries = 0;
+                do {
+                    query = nextAction.getQuery(globalState);
+                    success = globalState.executeStatement(query);
+                } while (!success && nrTries++ < 1000);
+            } catch (IgnoreMeException e) {
 
-    @Override
-    public Action getRandNextAction() {
-        int selection = globalState.getRandomly().getInteger(0, total);
-        int previousRange = 0;
-        for (int i = 0; i < nrActions.length; i++) {
-            if (previousRange <= selection && selection < previousRange + nrActions[i]) {
-                assert nrActions[i] > 0;
-                nrActions[i]--;
-                total--;
-                return Action.values()[i];
-            } else {
-                previousRange += nrActions[i];
+            }
+            if (query != null && query.couldAffectSchema()) {
+                globalState.updateSchema();
+                if (globalState.getSchema().getDatabaseTables().isEmpty()) {
+                    throw new IgnoreMeException();
+                }
             }
         }
-        throw new AssertionError();
     }
 }

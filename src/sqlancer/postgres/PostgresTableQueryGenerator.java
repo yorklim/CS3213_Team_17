@@ -1,6 +1,7 @@
 package sqlancer.postgres;
 
 import sqlancer.AbstractAction;
+import sqlancer.IgnoreMeException;
 import sqlancer.Randomly;
 import sqlancer.common.TableQueryGenerator;
 import sqlancer.common.query.SQLQueryAdapter;
@@ -25,7 +26,7 @@ import sqlancer.postgres.gen.PostgresUpdateGenerator;
 import sqlancer.postgres.gen.PostgresVacuumGenerator;
 import sqlancer.postgres.gen.PostgresViewGenerator;
 
-public class PostgresTableQueryGenerator implements TableQueryGenerator {
+public class PostgresTableQueryGenerator extends TableQueryGenerator {
 
     public enum Action implements AbstractAction<PostgresGlobalState> {
         ANALYZE(PostgresAnalyzeGenerator::create), //
@@ -85,14 +86,8 @@ public class PostgresTableQueryGenerator implements TableQueryGenerator {
         }
     }
 
-    private final PostgresGlobalState globalState;
-    private int total;
-    private int[] nrActions;
-
     public PostgresTableQueryGenerator(PostgresGlobalState globalState) {
-        this.globalState = globalState;
-        this.total = 0;
-        this.nrActions = new int[Action.values().length];
+        super(Action.values().length, globalState);
     }
 
     // For Citus coupling...
@@ -139,7 +134,7 @@ public class PostgresTableQueryGenerator implements TableQueryGenerator {
         }
     }
 
-    private void generateNrActions() {
+    private void generate() {
         for (Action action : Action.values()) {
             int nrPerformed = mapActions(action);
             nrActions[action.ordinal()] = nrPerformed;
@@ -148,29 +143,35 @@ public class PostgresTableQueryGenerator implements TableQueryGenerator {
     }
 
     @Override
-    public void generate() {
-        generateNrActions();
-    }
+    public void generateNExecute() throws Exception {
+        generate();
 
-    @Override
-    public boolean isFinished() {
-        return total == 0;
-    }
+        PostgresGlobalState globalState = (PostgresGlobalState) super.globalState;
 
-    @Override
-    public Action getRandNextAction() {
-        int selection = globalState.getRandomly().getInteger(0, total);
-        int previousRange = 0;
-        for (int i = 0; i < nrActions.length; i++) {
-            if (previousRange <= selection && selection < previousRange + nrActions[i]) {
-                assert nrActions[i] > 0;
-                nrActions[i]--;
-                total--;
-                return Action.values()[i];
-            } else {
-                previousRange += nrActions[i];
+        while (!isFinished()) {
+            PostgresTableQueryGenerator.Action nextAction = Action.values()[getRandNextAction()];
+            assert nextAction != null;
+            SQLQueryAdapter query = null;
+            try {
+                boolean success = false;
+                int nrTries = 0;
+                do {
+                    query = nextAction.getQuery(globalState);
+                    success = globalState.executeStatement(query);
+                } while (nextAction.canBeRetried() && !success
+                        && nrTries++ < globalState.getOptions().getNrStatementRetryCount());
+            } catch (IgnoreMeException e) {
+
+            }
+            if (query != null && query.couldAffectSchema()) {
+                globalState.updateSchema();
+                if (globalState.getSchema().getDatabaseTables().isEmpty()) {
+                    throw new IgnoreMeException();
+                }
             }
         }
-        throw new AssertionError();
+
+        globalState.executeStatement(new SQLQueryAdapter("COMMIT", true));
+        globalState.executeStatement(new SQLQueryAdapter("SET SESSION statement_timeout = 5000;\n", true));
     }
 }
