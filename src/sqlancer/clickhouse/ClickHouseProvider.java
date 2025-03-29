@@ -14,7 +14,6 @@ import sqlancer.SQLConnection;
 import sqlancer.SQLGlobalState;
 import sqlancer.SQLProviderAdapter;
 import sqlancer.clickhouse.ClickHouseProvider.ClickHouseGlobalState;
-import sqlancer.common.query.SQLQueryAdapter;
 
 @AutoService(DatabaseProvider.class)
 public class ClickHouseProvider extends SQLProviderAdapter<ClickHouseGlobalState, ClickHouseOptions> {
@@ -67,7 +66,7 @@ public class ClickHouseProvider extends SQLProviderAdapter<ClickHouseGlobalState
         }
 
         String staticQuery = System.getProperty("staticQuery");
-         // For Future Custom Queries for Testing (Table Query Generation)
+        // For Future Custom Queries for Testing (Table Query Generation)
         if (!staticQuery.equals("true")) {
             tableQueryGenerator.generateNExecute();
         } else {
