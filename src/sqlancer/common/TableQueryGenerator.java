@@ -2,7 +2,7 @@ package sqlancer.common;
 
 import sqlancer.GlobalState;
 
-public abstract class TableQueryGenerator extends FileExecuter {
+public abstract class TableQueryGenerator extends FileExecutor {
     protected int total;
     protected int[] nrActions;
     protected GlobalState<?, ?, ?> globalState;
