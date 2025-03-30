@@ -44,6 +44,7 @@ import sqlancer.sqlite3.gen.dml.SQLite3InsertGenerator;
 import sqlancer.sqlite3.gen.dml.SQLite3StatTableGenerator;
 import sqlancer.sqlite3.gen.dml.SQLite3UpdateGenerator;
 import sqlancer.sqlite3.schema.SQLite3Schema.SQLite3Table;
+import sqlancer.drivers.DynamicDriverManager;
 
 @AutoService(DatabaseProvider.class)
 public class SQLite3Provider extends SQLProviderAdapter<SQLite3GlobalState, SQLite3Options> {
@@ -285,6 +286,13 @@ public class SQLite3Provider extends SQLProviderAdapter<SQLite3GlobalState, SQLi
 
     @Override
     public SQLConnection createDatabase(SQLite3GlobalState globalState) throws SQLException {
+
+        try {
+            DynamicDriverManager.registerDriver("sqlite3");
+        } catch (Exception e) {
+            throw new SQLException("Failed to load SQLite driver: " + e.getMessage(), e);
+        }
+
         File dir = new File("." + File.separator + "databases");
         if (!dir.exists()) {
             dir.mkdir();

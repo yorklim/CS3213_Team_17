@@ -14,6 +14,7 @@ import sqlancer.SQLConnection;
 import sqlancer.SQLGlobalState;
 import sqlancer.SQLProviderAdapter;
 import sqlancer.duckdb.DuckDBProvider.DuckDBGlobalState;
+import sqlancer.drivers.DynamicDriverManager;
 
 @AutoService(DatabaseProvider.class)
 public class DuckDBProvider extends SQLProviderAdapter<DuckDBGlobalState, DuckDBOptions> {
@@ -72,6 +73,13 @@ public class DuckDBProvider extends SQLProviderAdapter<DuckDBGlobalState, DuckDB
 
     @Override
     public SQLConnection createDatabase(DuckDBGlobalState globalState) throws SQLException {
+
+        try {
+            DynamicDriverManager.registerDriver("duckdb");
+        } catch (Exception e) {
+            throw new SQLException("Failed to load DuckDB driver: " + e.getMessage(), e);
+        }
+
         String databaseFile = System.getProperty("duckdb.database.file", "");
         String url = "jdbc:duckdb:" + databaseFile;
         tryDeleteDatabase(databaseFile);
