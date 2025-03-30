@@ -140,11 +140,6 @@ public class MySQLAlterTable {
                 sb.append("PACK_KEYS ");
                 sb.append(Randomly.fromOptions("0", "1", "DEFAULT"));
                 break;
-            // not relevant:
-            // case WITH_WITHOUT_VALIDATION:
-            // sb.append(Randomly.fromOptions("WITHOUT", "WITH"));
-            // sb.append(" VALIDATION");
-            // break;
             case RENAME:
                 sb.append("RENAME ");
                 if (Randomly.getBoolean()) {

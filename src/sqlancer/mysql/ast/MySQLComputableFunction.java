@@ -26,21 +26,6 @@ public class MySQLComputableFunction implements MySQLExpression {
     }
 
     public enum MySQLFunction {
-
-        // ABS(1, "ABS") {
-        // @Override
-        // public MySQLConstant apply(MySQLConstant[] args, MySQLExpression[] origArgs) {
-        // if (args[0].isNull()) {
-        // return MySQLConstant.createNullConstant();
-        // }
-        // MySQLConstant intVal = args[0].castAs(CastType.SIGNED);
-        // return MySQLConstant.createIntConstant(Math.abs(intVal.getInt()));
-        // }
-        // },
-        /**
-         * @see <a href="https://dev.mysql.com/doc/refman/8.0/en/bit-functions.html#function_bit-count">Bit Functions
-         *      and Operators</a>
-         */
         BIT_COUNT(1, "BIT_COUNT") {
 
             @Override
@@ -55,23 +40,6 @@ public class MySQLComputableFunction implements MySQLExpression {
             }
 
         },
-        // BENCHMARK(2, "BENCHMARK") {
-        //
-        // @Override
-        // public MySQLConstant apply(MySQLConstant[] evaluatedArgs, MySQLExpression[] args) {
-        // if (evaluatedArgs[0].isNull()) {
-        // return MySQLConstant.createNullConstant();
-        // }
-        // if (evaluatedArgs[0].castAs(CastType.SIGNED).getInt() < 0) {
-        // return MySQLConstant.createNullConstant();
-        // }
-        // if (Math.abs(evaluatedArgs[0].castAs(CastType.SIGNED).getInt()) > 10) {
-        // throw new IgnoreMeException();
-        // }
-        // return MySQLConstant.createIntConstant(0);
-        // }
-        //
-        // },
         COALESCE(2, "COALESCE") {
 
             @Override

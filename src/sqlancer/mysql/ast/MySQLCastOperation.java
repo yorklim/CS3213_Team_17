@@ -10,7 +10,6 @@ public class MySQLCastOperation implements MySQLExpression {
 
         public static CastType getRandom() {
             return SIGNED;
-            // return Randomly.fromOptions(CastType.values());
         }
 
     }

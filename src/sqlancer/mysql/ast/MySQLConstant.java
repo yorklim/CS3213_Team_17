@@ -107,7 +107,6 @@ public abstract class MySQLConstant implements MySQLExpression {
                 }
             }
             return false;
-            // return castAs(CastType.SIGNED).getInt() != 0;
         }
 
         @Override
@@ -197,10 +196,6 @@ public abstract class MySQLConstant implements MySQLExpression {
                 checkIfSmallFloatingPointText();
                 return castAs(rightVal.isSigned() ? CastType.SIGNED : CastType.UNSIGNED).isLessThan(rightVal);
             } else if (rightVal.isString()) {
-                // unexpected result for '-' < "!";
-                // return
-                // MySQLConstant.createBoolean(value.compareToIgnoreCase(rightVal.getString()) <
-                // 0);
                 throw new IgnoreMeException();
             } else {
                 throw new AssertionError(rightVal);
@@ -316,7 +311,6 @@ public abstract class MySQLConstant implements MySQLExpression {
                 } else {
                     return MySQLConstant.createBoolean(new BigInteger(getStringRepr())
                             .compareTo(new BigInteger(((MySQLIntConstant) rightVal).getStringRepr())) < 0);
-                    // return MySQLConstant.createBoolean(Long.compareUnsigned(value, intVal) < 0);
                 }
             } else if (rightVal.isNull()) {
                 return MySQLConstant.createNullConstant();
