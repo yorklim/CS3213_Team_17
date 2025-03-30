@@ -132,8 +132,6 @@ public class QuestDBSchema extends AbstractSchema<QuestDBGlobalState, QuestDBTab
                 default:
                     throw new AssertionError(size);
                 }
-                // case CHAR:
-                // return "CHAR";
             case FLOAT:
                 switch (size) {
                 case 4:
@@ -149,10 +147,6 @@ public class QuestDBSchema extends AbstractSchema<QuestDBGlobalState, QuestDBTab
                 return Randomly.fromOptions("BOOLEAN");
             case SYMBOL:
                 return "SYMBOL";
-            // case TIMESTAMP:
-            // return Randomly.fromOptions("TIMESTAMP");
-            // case DATE:
-            // return Randomly.fromOptions("DATE");
             case NULL:
                 return Randomly.fromOptions("NULL");
             default:
@@ -208,9 +202,6 @@ public class QuestDBSchema extends AbstractSchema<QuestDBGlobalState, QuestDBTab
             primitiveType = QuestDBDataType.INT;
             size = 4;
             break;
-        // case "CHAR":
-        // primitiveType = QuestDBDataType.CHAR;
-        // break;
         case "FLOAT":
             primitiveType = QuestDBDataType.FLOAT;
             size = 4;
@@ -226,12 +217,6 @@ public class QuestDBSchema extends AbstractSchema<QuestDBGlobalState, QuestDBTab
         case "BOOLEAN":
             primitiveType = QuestDBDataType.BOOLEAN;
             break;
-        // case "DATE":
-        // primitiveType = QuestDBDataType.DATE;
-        // break;
-        // case "TIMESTAMP":
-        // primitiveType = QuestDBDataType.TIMESTAMP;
-        // break;
         case "BYTE":
             primitiveType = QuestDBDataType.INT;
             size = 1;
@@ -260,7 +245,7 @@ public class QuestDBSchema extends AbstractSchema<QuestDBGlobalState, QuestDBTab
 
     }
 
-    public static QuestDBSchema fromConnection(SQLConnection con, String databaseName) throws SQLException {
+    public static QuestDBSchema fromConnection(SQLConnection con) throws SQLException {
         List<QuestDBTable> databaseTables = new ArrayList<>();
         List<String> tableNames = getTableNames(con);
         for (String tableName : tableNames) {
