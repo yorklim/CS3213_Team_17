@@ -36,8 +36,6 @@ public class PrestoTableGenerator {
         sb.append(tableName);
         sb.append("(");
         List<PrestoColumn> columns = getNewColumns();
-        // TypedExpressionGenerator<Node<PrestoExpression>, PrestoColumn, PrestoCompositeDataType>
-        // typedExpressionGenerator = new PrestoTypedExpressionGenerator(globalState).setColumns(columns);
         for (int i = 0; i < columns.size(); i++) {
             if (i != 0) {
                 sb.append(", ");
@@ -46,21 +44,7 @@ public class PrestoTableGenerator {
             sb.append(column.getName());
             sb.append(" ");
             sb.append(column.getType());
-            // if (globalState.getDbmsSpecificOptions().testIndexes && Randomly.getBooleanWithRatherLowProbability()) {
-            // sb.append(" UNIQUE");
-            // }
-            // if (globalState.getDbmsSpecificOptions().testNotNullConstraints
-            // && Randomly.getBooleanWithRatherLowProbability()) {
-            // sb.append(" NOT NULL");
-            // }
         }
-        // if (globalState.getDbmsSpecificOptions().testIndexes && Randomly.getBoolean()) {
-        // errors.add("Invalid type for index");
-        // List<PrestoColumn> primaryKeyColumns = Randomly.nonEmptySubset(columns);
-        // sb.append(", PRIMARY KEY(");
-        // sb.append(primaryKeyColumns.stream().map(c -> c.getName()).collect(Collectors.joining(", ")));
-        // sb.append(")");
-        // }
         sb.append(")");
 
         return new SQLQueryAdapter(sb.toString(), errors, true, false);

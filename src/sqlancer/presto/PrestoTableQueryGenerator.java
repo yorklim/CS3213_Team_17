@@ -13,21 +13,7 @@ import sqlancer.presto.gen.PrestoInsertGenerator;
 public class PrestoTableQueryGenerator extends TableQueryGenerator {
 
     public enum Action implements AbstractAction<PrestoGlobalState> {
-        // SHOW_TABLES((g) -> new SQLQueryAdapter("SHOW TABLES", new ExpectedErrors(), false, false)), //
         INSERT(PrestoInsertGenerator::getQuery);
-        // TODO : check actions based on connector
-        // DELETE(PrestoDeleteGenerator::generate), //
-        // UPDATE(PrestoUpdateGenerator::getQuery), //
-        // CREATE_VIEW(PrestoViewGenerator::generate), //
-        // EXPLAIN((g) -> {
-        // ExpectedErrors errors = new ExpectedErrors();
-        // PrestoErrors.addExpressionErrors(errors);
-        // PrestoErrors.addGroupByErrors(errors);
-        // return new SQLQueryAdapter(
-        // "EXPLAIN " + PrestoToStringVisitor
-        // .asString(PrestoRandomQuerySynthesizer.generateSelect(g, Randomly.smallNumber() + 1)),
-        // errors);
-        // });
 
         private final SQLQueryProvider<PrestoGlobalState> sqlQueryProvider;
 
@@ -49,14 +35,6 @@ public class PrestoTableQueryGenerator extends TableQueryGenerator {
         Randomly r = globalState.getRandomly();
         if (Objects.requireNonNull(action) == Action.INSERT) {
             return r.getInteger(0, globalState.getOptions().getMaxNumberInserts());
-            // case UPDATE:
-            // return r.getInteger(0, globalState.getDbmsSpecificOptions().maxNumUpdates + 1);
-            // case EXPLAIN:
-            // return r.getInteger(0, 2);
-            // case DELETE:
-            // return r.getInteger(0, globalState.getDbmsSpecificOptions().maxNumDeletes + 1);
-            // case CREATE_VIEW:
-            // return r.getInteger(0, globalState.getDbmsSpecificOptions().maxNumViews + 1);
         }
         throw new AssertionError(action);
     }
