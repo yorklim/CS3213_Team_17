@@ -49,11 +49,6 @@ public final class MariaDBIndexGenerator {
             }
         }
         sb.append(")");
-        // if (Randomly.getBoolean()) {
-        // sb.append(" ALGORITHM=");
-        // sb.append(Randomly.fromOptions("DEFAULT", "INPLACE", "COPY", "NOCOPY", "INSTANT"));
-        // errors.add("is not supported for this operation");
-        // }
 
         return new SQLQueryAdapter(sb.toString(), errors, true);
     }

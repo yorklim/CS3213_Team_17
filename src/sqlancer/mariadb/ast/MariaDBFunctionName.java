@@ -35,7 +35,7 @@ public enum MariaDBFunctionName {
 
     enum FunctionAttribute {
         VARIADIC
-    };
+    }
 
     public String getFunctionName() {
         return functionName;

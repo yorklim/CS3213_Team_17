@@ -68,7 +68,7 @@ public class MariaDBDQPOracle implements TestOracle<MariaDBGlobalState> {
         List<String> originalResult = ComparatorHelper.getResultSetFirstColumnAsString(originalQueryString, errors,
                 state);
 
-        List<SQLQueryAdapter> optimizationList = MariaDBSetGenerator.getAllOptimizer(state);
+        List<SQLQueryAdapter> optimizationList = MariaDBSetGenerator.getAllOptimizer();
         for (SQLQueryAdapter optimization : optimizationList) {
             optimization.execute(state);
             List<String> result = ComparatorHelper.getResultSetFirstColumnAsString(originalQueryString, errors, state);
