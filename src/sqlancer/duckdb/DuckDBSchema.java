@@ -224,7 +224,7 @@ public class DuckDBSchema extends AbstractSchema<DuckDBGlobalState, DuckDBTable>
 
     }
 
-    public static DuckDBSchema fromConnection(SQLConnection con, String databaseName) throws SQLException {
+    public static DuckDBSchema fromConnection(SQLConnection con) throws SQLException {
         List<DuckDBTable> databaseTables = new ArrayList<>();
         List<String> tableNames = getTableNames(con);
         for (String tableName : tableNames) {
