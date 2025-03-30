@@ -28,14 +28,12 @@ public class PostgresTableGenerator {
     private final List<PostgresColumn> columnsToBeAdded = new ArrayList<>();
     protected final ExpectedErrors errors = new ExpectedErrors();
     private final PostgresTable table;
-    private final boolean generateOnlyKnown;
     private final PostgresGlobalState globalState;
 
-    public PostgresTableGenerator(String tableName, PostgresSchema newSchema, boolean generateOnlyKnown,
+    public PostgresTableGenerator(String tableName, PostgresSchema newSchema,
             PostgresGlobalState globalState) {
         this.tableName = tableName;
         this.newSchema = newSchema;
-        this.generateOnlyKnown = generateOnlyKnown;
         this.globalState = globalState;
         table = new PostgresTable(tableName, columnsToBeAdded, null, null, null, false, false);
         errors.add("invalid input syntax for");
@@ -59,9 +57,9 @@ public class PostgresTableGenerator {
         PostgresCommon.addCommonTableErrors(errors);
     }
 
-    public static SQLQueryAdapter generate(String tableName, PostgresSchema newSchema, boolean generateOnlyKnown,
+    public static SQLQueryAdapter generate(String tableName, PostgresSchema newSchema,
             PostgresGlobalState globalState) {
-        return new PostgresTableGenerator(tableName, newSchema, generateOnlyKnown, globalState).generate();
+        return new PostgresTableGenerator(tableName, newSchema, globalState).generate();
     }
 
     protected SQLQueryAdapter generate() {

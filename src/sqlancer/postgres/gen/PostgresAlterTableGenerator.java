@@ -17,7 +17,6 @@ public class PostgresAlterTableGenerator {
     private PostgresTable randomTable;
     private Randomly r;
     private static PostgresColumn randomColumn;
-    private boolean generateOnlyKnown;
     private List<String> opClasses;
     private PostgresGlobalState globalState;
 
@@ -51,18 +50,15 @@ public class PostgresAlterTableGenerator {
         REPLICA_IDENTITY
     }
 
-    public PostgresAlterTableGenerator(PostgresTable randomTable, PostgresGlobalState globalState,
-            boolean generateOnlyKnown) {
+    public PostgresAlterTableGenerator(PostgresTable randomTable, PostgresGlobalState globalState) {
         this.randomTable = randomTable;
         this.globalState = globalState;
         this.r = globalState.getRandomly();
-        this.generateOnlyKnown = generateOnlyKnown;
         this.opClasses = globalState.getOpClasses();
     }
 
-    public static SQLQueryAdapter create(PostgresTable randomTable, PostgresGlobalState globalState,
-            boolean generateOnlyKnown) {
-        return new PostgresAlterTableGenerator(randomTable, globalState, generateOnlyKnown).generate();
+    public static SQLQueryAdapter create(PostgresTable randomTable, PostgresGlobalState globalState) {
+        return new PostgresAlterTableGenerator(randomTable, globalState).generate();
     }
 
     private enum Attribute {

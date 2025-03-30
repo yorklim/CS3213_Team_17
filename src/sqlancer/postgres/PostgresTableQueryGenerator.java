@@ -30,8 +30,7 @@ public class PostgresTableQueryGenerator extends TableQueryGenerator {
 
     public enum Action implements AbstractAction<PostgresGlobalState> {
         ANALYZE(PostgresAnalyzeGenerator::create), //
-        ALTER_TABLE(g -> PostgresAlterTableGenerator.create(g.getSchema().getRandomTable(t -> !t.isView()), g,
-                PostgresProvider.generateOnlyKnown)), //
+        ALTER_TABLE(g -> PostgresAlterTableGenerator.create(g.getSchema().getRandomTable(t -> !t.isView()), g)), //
         CLUSTER(PostgresClusterGenerator::create), //
         COMMIT(g -> {
             SQLQueryAdapter query;
