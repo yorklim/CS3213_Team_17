@@ -25,14 +25,12 @@ public class MaterializeTableGenerator {
     private final List<MaterializeColumn> columnsToBeAdded = new ArrayList<>();
     protected final ExpectedErrors errors = new ExpectedErrors();
     private final MaterializeTable table;
-    private final boolean generateOnlyKnown;
     private final MaterializeGlobalState globalState;
 
-    public MaterializeTableGenerator(String tableName, MaterializeSchema newSchema, boolean generateOnlyKnown,
+    public MaterializeTableGenerator(String tableName, MaterializeSchema newSchema,
             MaterializeGlobalState globalState) {
         this.tableName = tableName;
         this.newSchema = newSchema;
-        this.generateOnlyKnown = generateOnlyKnown;
         this.globalState = globalState;
         table = new MaterializeTable(tableName, columnsToBeAdded, null, null, null, false, false);
         errors.add("invalid input syntax for");
@@ -56,9 +54,9 @@ public class MaterializeTableGenerator {
         MaterializeCommon.addCommonTableErrors(errors);
     }
 
-    public static SQLQueryAdapter generate(String tableName, MaterializeSchema newSchema, boolean generateOnlyKnown,
+    public static SQLQueryAdapter generate(String tableName, MaterializeSchema newSchema,
             MaterializeGlobalState globalState) {
-        return new MaterializeTableGenerator(tableName, newSchema, generateOnlyKnown, globalState).generate();
+        return new MaterializeTableGenerator(tableName, newSchema, globalState).generate();
     }
 
     protected SQLQueryAdapter generate() {

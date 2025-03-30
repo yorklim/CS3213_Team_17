@@ -13,9 +13,8 @@ public class MariaDBBinaryOperator implements MariaDBExpression {
         GREATER_THAN_EQUAL(">="),
 
         // regex
-        LIKE("LIKE"), RLIKE("RLIKE"), REGEXP("REGEXP"),
-        AND("AND"), OR("OR"), XOR("XOR"),
-        BITWISE_AND("&"), LEFT_SHIFT("<<"), RIGHT_SHIFT(">>"), BITWISE_XOR("^"), BITWISE_OR("|");
+        LIKE("LIKE"), RLIKE("RLIKE"), REGEXP("REGEXP"), AND("AND"), OR("OR"), XOR("XOR"), BITWISE_AND("&"),
+        LEFT_SHIFT("<<"), RIGHT_SHIFT(">>"), BITWISE_XOR("^"), BITWISE_OR("|");
 
         private String op;
 

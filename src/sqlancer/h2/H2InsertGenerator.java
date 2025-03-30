@@ -27,7 +27,7 @@ public class H2InsertGenerator extends AbstractInsertGenerator<H2Column> {
     }
 
     private SQLQueryAdapter generate() {
-        boolean mergeInto = false; 
+        boolean mergeInto = false;
         if (mergeInto) {
             sb.append("MERGE INTO ");
             errors.add("Index \"PRIMARY_KEY_\" not found");

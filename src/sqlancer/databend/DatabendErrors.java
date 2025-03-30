@@ -47,7 +47,7 @@ public final class DatabendErrors {
         if (DatabendBugs.bug15568) {
             errors.add("Decimal overflow at line : 723 while evaluating function `to_decimal");
         }
-        
+
         errors.add("Can't cast column from null into non-nullable type");
 
         return errors;

@@ -9,7 +9,7 @@ public class MariaDBUnaryPrefixOperation implements MariaDBExpression {
 
     public enum MariaDBUnaryPrefixOperator {
 
-        PLUS("+"), MINUS("-"); 
+        PLUS("+"), MINUS("-");
 
         String textRepresentation;
 

@@ -128,7 +128,7 @@ public class DataFusionSchema extends AbstractSchema<DataFusionGlobalState, Data
             case DOUBLE:
                 if (Randomly.getBoolean()) {
                     if (Randomly.getBoolean()) {
-                        Double randomDouble = state.getRandomly().getDouble(); 
+                        Double randomDouble = state.getRandomly().getDouble();
                         Double scaledDouble = (randomDouble - 0.5) * 2 * Double.MAX_VALUE;
                         return new DataFusionConstant.DataFusionDoubleConstant(scaledDouble);
                     }

@@ -19,7 +19,7 @@ public class TestComparatorHelper {
 
         @Override
         protected H2Schema readSchema() throws SQLException {
-            return H2Schema.fromConnection(getConnection(), getDatabaseName());
+            return H2Schema.fromConnection(getConnection());
         }
 
         @Override

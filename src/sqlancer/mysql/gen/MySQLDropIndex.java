@@ -14,7 +14,7 @@ public final class MySQLDropIndex {
 
     private MySQLDropIndex() {
     }
-    
+
     public static SQLQueryAdapter generate(MySQLGlobalState globalState) {
         MySQLTable table = globalState.getSchema().getRandomTable();
         if (!table.hasIndexes()) {
