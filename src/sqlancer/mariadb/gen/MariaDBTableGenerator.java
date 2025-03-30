@@ -133,10 +133,6 @@ public class MariaDBTableGenerator {
             sb.append("OR REPLACE ");
             replace = true;
         }
-        // TODO temporary
-        // if (Randomly.getBoolean()) {
-        // sb.append("TEMPORARY ");
-        // }
         sb.append("TABLE ");
         if (Randomly.getBoolean() && !replace) {
             sb.append("IF NOT EXISTS ");

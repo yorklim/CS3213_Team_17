@@ -90,7 +90,6 @@ public enum PrestoAggregateFunction implements PrestoFunction {
             return new PrestoDataType[] { Randomly.fromOptions(PrestoDataType.getRandomWithoutNull()) };
         }
     },
-    // count_if(x) → bigint#
     // Returns the number of TRUE input values. This function is equivalent to count(CASE WHEN x THEN 1 END).
     COUNT_IF("count_if", PrestoDataType.INT) {
         @Override
@@ -278,7 +277,7 @@ public enum PrestoAggregateFunction implements PrestoFunction {
     // (2, 30),
     // (2, 40)
     // ) AS t(id, value)
-    // GROUP BY id;
+    // GROUP BY id
     // -- (1, 9)
     // -- (2, 90)
     //
@@ -292,7 +291,7 @@ public enum PrestoAggregateFunction implements PrestoFunction {
     // (2, 30),
     // (2, 40)
     // ) AS t(id, value)
-    // GROUP BY id;
+    // GROUP BY id
     // -- (1, 24)
     // -- (2, 24000)
     // The state type must be a boolean, integer, floating-point, or date/time/interval.
@@ -314,7 +313,7 @@ public enum PrestoAggregateFunction implements PrestoFunction {
     // VALUES
     // ARRAY[1, 3],
     // ARRAY[2, 4]
-    // ) AS t(elements);
+    // ) AS t(elements)
     // Returns ARRAY[1, 3, 4]
 
     // sum(x) → [same as input]#

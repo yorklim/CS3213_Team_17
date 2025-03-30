@@ -21,9 +21,8 @@ public enum MaterializeFunctionWithUnknownResult {
     //
     TO_CHAR("to_char", MaterializeDataType.TEXT, MaterializeDataType.TEXT, MaterializeDataType.TEXT) {
         @Override
-        public MaterializeExpression[] getArguments(MaterializeDataType returnType, MaterializeExpressionGenerator gen,
-                int depth) {
-            MaterializeExpression[] args = super.getArguments(returnType, gen, depth);
+        public MaterializeExpression[] getArguments(MaterializeExpressionGenerator gen, int depth) {
+            MaterializeExpression[] args = super.getArguments(gen, depth);
             args[0] = gen.generateExpression(MaterializeDataType.getRandomType());
             return args;
         }
@@ -35,9 +34,8 @@ public enum MaterializeFunctionWithUnknownResult {
     CHR("chr", MaterializeDataType.TEXT, MaterializeDataType.INT),
     CONVERT_FROM("convert_from", MaterializeDataType.TEXT, MaterializeDataType.TEXT, MaterializeDataType.TEXT) {
         @Override
-        public MaterializeExpression[] getArguments(MaterializeDataType returnType, MaterializeExpressionGenerator gen,
-                int depth) {
-            MaterializeExpression[] args = super.getArguments(returnType, gen, depth);
+        public MaterializeExpression[] getArguments(MaterializeExpressionGenerator gen, int depth) {
+            MaterializeExpression[] args = super.getArguments(gen, depth);
             args[1] = MaterializeConstant.createTextConstant(Randomly.fromOptions("UTF8", "LATIN1"));
             return args;
         }
@@ -121,8 +119,7 @@ public enum MaterializeFunctionWithUnknownResult {
         return t == returnType;
     }
 
-    public MaterializeExpression[] getArguments(MaterializeDataType returnType, MaterializeExpressionGenerator gen,
-            int depth) {
+    public MaterializeExpression[] getArguments(MaterializeExpressionGenerator gen, int depth) {
         MaterializeExpression[] args = new MaterializeExpression[argTypes.length];
         for (int i = 0; i < args.length; i++) {
             args[i] = gen.generateExpression(depth, argTypes[i]);

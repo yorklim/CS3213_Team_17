@@ -70,11 +70,11 @@ public final class HSQLDBExpressionGenerator extends
             return HSQLDBConstant.HSQLDBTextConstant.createStringConstant(hsqldbGlobalState.getRandomly().getString(),
                     type.getSize());
         case TIME:
-            return HSQLDBConstant.createTimeConstant(
-                    hsqldbGlobalState.getRandomly().getLong(0, System.currentTimeMillis()), type.getSize());
+            return HSQLDBConstant
+                    .createTimeConstant(hsqldbGlobalState.getRandomly().getLong(0, System.currentTimeMillis()));
         case TIMESTAMP:
-            return HSQLDBConstant.createTimestampConstant(
-                    hsqldbGlobalState.getRandomly().getLong(0, System.currentTimeMillis()), type.getSize());
+            return HSQLDBConstant
+                    .createTimestampConstant(hsqldbGlobalState.getRandomly().getLong(0, System.currentTimeMillis()));
 
         case INTEGER:
             return HSQLDBConstant.HSQLDBIntConstant.createIntConstant(Randomly.getNonCachedInteger());

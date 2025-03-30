@@ -63,7 +63,7 @@ public class YSQLCatalog implements TestOracle<YSQLGlobalState> {
 
                 try {
                     String tableName = DBMSCommon.createTableName(globalState.getSchema().getDatabaseTables().size());
-                    SQLQueryAdapter createTable = YSQLTableGenerator.generate(tableName, true, globalState);
+                    SQLQueryAdapter createTable = YSQLTableGenerator.generate(tableName, globalState);
                     globalState.executeStatement(createTable);
                     globalState.getManager().incrementSelectQueryCount();
                     globalState.executeStatement(new SQLQueryAdapter("COMMIT", true));

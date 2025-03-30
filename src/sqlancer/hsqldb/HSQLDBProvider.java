@@ -70,7 +70,7 @@ public class HSQLDBProvider extends SQLProviderAdapter<HSQLDBProvider.HSQLDBGlob
 
         @Override
         protected HSQLDBSchema readSchema() throws SQLException {
-            return HSQLDBSchema.fromConnection(getConnection(), getDatabaseName());
+            return HSQLDBSchema.fromConnection(getConnection());
         }
 
     }

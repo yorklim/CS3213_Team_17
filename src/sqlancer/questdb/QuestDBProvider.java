@@ -26,7 +26,7 @@ public class QuestDBProvider extends SQLProviderAdapter<QuestDBGlobalState, Ques
 
         @Override
         protected QuestDBSchema readSchema() throws SQLException {
-            return QuestDBSchema.fromConnection(getConnection(), getDatabaseName());
+            return QuestDBSchema.fromConnection(getConnection());
         }
 
     }
@@ -86,16 +86,6 @@ public class QuestDBProvider extends SQLProviderAdapter<QuestDBGlobalState, Ques
         try (Statement s = con.createStatement()) {
             s.execute("DROP TABLE IF EXISTS " + tableName);
         }
-        // TODO(anxing): Drop all previous tables in db
-        // List<String> tableNames =
-        // globalState.getSchema().getDatabaseTables().stream().map(AbstractTable::getName).collect(Collectors.toList());
-        // for (String tName : tableNames) {
-        // try (Statement s = con.createStatement()) {
-        // String query = "DROP TABLE IF EXISTS " + tName;
-        // globalState.getState().logStatement(query);
-        // s.execute(query);
-        // }
-        // }
         try (Statement s = con.createStatement()) {
             s.execute(createTableCommand.getQueryString());
         }

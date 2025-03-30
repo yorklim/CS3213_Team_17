@@ -26,7 +26,7 @@ public class DuckDBProvider extends SQLProviderAdapter<DuckDBGlobalState, DuckDB
 
         @Override
         protected DuckDBSchema readSchema() throws SQLException {
-            return DuckDBSchema.fromConnection(getConnection(), getDatabaseName());
+            return DuckDBSchema.fromConnection(getConnection());
         }
     }
 

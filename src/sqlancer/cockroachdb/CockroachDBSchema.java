@@ -286,7 +286,7 @@ public class CockroachDBSchema extends AbstractSchema<CockroachDBGlobalState, Co
         return count;
     }
 
-    public static CockroachDBSchema fromConnection(SQLConnection con, String databaseName) throws SQLException {
+    public static CockroachDBSchema fromConnection(SQLConnection con) throws SQLException {
         List<CockroachDBTable> databaseTables = new ArrayList<>();
         List<String> tableNames = getTableNames(con, "SELECT table_name FROM information_schema.tables WHERE "
                 + "TABLE_TYPE IN ('BASE TABLE', 'LOCAL TEMPORARY');");
@@ -328,7 +328,7 @@ public class CockroachDBSchema extends AbstractSchema<CockroachDBGlobalState, Co
                 while (rs.next()) {
                     String columnName = rs.getString("column_name");
                     if (columnName.contains("crdb_internal")) {
-                        continue; // created for CREATE INDEX ON t0(c0) USING HASH WITH BUCKET_COUNT = 1;
+                        continue;
                     }
                     String dataType = rs.getString("data_type");
                     boolean isNullable = rs.getBoolean("is_nullable");

@@ -1,6 +1,5 @@
 package sqlancer.oceanbase.gen;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +27,7 @@ public class OceanBaseInsertGenerator {
         this.r = globalState.getRandomly();
     }
 
-    public static SQLQueryAdapter insertRow(OceanBaseGlobalState globalState) throws SQLException {
+    public static SQLQueryAdapter insertRow(OceanBaseGlobalState globalState) {
         if (Randomly.getBoolean()) {
             return new OceanBaseInsertGenerator(globalState).generateInsert();
         } else {

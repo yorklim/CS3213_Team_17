@@ -82,8 +82,6 @@ public final class PrestoTypedExpressionGenerator extends
     public PrestoExpression generateConstant(PrestoSchema.PrestoCompositeDataType type) {
         if (Objects.requireNonNull(type.getPrimitiveDataType()) == PrestoSchema.PrestoDataType.ARRAY) {
             return PrestoConstant.createArrayConstant(type);
-            // case MAP:
-            // return PrestoConstant.createMapConstant(type);
         }
         return PrestoConstant.generateConstant(type, false);
     }
@@ -91,8 +89,6 @@ public final class PrestoTypedExpressionGenerator extends
     public PrestoExpression generateInsertConstant(PrestoSchema.PrestoCompositeDataType type) {
         if (Objects.requireNonNull(type.getPrimitiveDataType()) == PrestoSchema.PrestoDataType.ARRAY) {
             return PrestoConstant.createArrayConstant(type);
-            // case MAP:
-            // return PrestoConstant.createMapConstant(type);
         }
         return PrestoConstant.generateConstant(type, true);
     }
@@ -111,16 +107,6 @@ public final class PrestoTypedExpressionGenerator extends
                 PrestoDefaultFunction function = Randomly.fromList(applicableFunctions);
                 return generateFunction(type, depth, function);
             }
-            // TODO: try
-            // if (Randomly.getBooleanWithRatherLowProbability()) {
-            // return generateTry(type, depth);
-            // }
-
-            // TODO: cast
-            //
-            // if (Randomly.getBooleanWithRatherLowProbability()) {
-            // Node<PrestoExpression> expressionNode = generateCast(type, depth);
-            // }
             if (Randomly.getBooleanWithRatherLowProbability()) {
                 return getCase(type, depth);
             }
@@ -572,7 +558,6 @@ public final class PrestoTypedExpressionGenerator extends
         for (PrestoSchema.PrestoDataType argumentType : returnTypes) {
             arguments.add(generateExpression(PrestoSchema.PrestoCompositeDataType.fromDataType(argumentType)));
         }
-        // return new NewFunctionNode<>(arguments, aggregateFunction);
         return arguments;
     }
 
@@ -749,9 +734,6 @@ public final class PrestoTypedExpressionGenerator extends
             case ARRAY:
             case INTERVAL_YEAR_TO_MONTH:
             case INTERVAL_DAY_TO_SECOND:
-                // return Randomly.fromOptions(EQUALS, NOT_EQUALS, NOT_EQUALS_ALT,
-                // IS_DISTINCT_FROM,
-                // IS_NOT_DISTINCT_FROM);
             default:
                 return Randomly.fromOptions(EQUALS, NOT_EQUALS, NOT_EQUALS_ALT, IS_DISTINCT_FROM, IS_NOT_DISTINCT_FROM);
             }

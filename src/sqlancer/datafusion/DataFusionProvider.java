@@ -128,7 +128,7 @@ public class DataFusionProvider extends SQLProviderAdapter<DataFusionGlobalState
 
         @Override
         protected DataFusionSchema readSchema() throws SQLException {
-            return DataFusionSchema.fromConnection(getConnection(), getDatabaseName());
+            return DataFusionSchema.fromConnection(getConnection());
         }
     }
 }

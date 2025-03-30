@@ -32,7 +32,7 @@ public class TiDBProvider extends SQLProviderAdapter<TiDBGlobalState, TiDBOption
 
         @Override
         protected TiDBSchema readSchema() throws SQLException {
-            return TiDBSchema.fromConnection(getConnection(), getDatabaseName());
+            return TiDBSchema.fromConnection(getConnection());
         }
 
     }

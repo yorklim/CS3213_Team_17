@@ -208,10 +208,6 @@ public class YSQLProvider extends SQLProviderAdapter<YSQLGlobalState, YSQLOption
             }
 
             if (Randomly.getBoolean()) {
-                // if (YugabyteBugs.bug11357) {
-                // throw new IgnoreMeException();
-                // }
-
                 sb.append("COLOCATED = true ");
             }
 

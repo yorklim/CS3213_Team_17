@@ -34,7 +34,6 @@ public class HSQLDBInsertGenerator extends AbstractInsertGenerator<HSQLDBSchema.
         sb.append(")");
         sb.append(" VALUES ");
         insertColumns(columns);
-        // HSQLDBErrors.addInsertErrors(errors);
         return new SQLQueryAdapter(sb.toString(), errors);
     }
 

@@ -1,6 +1,5 @@
 package sqlancer.tidb.gen;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import sqlancer.IgnoreMeException;
@@ -16,7 +15,7 @@ public final class TiDBIndexGenerator {
     private TiDBIndexGenerator() {
     }
 
-    public static SQLQueryAdapter getQuery(TiDBGlobalState globalState) throws SQLException {
+    public static SQLQueryAdapter getQuery(TiDBGlobalState globalState) {
         if (globalState.getSchema().getIndexCount() > globalState.getDbmsSpecificOptions().maxNumIndexes) {
             throw new IgnoreMeException();
         }

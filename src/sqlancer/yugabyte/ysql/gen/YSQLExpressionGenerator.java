@@ -107,9 +107,6 @@ public class YSQLExpressionGenerator implements ExpressionGenerator<YSQLExpressi
         if (Randomly.getBooleanWithSmallProbability()) {
             return YSQLConstant.createNullConstant();
         }
-        // if (Randomly.getBooleanWithSmallProbability()) {
-        // return YSQLConstant.createTextConstant(r.getString());
-        // }
         switch (type) {
         case INT:
             if (Randomly.getBooleanWithSmallProbability()) {
@@ -205,7 +202,7 @@ public class YSQLExpressionGenerator implements ExpressionGenerator<YSQLExpressi
             throw new IgnoreMeException();
         }
         YSQLFunctionWithUnknownResult randomFunction = Randomly.fromList(supportedFunctions);
-        return new YSQLFunction(randomFunction, type, randomFunction.getArguments(type, this, depth + 1));
+        return new YSQLFunction(randomFunction, type, randomFunction.getArguments(this, depth + 1));
     }
 
     private YSQLExpression generateFunctionWithKnownResult(int depth, YSQLDataType type) {

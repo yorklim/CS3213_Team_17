@@ -1,6 +1,5 @@
 package sqlancer.tidb.gen;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +24,7 @@ public class TiDBInsertGenerator {
         TiDBErrors.addInsertErrors(errors);
     }
 
-    public static SQLQueryAdapter getQuery(TiDBGlobalState globalState) throws SQLException {
+    public static SQLQueryAdapter getQuery(TiDBGlobalState globalState) {
         TiDBTable table = globalState.getSchema().getRandomTable(t -> !t.isView());
         return new TiDBInsertGenerator(globalState).get(table);
     }

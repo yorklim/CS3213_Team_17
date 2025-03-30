@@ -26,8 +26,7 @@ public class YSQLTableCreator extends TableCreator {
 
                 try {
                     String tableName = DBMSCommon.createTableName(globalState.getSchema().getDatabaseTables().size());
-                    SQLQueryAdapter createTable = YSQLTableGenerator.generate(tableName, YSQLProvider.generateOnlyKnown,
-                            globalState);
+                    SQLQueryAdapter createTable = YSQLTableGenerator.generate(tableName, globalState);
                     globalState.executeStatement(createTable);
                     prevCreationFailed = false;
                 } catch (IgnoreMeException e) {

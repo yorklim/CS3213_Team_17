@@ -30,11 +30,11 @@ public class SQLite3IndexGenerator {
         return new SQLite3IndexGenerator(globalState).create();
     }
 
-    public SQLite3IndexGenerator(SQLite3GlobalState globalState) throws SQLException {
+    public SQLite3IndexGenerator(SQLite3GlobalState globalState) {
         this.globalState = globalState;
     }
 
-    private SQLQueryAdapter create() throws SQLException {
+    private SQLQueryAdapter create() {
         SQLite3Table t = globalState.getSchema()
                 .getRandomTableOrBailout(tab -> !tab.isView() && !tab.isVirtual() && !tab.isReadOnly());
         String q = createIndex(t, t.getColumns());
@@ -50,7 +50,6 @@ public class SQLite3IndexGenerator {
         errors.add("The database file is locked");
         SQLite3Errors.addExpectedExpressionErrors(errors);
         if (!SQLite3Provider.mustKnowResult) {
-            // can only happen when PRAGMA case_sensitive_like=ON;
             errors.add("non-deterministic functions prohibited");
         }
 

@@ -36,7 +36,7 @@ public class CockroachDBProvider extends SQLProviderAdapter<CockroachDBGlobalSta
 
         @Override
         protected CockroachDBSchema readSchema() throws SQLException {
-            return CockroachDBSchema.fromConnection(getConnection(), getDatabaseName());
+            return CockroachDBSchema.fromConnection(getConnection());
         }
 
     }

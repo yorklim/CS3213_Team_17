@@ -56,8 +56,6 @@ public final class DataFusionUtil {
             } catch (SQLException err) {
                 resultStringBuilder.append("Table: ").append(tableName).append("\n");
                 resultStringBuilder.append("----------------------------------------\n\n");
-                // resultStringBuilder.append("Error retrieving data from table ").append(tableName).append(":
-                // ").append(err.getMessage()).append("\n");
             }
         }
 
@@ -67,11 +65,6 @@ public final class DataFusionUtil {
     // During development, you might want to manually let this function call exit(1) to fail fast
     public static void dfAssert(boolean condition, String message) {
         if (!condition) {
-            // // Development mode assertion failure
-            // String methodName = Thread.currentThread().getStackTrace()[2]// .getMethodName();
-            // System.err.println("DataFusion assertion failed in function '" + methodName + "': " + message);
-            // exit(1);
-
             throw new AssertionError(message);
         }
     }

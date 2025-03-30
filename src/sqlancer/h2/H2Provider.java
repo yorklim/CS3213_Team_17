@@ -23,7 +23,7 @@ public class H2Provider extends SQLProviderAdapter<H2GlobalState, H2Options> {
 
         @Override
         protected H2Schema readSchema() throws SQLException {
-            return H2Schema.fromConnection(getConnection(), getDatabaseName());
+            return H2Schema.fromConnection(getConnection());
         }
 
     }

@@ -189,7 +189,7 @@ public final class DuckDBExpressionGenerator extends UntypedExpressionGenerator<
             newExpr.add(curExpr);
         }
         return newExpr;
-    };
+    }
 
     public static class DuckDBCastOperation extends NewUnaryPostfixOperatorNode<DuckDBExpression>
             implements DuckDBExpression {

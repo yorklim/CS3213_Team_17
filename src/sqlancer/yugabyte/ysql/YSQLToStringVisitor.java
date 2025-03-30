@@ -310,11 +310,6 @@ public final class YSQLToStringVisitor extends ToStringVisitor<YSQLExpression> i
         case BYTEA:
             sb.append("BYTEA");
             break;
-        // if (Randomly.getBoolean()) {
-        // sb.append("(");
-        // sb.append(Randomly.getNotCachedInteger(1, 100));
-        // sb.append(")");
-        // }
         default:
             throw new AssertionError(cast.getType());
         }

@@ -1,7 +1,5 @@
 package sqlancer.tidb.gen;
 
-import java.sql.SQLException;
-
 import sqlancer.Randomly;
 import sqlancer.common.query.ExpectedErrors;
 import sqlancer.common.query.SQLQueryAdapter;
@@ -14,7 +12,7 @@ public final class TiDBAnalyzeTableGenerator {
     private TiDBAnalyzeTableGenerator() {
     }
 
-    public static SQLQueryAdapter getQuery(TiDBGlobalState globalState) throws SQLException {
+    public static SQLQueryAdapter getQuery(TiDBGlobalState globalState) {
         ExpectedErrors errors = ExpectedErrors.newErrors().with(TiDBErrors.getExpressionErrors()).build();
         TiDBTable table = globalState.getSchema().getRandomTable(t -> !t.isView());
         boolean analyzeIndex = !table.getIndexes().isEmpty() && Randomly.getBoolean();

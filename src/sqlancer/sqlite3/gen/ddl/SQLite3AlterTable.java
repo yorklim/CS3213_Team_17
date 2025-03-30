@@ -1,7 +1,5 @@
 package sqlancer.sqlite3.gen.ddl;
 
-import java.sql.SQLException;
-
 import sqlancer.Randomly;
 import sqlancer.common.query.ExpectedErrors;
 import sqlancer.common.query.SQLQueryAdapter;
@@ -17,7 +15,7 @@ public class SQLite3AlterTable {
     private final StringBuilder sb = new StringBuilder();
     private final SQLite3GlobalState globalState;
 
-    public static SQLQueryAdapter alterTable(SQLite3GlobalState globalState) throws SQLException {
+    public static SQLQueryAdapter alterTable(SQLite3GlobalState globalState) {
         SQLite3AlterTable alterTable = new SQLite3AlterTable(globalState);
         return alterTable.getQuery(globalState.getSchema(), alterTable);
     }

@@ -78,7 +78,7 @@ public class MySQLSetGenerator {
         OLD_ALTER_TABLE("old_alter_table", (r) -> Randomly.fromOptions("OFF", "ON"), Scope.GLOBAL, Scope.SESSION), //
         OPTIMIZER_PRUNE_LEVEL("optimizer_prune_level", (r) -> Randomly.fromOptions(0, 1), Scope.GLOBAL, Scope.SESSION), //
         OPTIMIZER_SEARCH_DEPTH("optimizer_search_depth", (r) -> r.getLong(0, 62), Scope.GLOBAL, Scope.SESSION), //
-        OPTIMIZER_SWITCH("optimizer_switch", (r) -> getOptimizerSwitchConfiguration(r), Scope.GLOBAL, Scope.SESSION), //
+        OPTIMIZER_SWITCH("optimizer_switch", (r) -> getOptimizerSwitchConfiguration(), Scope.GLOBAL, Scope.SESSION), //
         PARSER_MAX_MEM_SIZE("parser_max_mem_size", (r) -> r.getLong(10000000, Long.MAX_VALUE), Scope.GLOBAL,
                 Scope.SESSION), //
         PRELOAD_BUFFER_SIZE("preload_buffer_size", (r) -> r.getLong(1024, 1073741824), Scope.GLOBAL, Scope.SESSION), //
@@ -131,7 +131,7 @@ public class MySQLSetGenerator {
         /*
          * @see https://dev.mysql.com/doc/refman/8.0/en/switchable-optimizations.html
          */
-        private static String getOptimizerSwitchConfiguration(Randomly r) {
+        private static String getOptimizerSwitchConfiguration() {
             StringBuilder sb = new StringBuilder();
             sb.append("'");
             String[] options = { "index_merge", "index_merge_union", "index_merge_sort_union",

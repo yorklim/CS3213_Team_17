@@ -55,9 +55,6 @@ public class DatabendQueryPartitioningAggregateTester extends DatabendQueryParti
             fetchColumns.add((DatabendAggregateOperation) gen.generateAggregate()); // TODO 更换成非聚合函数
         }
         select.setFetchColumns(Arrays.asList(aggregate));
-        // if (Randomly.getBooleanWithRatherLowProbability()) {
-        // select.setOrderByClauses(gen.generateOrderBys());
-        // }
         originalQuery = DatabendToStringVisitor.asString(select);
         firstResult = getAggregateResult(originalQuery);
         metamorphicQuery = createMetamorphicUnionQuery(select, aggregate, select.getFromList());

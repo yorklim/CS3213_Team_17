@@ -255,11 +255,6 @@ public final class PostgresToStringVisitor extends ToStringVisitor<PostgresExpre
             break;
         case BIT:
             sb.append("BIT");
-            // if (Randomly.getBoolean()) {
-            // sb.append("(");
-            // sb.append(Randomly.getNotCachedInteger(1, 100));
-            // sb.append(")");
-            // }
             break;
         default:
             throw new AssertionError(cast.getType());

@@ -19,13 +19,6 @@ public final class PrestoErrors {
         errors.add("cannot be applied to");
         errors.add("LIKE expression must evaluate to a varchar");
         errors.add("JOIN ON clause must evaluate to a boolean");
-        // errors.add("Unexpected parameters");
-
-        // SELECT SUM(count) FROM (SELECT
-        // CAST((-179769313486231570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.0000
-        // IS NOT NULL AND
-        // -179769313486231570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000.0000)
-        // AS BIGINT)as count FROM t0) as res
         errors.add("Decimal overflow");
         errors.add("long overflow");
         errors.add("multiplication overflow");
@@ -33,7 +26,6 @@ public final class PrestoErrors {
         errors.add("subtraction overflow");
 
         // cast
-        // errors.add("Cannot cast");
         errors.add("Value cannot be cast to");
         errors.add("Cannot cast DECIMAL");
         errors.add("Cannot cast BIGINT");

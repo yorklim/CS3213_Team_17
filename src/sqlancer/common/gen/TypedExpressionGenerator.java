@@ -68,12 +68,4 @@ public abstract class TypedExpressionGenerator<E, C, T> implements ExpressionGen
         return generateExpressions(Randomly.smallNumber() + 1);
     }
 
-    // override this class to generate aggregate functions
-    // public E generateHavingClause() {
-    // allowAggregates = true;
-    // E expr = generateExpression();
-    // allowAggregates = false;
-    // return expr;
-    // }
-
 }

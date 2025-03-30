@@ -2,7 +2,6 @@ package sqlancer.oceanbase;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.sql.Statement;
 
 import com.google.auto.service.AutoService;
@@ -44,7 +43,7 @@ public class OceanBaseProvider extends SQLProviderAdapter<OceanBaseGlobalState, 
     }
 
     @Override
-    public SQLConnection createDatabase(OceanBaseGlobalState globalState) throws Exception, SQLException {
+    public SQLConnection createDatabase(OceanBaseGlobalState globalState) throws Exception {
         String username = globalState.getOptions().getUserName();
         String password = globalState.getOptions().getPassword();
         String host = globalState.getOptions().getHost();

@@ -45,7 +45,7 @@ public class YCQLFuzzer implements TestOracle<YCQLGlobalState> {
     private static class Query {
         public SQLQueryAdapter getQuery(YCQLGlobalState state, ExpectedErrors errors) throws Exception {
             throw new IllegalAccessException("Should be implemented");
-        };
+        }
     }
 
     private static class ActionQuery extends Query {

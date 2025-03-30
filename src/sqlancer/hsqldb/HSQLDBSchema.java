@@ -21,7 +21,7 @@ public class HSQLDBSchema extends AbstractSchema<HSQLDBProvider.HSQLDBGlobalStat
         super(databaseTables);
     }
 
-    public static HSQLDBSchema fromConnection(SQLConnection connection, String databaseName) throws SQLException {
+    public static HSQLDBSchema fromConnection(SQLConnection connection) throws SQLException {
         List<HSQLDBSchema.HSQLDBTable> databaseTables = new ArrayList<>();
         List<String> tableNames = getTableNames(connection);
         for (String tableName : tableNames) {

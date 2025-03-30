@@ -82,9 +82,7 @@ public class YSQLSchema extends AbstractSchema<YSQLGlobalState, YSQLTable> {
                         boolean isInsertable = rs.getBoolean("is_insertable_into");
                         // TODO: also check insertable
                         // TODO: insert into view?
-                        boolean isView = tableName.startsWith("v"); // tableTypeStr.contains("VIEW") ||
-                        // tableTypeStr.contains("LOCAL TEMPORARY") &&
-                        // !isInsertable;
+                        boolean isView = tableName.startsWith("v");
                         YSQLTable.TableType tableType = getTableType(tableTypeSchema);
                         List<YSQLColumn> databaseColumns = getTableColumns(con, tableName);
                         List<YSQLIndex> indexes = getIndexes(con, tableName);

@@ -54,15 +54,6 @@ public final class PostgresViewGenerator {
             sb.append(DBMSCommon.createColumnName(i));
         }
         sb.append(")");
-        // if (Randomly.getBoolean() && false) {
-        // sb.append(" WITH(");
-        // if (Randomly.getBoolean()) {
-        // sb.append(String.format("security_barrier(%s)", Randomly.getBoolean()));
-        // } else {
-        // sb.append(String.format("check_option(%s)", Randomly.fromOptions("local1", "cascaded")));
-        // }
-        // sb.append(")");
-        // }
         sb.append(" AS (");
         PostgresSelect select = PostgresRandomQueryGenerator.createRandomQuery(nrColumns, globalState);
         sb.append(PostgresVisitor.asString(select));

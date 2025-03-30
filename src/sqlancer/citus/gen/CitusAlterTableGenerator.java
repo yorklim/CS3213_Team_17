@@ -11,14 +11,12 @@ import sqlancer.postgres.gen.PostgresAlterTableGenerator;
 
 public class CitusAlterTableGenerator extends PostgresAlterTableGenerator {
 
-    public CitusAlterTableGenerator(PostgresTable randomTable, PostgresGlobalState globalState,
-            boolean generateOnlyKnown) {
-        super(randomTable, globalState, generateOnlyKnown);
+    public CitusAlterTableGenerator(PostgresTable randomTable, PostgresGlobalState globalState) {
+        super(randomTable, globalState);
     }
 
-    public static SQLQueryAdapter create(PostgresTable randomTable, PostgresGlobalState globalState,
-            boolean generateOnlyKnown) {
-        return new CitusAlterTableGenerator(randomTable, globalState, generateOnlyKnown).generate();
+    public static SQLQueryAdapter create(PostgresTable randomTable, PostgresGlobalState globalState) {
+        return new CitusAlterTableGenerator(randomTable, globalState).generate();
     }
 
     @Override

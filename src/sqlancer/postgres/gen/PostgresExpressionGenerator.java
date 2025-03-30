@@ -141,7 +141,7 @@ public class PostgresExpressionGenerator implements ExpressionGenerator<Postgres
             throw new IgnoreMeException();
         }
         PostgresFunctionWithUnknownResult randomFunction = Randomly.fromList(supportedFunctions);
-        return new PostgresFunction(randomFunction, type, randomFunction.getArguments(type, this, depth + 1));
+        return new PostgresFunction(randomFunction, type, randomFunction.getArguments(this, depth + 1));
     }
 
     private PostgresExpression generateFunctionWithKnownResult(int depth, PostgresDataType type) {
@@ -164,7 +164,7 @@ public class PostgresExpressionGenerator implements ExpressionGenerator<Postgres
             for (int i = 0; i < args.length; i++) {
                 args[i] = generateExpression(depth + 1, argTypes[i]);
             }
-        } while (!randomFunction.checkArguments(args));
+        } while (!randomFunction.checkArguments());
         return new PostgresFunction(randomFunction, type, args);
     }
 
@@ -431,7 +431,7 @@ public class PostgresExpressionGenerator implements ExpressionGenerator<Postgres
 
     private enum BitExpression {
         BINARY_OPERATION
-    };
+    }
 
     private PostgresExpression generateBitExpression(int depth) {
         BitExpression option;
@@ -500,9 +500,6 @@ public class PostgresExpressionGenerator implements ExpressionGenerator<Postgres
         if (Randomly.getBooleanWithSmallProbability()) {
             return PostgresConstant.createNullConstant();
         }
-        // if (Randomly.getBooleanWithSmallProbability()) {
-        // return PostgresConstant.createTextConstant(r.getString());
-        // }
         switch (type) {
         case INT:
             if (Randomly.getBooleanWithSmallProbability()) {
@@ -762,7 +759,6 @@ public class PostgresExpressionGenerator implements ExpressionGenerator<Postgres
             mutators.add(this::mutateAnd);
             mutators.add(this::mutateOr);
         }
-        // mutators.add(this::mutateLimit);
         mutators.add(this::mutateDistinct);
 
         return Randomly.fromList(mutators).apply(select);
@@ -783,7 +779,7 @@ public class PostgresExpressionGenerator implements ExpressionGenerator<Postgres
             join.setOnClause(joinGen2.generateExpression(0, PostgresDataType.BOOLEAN));
         }
 
-        PostgresJoinType newJoinType = PostgresJoinType.INNER;
+        PostgresJoinType newJoinType;
         if (join.getType() == PostgresJoinType.LEFT || join.getType() == PostgresJoinType.RIGHT) {
             newJoinType = PostgresJoinType.getRandomExcept(PostgresJoinType.LEFT, PostgresJoinType.RIGHT);
         } else {

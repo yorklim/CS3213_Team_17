@@ -25,7 +25,7 @@ public class MySQLUpdateGenerator extends AbstractUpdateGenerator<MySQLColumn> {
         return new MySQLUpdateGenerator(globalState).generate();
     }
 
-    private SQLQueryAdapter generate() throws SQLException {
+    private SQLQueryAdapter generate() {
         MySQLTable table = globalState.getSchema().getRandomTable(t -> !t.isView());
         List<MySQLColumn> columns = table.getRandomNonEmptyColumnSubset();
         gen = new MySQLExpressionGenerator(globalState).setColumns(table.getColumns());

@@ -1,6 +1,5 @@
 package sqlancer.doris.gen;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,9 +18,7 @@ import sqlancer.doris.visitor.DorisToStringVisitor;
 
 public class DorisTableGenerator {
 
-    // private final ExpectedErrors errors = new ExpectedErrors();
-
-    public static SQLQueryAdapter createRandomTableStatement(DorisGlobalState globalState) throws SQLException {
+    public static SQLQueryAdapter createRandomTableStatement(DorisGlobalState globalState) {
         if (globalState.getSchema().getDatabaseTables().size() > globalState.getDbmsSpecificOptions().maxNumTables) {
             throw new IgnoreMeException();
         }
@@ -88,12 +85,10 @@ public class DorisTableGenerator {
             if (!globalState.getDbmsSpecificOptions().testNotNullConstraints) {
                 isNullable = true;
             }
-            // boolean isHllOrBitmap = (columnType.getPrimitiveDataType() == DorisSchema.DorisDataType.HLL)
-            // || (columnType.getPrimitiveDataType() == DorisSchema.DorisDataType.BITMAP);
             boolean isHllOrBitmap = false;
             DorisSchema.DorisColumnAggrType aggrType = DorisSchema.DorisColumnAggrType.NULL;
             if (globalState.getDbmsSpecificOptions().testColumnAggr && (isHllOrBitmap || !iskey)) {
-                aggrType = DorisSchema.DorisColumnAggrType.getRandom(columnType);
+                aggrType = DorisSchema.DorisColumnAggrType.getRandom();
             }
 
             boolean hasDefaultValue = globalState.getDbmsSpecificOptions().testDefaultValues && Randomly.getBoolean()

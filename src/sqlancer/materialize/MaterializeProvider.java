@@ -244,7 +244,7 @@ public class MaterializeProvider extends SQLProviderAdapter<MaterializeGlobalSta
             try {
                 String tableName = DBMSCommon.createTableName(globalState.getSchema().getDatabaseTables().size());
                 SQLQueryAdapter createTable = MaterializeTableGenerator.generate(tableName, globalState.getSchema(),
-                        generateOnlyKnown, globalState);
+                        globalState);
                 globalState.executeStatement(createTable);
             } catch (IgnoreMeException e) {
 

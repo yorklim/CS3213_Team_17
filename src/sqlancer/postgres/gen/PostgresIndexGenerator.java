@@ -36,9 +36,6 @@ public final class PostgresIndexGenerator {
          * Commented out as a workaround for https://www.postgresql.org/message-id/CA%2Bu7OA4XYhc-
          * qyCgJqwwgMGZDWAyeH821oa5oMzm_HEifZ4BeA%40mail.gmail.com
          */
-        // if (Randomly.getBoolean()) {
-        // sb.append("CONCURRENTLY ");
-        // }
         PostgresTable randomTable = globalState.getSchema().getRandomTable(t -> !t.isView()); // TODO: materialized
                                                                                               // views
         String indexName = getNewIndexName(randomTable);
@@ -75,11 +72,6 @@ public final class PostgresIndexGenerator {
                     sb.append(")");
                 }
 
-                // if (Randomly.getBoolean()) {
-                // sb.append(" ");
-                // sb.append("COLLATE ");
-                // sb.append(Randomly.fromOptions("C", "POSIX"));
-                // }
                 if (Randomly.getBooleanWithRatherLowProbability()) {
                     sb.append(" ");
                     sb.append(globalState.getRandomOpclass());

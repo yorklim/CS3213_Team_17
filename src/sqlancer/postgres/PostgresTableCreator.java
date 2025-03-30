@@ -21,7 +21,7 @@ public class PostgresTableCreator extends TableCreator {
             try {
                 String tableName = DBMSCommon.createTableName(globalState.getSchema().getDatabaseTables().size());
                 SQLQueryAdapter createTable = PostgresTableGenerator.generate(tableName, globalState.getSchema(),
-                        PostgresProvider.generateOnlyKnown, globalState);
+                        globalState);
                 globalState.executeStatement(createTable);
             } catch (IgnoreMeException e) {
 

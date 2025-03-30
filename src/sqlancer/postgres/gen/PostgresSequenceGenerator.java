@@ -78,11 +78,7 @@ public final class PostgresSequenceGenerator {
         }
         if (Randomly.getBoolean()) {
             sb.append(" OWNED BY ");
-            // if (Randomly.getBoolean()) {
             sb.append("NONE");
-            // } else {
-            // sb.append(s.getRandomTable().getRandomColumn().getFullQualifiedName());
-            // }
         }
         return new SQLQueryAdapter(sb.toString(), errors);
     }
