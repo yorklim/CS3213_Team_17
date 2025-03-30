@@ -22,7 +22,8 @@ public final class YSQLCommon {
     private YSQLCommon() {
     }
 
-    public static boolean appendDataType(YSQLDataType type, StringBuilder sb, boolean allowSerial) throws AssertionError {
+    public static boolean appendDataType(YSQLDataType type, StringBuilder sb, boolean allowSerial)
+            throws AssertionError {
         boolean serial = false;
         switch (type) {
         case BOOLEAN:
