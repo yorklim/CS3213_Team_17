@@ -234,9 +234,7 @@ public class PostgresSchema extends AbstractSchema<PostgresGlobalState, Postgres
                         boolean isInsertable = rs.getBoolean("is_insertable_into");
                         // TODO: also check insertable
                         // TODO: insert into view?
-                        boolean isView = tableName.startsWith("v"); // tableTypeStr.contains("VIEW") ||
-                                                                    // tableTypeStr.contains("LOCAL TEMPORARY") &&
-                                                                    // !isInsertable;
+                        boolean isView = tableName.startsWith("v"); 
                         PostgresTable.TableType tableType = getTableType(tableTypeSchema);
                         List<PostgresColumn> databaseColumns = getTableColumns(con, tableName);
                         List<PostgresIndex> indexes = getIndexes(con, tableName);

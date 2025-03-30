@@ -24,9 +24,6 @@ public final class PostgresReindexGenerator {
         errors.add("could not create unique index"); // CONCURRENT INDEX
         StringBuilder sb = new StringBuilder();
         sb.append("REINDEX");
-        // if (Randomly.getBoolean()) {
-        // sb.append(" VERBOSE");
-        // }
         sb.append(" ");
         Scope scope = Randomly.fromOptions(Scope.values());
         switch (scope) {

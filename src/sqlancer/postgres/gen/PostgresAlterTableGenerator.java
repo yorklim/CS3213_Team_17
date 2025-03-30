@@ -73,7 +73,7 @@ public class PostgresAlterTableGenerator {
         Attribute(String val) {
             this.val = val;
         }
-    };
+    }
 
     public List<Action> getActions(ExpectedErrors errors) {
         PostgresCommon.addCommonExpressionErrors(errors);
@@ -155,7 +155,7 @@ public class PostgresAlterTableGenerator {
                 }
                 sb.append(" TYPE ");
                 PostgresDataType randomType = PostgresDataType.getRandomType();
-                PostgresCommon.appendDataType(randomType, sb, false, generateOnlyKnown, opClasses);
+                PostgresCommon.appendDataType(randomType, sb, false, opClasses);
                 // TODO [ COLLATE collation ] [ USING expression ]
                 errors.add("cannot alter type of a column used by a view or rule");
                 errors.add("cannot convert infinity to numeric");

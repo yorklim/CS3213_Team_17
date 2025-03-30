@@ -144,7 +144,7 @@ public class PostgresTableGenerator {
         sb.append(name);
         sb.append(" ");
         PostgresDataType type = PostgresDataType.getRandomType();
-        boolean serial = PostgresCommon.appendDataType(type, sb, true, generateOnlyKnown, globalState.getCollates());
+        boolean serial = PostgresCommon.appendDataType(type, sb, true, globalState.getCollates());
         PostgresColumn c = new PostgresColumn(name, type);
         c.setTable(table);
         columnsToBeAdded.add(c);
@@ -225,7 +225,7 @@ public class PostgresTableGenerator {
 
     private enum ColumnConstraint {
         NULL_OR_NOT_NULL, UNIQUE, PRIMARY_KEY, DEFAULT, CHECK, GENERATED
-    };
+    }
 
     private void createColumnConstraint(PostgresDataType type, boolean serial) {
         List<ColumnConstraint> constraintSubset = Randomly.nonEmptySubset(ColumnConstraint.values());
@@ -270,7 +270,6 @@ public class PostgresTableGenerator {
                 sb.append(" (");
                 sb.append(PostgresVisitor.asString(PostgresExpressionGenerator.generateExpression(globalState, type)));
                 sb.append(")");
-                // CREATE TEMPORARY TABLE t1(c0 smallint DEFAULT ('566963878'));
                 errors.add("out of range");
                 errors.add("is a generated column");
                 break;
