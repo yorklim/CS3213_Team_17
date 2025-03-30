@@ -23,7 +23,7 @@ public class DorisProvider extends SQLProviderAdapter<DorisGlobalState, DorisOpt
 
         @Override
         protected DorisSchema readSchema() throws SQLException {
-            return DorisSchema.fromConnection(getConnection(), getDatabaseName());
+            return DorisSchema.fromConnection(getConnection());
         }
 
     }

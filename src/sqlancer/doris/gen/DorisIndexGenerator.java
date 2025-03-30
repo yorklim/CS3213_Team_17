@@ -16,7 +16,7 @@ public final class DorisIndexGenerator {
     private DorisIndexGenerator() {
     }
 
-    public static SQLQueryAdapter getQuery(DorisGlobalState globalState) throws SQLException {
+    public static SQLQueryAdapter getQuery(DorisGlobalState globalState) {
         if (globalState.getSchema().getIndexCount() > globalState.getDbmsSpecificOptions().maxNumIndexes) {
             throw new IgnoreMeException();
         }
@@ -33,7 +33,7 @@ public final class DorisIndexGenerator {
         sb.append(" ON ");
         sb.append(randomTable.getName());
         sb.append("(");
-        int nr = 1; // Doris Only support CREATE_INDEX on single column and index type is BITMAP;
+        int nr = 1; // Doris Only support CREATE_INDEX on single column and index type is BITMAP
         List<DorisColumn> subset = Randomly.extractNrRandomColumns(randomTable.getColumns(), nr);
         sb.append(subset.get(0).getName());
         sb.append(") ");

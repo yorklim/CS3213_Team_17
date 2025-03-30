@@ -45,21 +45,13 @@ public class DorisSchema extends AbstractSchema<DorisGlobalState, DorisTable> {
     public enum DorisColumnAggrType {
         SUM, MIN, MAX, REPLACE, REPLCAE_IF_NOT_NULL, BITMAP_UNION, HLL_UNION, NULL;
 
-        public static DorisColumnAggrType getRandom(DorisCompositeDataType columnDataType) {
-            // if (columnDataType.getPrimitiveDataType() == DorisSchema.DorisDataType.BITMAP) {
-            // return DorisColumnAggrType.BITMAP_UNION;
-            // }
-            // if (columnDataType.getPrimitiveDataType() == DorisSchema.DorisDataType.HLL) {
-            // return DorisColumnAggrType.HLL_UNION;
-            // }
-
+        public static DorisColumnAggrType getRandom() {
             return Randomly.fromOptions(SUM, MIN, MAX, REPLACE, REPLCAE_IF_NOT_NULL);
         }
     }
 
     public enum DorisDataType {
         INT, FLOAT, DECIMAL, DATE, DATETIME, VARCHAR, BOOLEAN, NULL;
-        // HLL, BITMAP, ARRAY;
 
         private int decimalScale;
         private int decimalPrecision;
@@ -232,12 +224,6 @@ public class DorisSchema extends AbstractSchema<DorisGlobalState, DorisTable> {
                 return Randomly.fromOptions("VARCHAR", "CHAR") + "(" + getPrimitiveDataType().getVarcharLength() + ")";
             case BOOLEAN:
                 return "BOOLEAN";
-            // case HLL:
-            // return "HLL";
-            // case BITMAP:
-            // return "BITMAP";
-            // case ARRAY:
-            // return "ARRAY";
             case NULL:
                 return Randomly.fromOptions("NULL");
             default:
@@ -339,7 +325,6 @@ public class DorisSchema extends AbstractSchema<DorisGlobalState, DorisTable> {
                 ResultSet rs = s.executeQuery(rowValueQuery);
                 if (!rs.next()) {
                     throw new IgnoreMeException();
-                    // throw new AssertionError("could not find random row " + rowValueQuery + "\n");
                 }
                 for (int i = 0; i < getColumns().size(); i++) {
                     DorisColumn column = getColumns().get(i);
@@ -518,12 +503,6 @@ public class DorisSchema extends AbstractSchema<DorisGlobalState, DorisTable> {
             case "BOOLEAN":
                 primitiveType = DorisDataType.BOOLEAN;
                 break;
-            // case "HLL":
-            // primitiveType = DorisDataType.HLL;
-            // break;
-            // case "BITMAP":
-            // primitiveType = DorisDataType.BITMAP;
-            // break;
             case "NULL":
                 primitiveType = DorisDataType.NULL;
                 break;
@@ -561,7 +540,7 @@ public class DorisSchema extends AbstractSchema<DorisGlobalState, DorisTable> {
 
     }
 
-    public static DorisSchema fromConnection(SQLConnection con, String databaseName) throws SQLException {
+    public static DorisSchema fromConnection(SQLConnection con) throws SQLException {
         List<DorisTable> databaseTables = new ArrayList<>();
         List<String> tableNames = getTableNames(con);
         for (String tableName : tableNames) {
