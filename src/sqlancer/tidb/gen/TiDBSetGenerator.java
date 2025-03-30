@@ -1,6 +1,5 @@
 package sqlancer.tidb.gen;
 
-import java.sql.SQLException;
 import java.util.function.Function;
 
 import sqlancer.Randomly;

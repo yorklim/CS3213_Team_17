@@ -1,7 +1,5 @@
 package sqlancer.tidb.gen;
 
-import java.sql.SQLException;
-
 import sqlancer.Randomly;
 import sqlancer.common.query.ExpectedErrors;
 import sqlancer.common.query.SQLQueryAdapter;
