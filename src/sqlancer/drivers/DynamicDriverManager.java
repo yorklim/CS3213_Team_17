@@ -11,7 +11,7 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.util.Properties;
 
-public class DynamicDriverManager {
+public final class DynamicDriverManager {
     private static final String CONFIG_FILE = "sqlancer-drivers.properties";
     private static final String DRIVER_CACHE_DIR = ".sqlancer-drivers";
     private static Properties properties;
