@@ -114,14 +114,8 @@ public class H2Schema extends AbstractSchema<H2GlobalState, H2Table> {
                 }
             case VARCHAR:
                 return /* String varCharType = */ Randomly.fromOptions("VARCHAR", "VARCHAR_IGNORECASE");
-            // if (precision == NO_PRECISION) {
-            // return varCharType;
-            // } else {
-            // return String.format("%s(%d)", varCharType, precision);
-            // }
             case BINARY:
                 return "BINARY";
-            // return String.format("BINARY(%d)", precision);
             default:
                 return dataType.toString();
             }
@@ -161,7 +155,7 @@ public class H2Schema extends AbstractSchema<H2GlobalState, H2Table> {
 
     }
 
-    public static H2Schema fromConnection(SQLConnection con, String databaseName) throws SQLException {
+    public static H2Schema fromConnection(SQLConnection con) throws SQLException {
         List<H2Table> databaseTables = new ArrayList<>();
         List<String> tableNames = getTableNames(con);
         for (String tableName : tableNames) {
