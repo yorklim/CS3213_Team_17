@@ -101,10 +101,6 @@ public final class SQLite3RandomQuerySynthesizer {
         // FROM ...
         select.setFromList(SQLite3Common.getTableRefs(tables, s));
         // TODO: no values are referenced from this sub query yet
-        // if (Randomly.getBooleanWithSmallProbability()) {
-        // select.getFromList().add(SQLite3RandomQuerySynthesizer.generate(globalState,
-        // Randomly.smallNumber() + 1));
-        // }
 
         // WHERE
         if (Randomly.getBoolean()) {

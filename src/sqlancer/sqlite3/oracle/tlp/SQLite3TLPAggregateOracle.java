@@ -73,8 +73,6 @@ public class SQLite3TLPAggregateOracle implements TestOracle<SQLite3GlobalState>
                 + " UNION ALL " + SQLite3Visitor.asString(rightSelect);
         metamorphicText += ")";
 
-        // String finalText = originalQuery + " INTERSECT " + metamorphicText;
-        // state.getState().queryString = "--" + finalText;
         String firstResult;
         String secondResult;
         SQLQueryAdapter q = new SQLQueryAdapter(originalQuery, errors);

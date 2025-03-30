@@ -29,7 +29,7 @@ public final class SQLite3ViewGenerator {
         return new SQLQueryAdapter(sb.toString(), true);
     }
 
-    public static SQLQueryAdapter generate(SQLite3GlobalState globalState) throws SQLException {
+    public static SQLQueryAdapter generate(SQLite3GlobalState globalState) {
         if (globalState.getSchema().getTables().getTables()
                 .size() >= globalState.getDbmsSpecificOptions().maxNumTables) {
             throw new IgnoreMeException();

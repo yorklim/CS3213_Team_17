@@ -350,11 +350,6 @@ public class SQLite3ExpressionGenerator implements ExpressionGenerator<SQLite3Ex
 
     private SQLite3Expression getAggregate(int depth, SQLite3AggregateFunction random) {
         int nrArgs;
-        // if (random == SQLite3AggregateFunction.ZIPFILE) {
-        // nrArgs = Randomly.fromOptions(2, 4);
-        // } else {
-        // nrArgs = 1;
-        // }
         nrArgs = 1;
         return new SQLite3Aggregate(getRandomExpressions(nrArgs, depth + 1), random);
     }
@@ -371,12 +366,7 @@ public class SQLite3ExpressionGenerator implements ExpressionGenerator<SQLite3Ex
         List<SQLite3Expression> left = getRandomExpressions(size, depth + 1);
         List<SQLite3Expression> right = getRandomExpressions(size, depth + 1);
         RowValueComparison randomOption;
-        // if (Randomly.getBooleanWithSmallProbability()) {
-        // // for the right hand side a random query is required, which is expensive
-        // randomOption = RowValueComparison.IN;
-        // } else {
         randomOption = Randomly.fromOptions(RowValueComparison.STANDARD_COMPARISON, RowValueComparison.BETWEEN);
-        // }
         switch (randomOption) {
         // TODO case
         case STANDARD_COMPARISON:
@@ -385,9 +375,6 @@ public class SQLite3ExpressionGenerator implements ExpressionGenerator<SQLite3Ex
         case BETWEEN:
             return new BetweenOperation(getRandomRowValue(depth + 1, size), Randomly.getBoolean(),
                     new SQLite3RowValueExpression(left), new SQLite3RowValueExpression(right));
-        // case IN:
-        // return new SQLite3Expression.InOperation(new SQLite3RowValue(left),
-        // SQLite3RandomQuerySynthesizer.generate(globalState, size));
         default:
             throw new AssertionError(randomOption);
         }
@@ -415,7 +402,7 @@ public class SQLite3ExpressionGenerator implements ExpressionGenerator<SQLite3Ex
 
     enum Attribute {
         VARIADIC, NONDETERMINISTIC
-    };
+    }
 
     private enum AnyFunction {
         ABS("ABS", 1), //
@@ -482,16 +469,6 @@ public class SQLite3ExpressionGenerator implements ExpressionGenerator<SQLite3Ex
 
         // FTS
         HIGHLIGHT("highlight", 4);
-
-        // testing functions
-        // EXPR_COMPARE("expr_compare", 2), EXPR_IMPLIES_EXPR("expr_implies_expr", 2);
-
-        // fts5_decode("fts5_decode", 2),
-        // fts5_decode_none("fts5_decode_none", 2),
-        // fts5_expr("fts5_expr", 1),
-        // fts5_expr_tcl("fts5_expr_tcl", 1),
-        // fts5_fold("fts5_fold", 1),
-        // fts5_isalnum("fts5_isalnum", 1);
 
         private int minNrArgs;
         private boolean variadic;
@@ -647,9 +624,6 @@ public class SQLite3ExpressionGenerator implements ExpressionGenerator<SQLite3Ex
         SQLite3Expression leftExpression = getRandomExpression(depth + 1);
         // TODO: operators
         BinaryOperator operator = BinaryOperator.getRandomOperator();
-        // while (operator == BinaryOperator.DIVIDE) {
-        // operator = BinaryOperator.getRandomOperator();
-        // }
         SQLite3Expression rightExpression = getRandomExpression(depth + 1);
         return new SQLite3Expression.Sqlite3BinaryOperation(leftExpression, rightExpression, operator);
     }

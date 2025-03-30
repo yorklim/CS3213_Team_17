@@ -170,7 +170,6 @@ public class SQLite3Schema extends AbstractSchema<SQLite3GlobalState, SQLite3Tab
                 }
                 if (!randomRowValues.next()) {
                     throw new IgnoreMeException();
-                    // throw new AssertionError("could not find random row! " + randomRow);
                 }
                 for (int i = 0; i < getColumns().size(); i++) {
                     SQLite3Column column = getColumns().get(i);

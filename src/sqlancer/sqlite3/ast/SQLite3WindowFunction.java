@@ -89,7 +89,7 @@ public class SQLite3WindowFunction extends SQLite3Expression {
 
         WindowFunction(int nrArgs) {
             this.nrArgs = nrArgs;
-        };
+        }
 
         WindowFunction() {
             this(0);
