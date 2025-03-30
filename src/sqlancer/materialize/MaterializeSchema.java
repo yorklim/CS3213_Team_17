@@ -236,7 +236,7 @@ public class MaterializeSchema extends AbstractSchema<MaterializeGlobalState, Ma
                         MaterializeTable.TableType tableType = getTableType(tableTypeSchema);
                         List<MaterializeColumn> databaseColumns = getTableColumns(con, tableName);
                         List<MaterializeIndex> indexes = getIndexes(con, tableName);
-                        List<MaterializeStatisticsObject> statistics = getStatistics(con);
+                        List<MaterializeStatisticsObject> statistics = getStatistics();
                         MaterializeTable t = new MaterializeTable(tableName, databaseColumns, indexes, tableType,
                                 statistics, isView, isInsertable);
                         for (MaterializeColumn c : databaseColumns) {
@@ -262,7 +262,7 @@ public class MaterializeSchema extends AbstractSchema<MaterializeGlobalState, Ma
         }
     }
 
-    protected static List<MaterializeStatisticsObject> getStatistics(SQLConnection con) throws SQLException {
+    protected static List<MaterializeStatisticsObject> getStatistics() {
         return new ArrayList<>();
     }
 

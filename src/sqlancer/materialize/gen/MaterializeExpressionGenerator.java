@@ -127,7 +127,7 @@ public class MaterializeExpressionGenerator implements ExpressionGenerator<Mater
             throw new IgnoreMeException();
         }
         MaterializeFunctionWithUnknownResult randomFunction = Randomly.fromList(supportedFunctions);
-        return new MaterializeFunction(randomFunction, type, randomFunction.getArguments(type, this, depth + 1));
+        return new MaterializeFunction(randomFunction, type, randomFunction.getArguments(this, depth + 1));
     }
 
     private MaterializeExpression generateFunctionWithKnownResult(int depth, MaterializeDataType type) {
@@ -151,7 +151,7 @@ public class MaterializeExpressionGenerator implements ExpressionGenerator<Mater
             for (int i = 0; i < args.length; i++) {
                 args[i] = generateExpression(depth + 1, argTypes[i]);
             }
-        } while (!randomFunction.checkArguments(args));
+        } while (!randomFunction.checkArguments());
         return new MaterializeFunction(randomFunction, type, args);
     }
 
@@ -357,7 +357,7 @@ public class MaterializeExpressionGenerator implements ExpressionGenerator<Mater
 
     private enum BitExpression {
         BINARY_OPERATION
-    };
+    }
 
     private MaterializeExpression generateBitExpression(int depth) {
         BitExpression option;

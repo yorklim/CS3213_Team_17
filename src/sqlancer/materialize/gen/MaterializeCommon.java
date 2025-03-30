@@ -217,8 +217,7 @@ public final class MaterializeCommon {
         errors.addAll(getGroupingErrors());
     }
 
-    public static boolean appendDataType(MaterializeDataType type, StringBuilder sb, boolean allowSerial,
-            boolean generateOnlyKnown, List<String> opClasses) throws AssertionError {
+    public static boolean appendDataType(MaterializeDataType type, StringBuilder sb) throws AssertionError {
         boolean serial = false;
         switch (type) {
         case BOOLEAN:

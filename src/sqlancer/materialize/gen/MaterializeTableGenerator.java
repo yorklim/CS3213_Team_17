@@ -89,7 +89,7 @@ public class MaterializeTableGenerator {
         sb.append(name);
         sb.append(" ");
         MaterializeDataType type = MaterializeDataType.getRandomType();
-        MaterializeCommon.appendDataType(type, sb, true, generateOnlyKnown, globalState.getCollates());
+        MaterializeCommon.appendDataType(type, sb);
         MaterializeColumn c = new MaterializeColumn(name, type);
         c.setTable(table);
         columnsToBeAdded.add(c);
@@ -101,7 +101,7 @@ public class MaterializeTableGenerator {
 
     private enum ColumnConstraint {
         DEFAULT
-    };
+    }
 
     private void createColumnConstraint(MaterializeDataType type) {
         List<ColumnConstraint> constraintSubset = Randomly.nonEmptySubset(ColumnConstraint.values());
@@ -114,7 +114,6 @@ public class MaterializeTableGenerator {
                 sb.append(MaterializeVisitor
                         .asString(MaterializeExpressionGenerator.generateExpression(globalState, type)));
                 sb.append(")");
-                // CREATE TEMPORARY TABLE t1(c0 smallint DEFAULT ('566963878'));
                 errors.add("out of range");
                 errors.add("is a generated column");
                 break;
