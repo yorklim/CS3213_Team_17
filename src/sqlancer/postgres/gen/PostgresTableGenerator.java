@@ -30,8 +30,7 @@ public class PostgresTableGenerator {
     private final PostgresTable table;
     private final PostgresGlobalState globalState;
 
-    public PostgresTableGenerator(String tableName, PostgresSchema newSchema,
-            PostgresGlobalState globalState) {
+    public PostgresTableGenerator(String tableName, PostgresSchema newSchema, PostgresGlobalState globalState) {
         this.tableName = tableName;
         this.newSchema = newSchema;
         this.globalState = globalState;

@@ -40,8 +40,7 @@ public enum PostgresFunctionWithUnknownResult {
     //
     TO_CHAR("to_char", PostgresDataType.TEXT, PostgresDataType.TEXT, PostgresDataType.TEXT) {
         @Override
-        public PostgresExpression[] getArguments(PostgresExpressionGenerator gen,
-                int depth) {
+        public PostgresExpression[] getArguments(PostgresExpressionGenerator gen, int depth) {
             PostgresExpression[] args = super.getArguments(gen, depth);
             args[0] = gen.generateExpression(PostgresDataType.getRandomType());
             return args;
@@ -54,8 +53,7 @@ public enum PostgresFunctionWithUnknownResult {
     CHR("chr", PostgresDataType.TEXT, PostgresDataType.INT),
     CONVERT_FROM("convert_from", PostgresDataType.TEXT, PostgresDataType.TEXT, PostgresDataType.TEXT) {
         @Override
-        public PostgresExpression[] getArguments(PostgresExpressionGenerator gen,
-                int depth) {
+        public PostgresExpression[] getArguments(PostgresExpressionGenerator gen, int depth) {
             PostgresExpression[] args = super.getArguments(gen, depth);
             args[1] = PostgresConstant.createTextConstant(Randomly.fromOptions("UTF8", "LATIN1"));
             return args;
@@ -142,7 +140,7 @@ public enum PostgresFunctionWithUnknownResult {
 
     // https://www.postgresql.org/docs/devel/functions-admin.html#FUNCTIONS-ADMIN-DBSIZE
     GET_COLUMN_SIZE("get_column_size", PostgresDataType.INT, PostgresDataType.TEXT);
-    
+
     private String functionName;
     private PostgresDataType returnType;
     private PostgresDataType[] argTypes;
