@@ -12,7 +12,7 @@ public final class PivotedQuerySynthesisOracleCommon {
     }
 
     public static String getContainmentCheckQueryCommon(List<? extends AbstractTableColumn<?, ?>> fetchColumns,
-            AbstractRowValue<?, ?, ?> pivotRow, Query<?> pivotRowQuery) throws Exception {
+            AbstractRowValue<?, ?, ?> pivotRow, Query<?> pivotRowQuery) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT * FROM (");
         sb.append(pivotRowQuery.getUnterminatedQueryString());
