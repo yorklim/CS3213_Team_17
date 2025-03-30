@@ -27,13 +27,11 @@ public final class DatabendRandomQuerySynthesizer {
         DatabendTables targetTables = globalState.getSchema().getRandomTableNonEmptyAndViewTables();
         List<DatabendColumn> targetColumns = targetTables.getColumns();
         DatabendNewExpressionGenerator gen = new DatabendNewExpressionGenerator(globalState).setColumns(targetColumns);
-        // boolean allowAggregates = Randomly.getBooleanWithSmallProbability();
         List<DatabendExpression> columns = new ArrayList<>();
         HashSet<DatabendColumnValue> columnOfLeafNode = new HashSet<>();
         gen.setColumnOfLeafNode(columnOfLeafNode);
         int freeColumns = targetColumns.size();
         for (int i = 0; i < nrColumns; i++) {
-            // if (allowAggregates && Randomly.getBoolean()) {
             DatabendExpression column = null;
             if (freeColumns > 0 && Randomly.getBoolean()) {
                 column = new DatabendColumnValue(targetColumns.get(freeColumns - 1), null);

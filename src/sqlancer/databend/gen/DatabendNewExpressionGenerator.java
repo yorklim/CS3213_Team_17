@@ -169,7 +169,6 @@ public class DatabendNewExpressionGenerator
 
     private enum BooleanExpression {
         POSTFIX_OPERATOR, NOT, BINARY_LOGICAL_OPERATOR, BINARY_COMPARISON, LIKE, BETWEEN, IN_OPERATION;
-        // SIMILAR_TO, POSIX_REGEX, BINARY_RANGE_COMPARISON,FUNCTION, CAST,;
     }
 
     DatabendExpression generateBooleanExpression(int depth) {
@@ -265,9 +264,6 @@ public class DatabendNewExpressionGenerator
     }
 
     public DatabendExpression generateExpressionWithExpectedResult(DatabendDataType type) {
-        // DatabendNewExpressionGenerator gen = new
-        // DatabendNewExpressionGenerator(globalState).setColumns(columns);
-        // gen.setRowValue(rowValue);
         DatabendExpression expr;
         do {
             expr = this.generateExpression(type);
