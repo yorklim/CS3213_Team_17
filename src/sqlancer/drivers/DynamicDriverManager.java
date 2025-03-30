@@ -7,14 +7,18 @@ import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.Properties;
 import java.sql.Driver;
 import java.sql.DriverManager;
+import java.util.Properties;
 
 public class DynamicDriverManager {
     private static final String CONFIG_FILE = "sqlancer-drivers.properties";
     private static final String DRIVER_CACHE_DIR = ".sqlancer-drivers";
     private static Properties properties;
+
+    private DynamicDriverManager() {
+        throw new AssertionError("Utility class should not be instantiated");
+    }
 
     static {
         properties = new Properties();

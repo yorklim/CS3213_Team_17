@@ -13,8 +13,8 @@ import sqlancer.MainOptions;
 import sqlancer.SQLConnection;
 import sqlancer.SQLGlobalState;
 import sqlancer.SQLProviderAdapter;
-import sqlancer.duckdb.DuckDBProvider.DuckDBGlobalState;
 import sqlancer.drivers.DynamicDriverManager;
+import sqlancer.duckdb.DuckDBProvider.DuckDBGlobalState;
 
 @AutoService(DatabaseProvider.class)
 public class DuckDBProvider extends SQLProviderAdapter<DuckDBGlobalState, DuckDBOptions> {

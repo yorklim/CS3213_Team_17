@@ -18,6 +18,7 @@ import sqlancer.Randomly;
 import sqlancer.SQLConnection;
 import sqlancer.SQLProviderAdapter;
 import sqlancer.StatementExecutor;
+import sqlancer.drivers.DynamicDriverManager;
 import sqlancer.common.DBMSCommon;
 import sqlancer.common.query.ExpectedErrors;
 import sqlancer.common.query.SQLQueryAdapter;
@@ -44,7 +45,6 @@ import sqlancer.sqlite3.gen.dml.SQLite3InsertGenerator;
 import sqlancer.sqlite3.gen.dml.SQLite3StatTableGenerator;
 import sqlancer.sqlite3.gen.dml.SQLite3UpdateGenerator;
 import sqlancer.sqlite3.schema.SQLite3Schema.SQLite3Table;
-import sqlancer.drivers.DynamicDriverManager;
 
 @AutoService(DatabaseProvider.class)
 public class SQLite3Provider extends SQLProviderAdapter<SQLite3GlobalState, SQLite3Options> {
