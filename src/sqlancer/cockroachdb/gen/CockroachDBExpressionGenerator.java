@@ -100,10 +100,6 @@ public class CockroachDBExpressionGenerator extends
 
     @Override
     public CockroachDBExpression generateExpression(CockroachDBCompositeDataType type, int depth) {
-        // if (type == CockroachDBDataType.FLOAT &&
-        // Randomly.getBooleanWithRatherLowProbability()) {
-        // type = CockroachDBDataType.INT;
-        // }
         if (allowAggregates && Randomly.getBoolean()) {
             return getAggregate(type);
         }
@@ -483,7 +479,6 @@ public class CockroachDBExpressionGenerator extends
             mutators.add(this::mutateWhere);
             mutators.add(this::mutateOr);
         }
-        // mutators.add(this::mutateLimit);
         mutators.add(this::mutateDistinct);
 
         return Randomly.fromList(mutators).apply(select);

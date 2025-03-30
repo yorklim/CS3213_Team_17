@@ -130,7 +130,7 @@ public class CockroachDBTableQueryGenerator extends TableQueryGenerator {
         case CREATE_TABLE:
         case DROP_TABLE:
         case DROP_VIEW:
-            return 0; // r.getInteger(0, 0);
+            return 0; 
         default:
             throw new AssertionError(action);
         }

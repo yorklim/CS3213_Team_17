@@ -26,7 +26,7 @@ public class CockroachDBBetweenOperation implements CockroachDBExpression {
         public static CockroachDBBetweenOperatorType getRandom() {
             return Randomly.fromOptions(values());
         }
-    };
+    }
 
     public CockroachDBBetweenOperation(CockroachDBExpression expr, CockroachDBExpression left,
             CockroachDBExpression right, CockroachDBBetweenOperatorType type) {
@@ -46,7 +46,7 @@ public class CockroachDBBetweenOperation implements CockroachDBExpression {
 
     public CockroachDBExpression getExpr() {
         return expr;
-    };
+    }
 
     public CockroachDBBetweenOperatorType getType() {
         return type;
