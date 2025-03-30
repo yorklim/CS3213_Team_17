@@ -31,22 +31,21 @@ public class MySQLProvider extends SQLProviderAdapter<MySQLGlobalState, MySQLOpt
         // Generate random queries (Insert, Update, Delete, etc.)
         MySQLTableQueryGenerator tableQueryGenerator = new MySQLTableQueryGenerator(globalState);
 
-        tableCreator.create();
-        tableQueryGenerator.generateNExecute();
+        String staticTable = System.getProperty("staticTable");
+        // For Future Custom Queries for Testing (Table Creation)
+        if (staticTable == null || !staticTable.equals("true")) {
+            tableCreator.create();
+        } else {
+            tableCreator.runQueryFromFile("staticTable.sql", globalState);
+        }
 
-        // // For Future Custom Queries for Testing (Table Creation)
-        // if (true) {
-        // tableCreator.create();
-        // } else {
-        // tableCreator.runQueryFromFile("placeholder", globalState);
-        // }
-        //
-        // // For Future Custom Queries for Testing (Table Query Generation)
-        // if (true) {
-        // tableQueryGenerator.generateNExecute();
-        // } else {
-        // tableQueryGenerator.runQueryFromFile("placeholder", globalState);
-        // }
+        String staticQuery = System.getProperty("staticQuery");
+        // For Future Custom Queries for Testing (Table Query Generation)
+        if (staticTable == null || !staticQuery.equals("true")) {
+            tableQueryGenerator.generateNExecute();
+        } else {
+            tableQueryGenerator.runQueryFromFile("staticQuery.sql", globalState);
+        }
 
         if (globalState.getDbmsSpecificOptions().getTestOracleFactory().stream()
                 .anyMatch((o) -> o == MySQLOracleFactory.CERT)) {
