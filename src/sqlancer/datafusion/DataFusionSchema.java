@@ -29,9 +29,7 @@ public class DataFusionSchema extends AbstractSchema<DataFusionGlobalState, Data
         super(databaseTables);
     }
 
-    // update existing tables in DB by query again
-    // (like `show tables;`)
-    public static DataFusionSchema fromConnection(SQLConnection con, String databaseName) throws SQLException {
+    public static DataFusionSchema fromConnection(SQLConnection con) throws SQLException {
         List<DataFusionTable> databaseTables = new ArrayList<>();
         List<String> tableNames = getTableNames(con);
 
@@ -101,10 +99,6 @@ public class DataFusionSchema extends AbstractSchema<DataFusionGlobalState, Data
             return dt;
         }
 
-        // How to parse type in DataFusion's catalog to `DataFusionDataType`
-        // As displayed in:
-        // create table t1(v1 int, v2 bigint);
-        // select table_name, column_name, data_type from information_schema.columns;
         public static DataFusionDataType parseFromDataFusionCatalog(String typeString) {
             switch (typeString) {
             case "Int64":
@@ -134,7 +128,7 @@ public class DataFusionSchema extends AbstractSchema<DataFusionGlobalState, Data
             case DOUBLE:
                 if (Randomly.getBoolean()) {
                     if (Randomly.getBoolean()) {
-                        Double randomDouble = state.getRandomly().getDouble(); // [0.0, 1.0);
+                        Double randomDouble = state.getRandomly().getDouble(); 
                         Double scaledDouble = (randomDouble - 0.5) * 2 * Double.MAX_VALUE;
                         return new DataFusionConstant.DataFusionDoubleConstant(scaledDouble);
                     }
