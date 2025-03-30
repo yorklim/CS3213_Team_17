@@ -16,7 +16,7 @@ public final class TiDBIndexGenerator {
     private TiDBIndexGenerator() {
     }
 
-    public static SQLQueryAdapter getQuery(TiDBGlobalState globalState) throws SQLException {
+    public static SQLQueryAdapter getQuery(TiDBGlobalState globalState) {
         if (globalState.getSchema().getIndexCount() > globalState.getDbmsSpecificOptions().maxNumIndexes) {
             throw new IgnoreMeException();
         }

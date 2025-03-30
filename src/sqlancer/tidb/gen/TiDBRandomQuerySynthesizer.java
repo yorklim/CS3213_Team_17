@@ -28,7 +28,6 @@ public final class TiDBRandomQuerySynthesizer {
         TiDBTables tables = globalState.getSchema().getRandomTableNonEmptyTables();
         TiDBExpressionGenerator gen = new TiDBExpressionGenerator(globalState).setColumns(tables.getColumns());
         TiDBSelect select = new TiDBSelect();
-        // select.setDistinct(Randomly.getBoolean());
         List<TiDBExpression> columns = new ArrayList<>();
         // TODO: also generate aggregates
         columns.addAll(gen.generateExpressions(nrColumns));

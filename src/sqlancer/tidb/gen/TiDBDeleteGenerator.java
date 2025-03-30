@@ -17,7 +17,7 @@ public final class TiDBDeleteGenerator {
     private TiDBDeleteGenerator() {
     }
 
-    public static SQLQueryAdapter getQuery(TiDBGlobalState globalState) throws SQLException {
+    public static SQLQueryAdapter getQuery(TiDBGlobalState globalState) {
         ExpectedErrors errors = ExpectedErrors.newErrors().with(TiDBErrors.getExpressionErrors()).build();
         TiDBTable table = globalState.getSchema().getRandomTable(t -> !t.isView());
         TiDBExpressionGenerator gen = new TiDBExpressionGenerator(globalState).setColumns(table.getColumns());

@@ -25,7 +25,7 @@ public class TiDBInsertGenerator {
         TiDBErrors.addInsertErrors(errors);
     }
 
-    public static SQLQueryAdapter getQuery(TiDBGlobalState globalState) throws SQLException {
+    public static SQLQueryAdapter getQuery(TiDBGlobalState globalState) {
         TiDBTable table = globalState.getSchema().getRandomTable(t -> !t.isView());
         return new TiDBInsertGenerator(globalState).get(table);
     }

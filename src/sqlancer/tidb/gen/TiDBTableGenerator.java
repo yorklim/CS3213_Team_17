@@ -31,7 +31,7 @@ public class TiDBTableGenerator {
         return new TiDBTableGenerator().getQuery(globalState);
     }
 
-    public SQLQueryAdapter getQuery(TiDBGlobalState globalState) throws SQLException {
+    public SQLQueryAdapter getQuery(TiDBGlobalState globalState) {
         errors.add("Information schema is changed during the execution of the statement");
         errors.add("A CLUSTERED INDEX must include all columns in the table's partitioning function");
         String tableName = globalState.getSchema().getFreeTableName();

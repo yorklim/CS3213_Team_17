@@ -28,10 +28,6 @@ public class TiDBSchema extends AbstractSchema<TiDBGlobalState, TiDBTable> {
             isPrimitive = true;
         }
 
-        TiDBDataType(boolean isPrimitive) {
-            this.isPrimitive = isPrimitive;
-        }
-
         public static TiDBDataType getRandom() {
             return Randomly.fromOptions(values());
         }
@@ -300,7 +296,7 @@ public class TiDBSchema extends AbstractSchema<TiDBGlobalState, TiDBTable> {
 
     }
 
-    public static TiDBSchema fromConnection(SQLConnection con, String databaseName) throws SQLException {
+    public static TiDBSchema fromConnection(SQLConnection con) throws SQLException {
         List<TiDBTable> databaseTables = new ArrayList<>();
         List<String> tableNames = getTableNames(con, "SHOW TABLES");
         for (String tableName : tableNames) {
