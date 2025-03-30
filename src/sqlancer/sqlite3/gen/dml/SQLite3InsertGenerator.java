@@ -1,6 +1,5 @@
 package sqlancer.sqlite3.gen.dml;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 

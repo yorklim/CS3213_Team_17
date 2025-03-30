@@ -1,6 +1,5 @@
 package sqlancer.sqlite3.gen;
 
-import java.sql.SQLException;
 import java.util.function.Supplier;
 
 import sqlancer.Randomly;

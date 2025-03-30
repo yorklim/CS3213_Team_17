@@ -1,7 +1,5 @@
 package sqlancer.sqlite3.gen.ddl;
 
-import java.sql.SQLException;
-
 import sqlancer.IgnoreMeException;
 import sqlancer.Randomly;
 import sqlancer.common.DBMSCommon;
