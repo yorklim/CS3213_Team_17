@@ -118,7 +118,7 @@ public final class YCQLExpressionGenerator extends UntypedExpressionGenerator<YC
             newExpr.add(curExpr);
         }
         return newExpr;
-    };
+    }
 
     public enum YCQLAggregateFunction {
         MAX(1), MIN(1), AVG(1), COUNT(1), SUM(1);
@@ -148,10 +148,6 @@ public final class YCQLExpressionGenerator extends UntypedExpressionGenerator<YC
         TIMESTAMP(0), //
         BIGINT(1), //
         UUID(0); //
-        // // extras
-        // PARTITION_HASH(2), //
-        // WRITETIME(1), //
-        // TTL(1); //
 
         private final int nrArgs;
         private final boolean isVariadic;

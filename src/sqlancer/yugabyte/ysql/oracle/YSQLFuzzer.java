@@ -53,7 +53,7 @@ public class YSQLFuzzer implements TestOracle<YSQLGlobalState> {
     private static class Query {
         public SQLQueryAdapter getQuery(YSQLGlobalState state, ExpectedErrors errors) throws Exception {
             throw new IllegalAccessException("Should be implemented");
-        };
+        }
     }
 
     private static class ActionQuery extends Query {

@@ -112,7 +112,6 @@ public class YSQLTableGenerator {
         if (Randomly.getBoolean() && isTemporaryTable) {
             sb.append(" ON COMMIT ");
             // todo ON COMMIT DROP fails and it's known issue
-            // sb.append(Randomly.fromOptions("PRESERVE ROWS", "DELETE ROWS", "DROP"));
             sb.append(Randomly.fromOptions("PRESERVE ROWS", "DELETE ROWS"));
             sb.append(" ");
         }
@@ -122,7 +121,7 @@ public class YSQLTableGenerator {
         sb.append(name);
         sb.append(" ");
         YSQLDataType type = YSQLDataType.getRandomType();
-        boolean serial = YSQLCommon.appendDataType(type, sb, true, generateOnlyKnown, globalState.getCollates());
+        boolean serial = YSQLCommon.appendDataType(type, sb, true);
         YSQLColumn c = new YSQLColumn(name, type);
         c.setTable(table);
         columnsToBeAdded.add(c);

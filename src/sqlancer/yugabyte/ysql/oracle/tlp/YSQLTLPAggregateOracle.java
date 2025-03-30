@@ -134,19 +134,6 @@ public class YSQLTLPAggregateOracle extends YSQLTLPBase implements TestOracle<YS
         case MAX:
         case MIN:
             return aliasArgs(Arrays.asList(aggregate));
-        // case AVG:
-        //// List<YSQLExpression> arg = Arrays.asList(new
-        // YSQLCast(aggregate.getExpr().get(0),
-        // YSQLDataType.DECIMAL.get()));
-        // YSQLAggregate sum = new YSQLAggregate(YSQLAggregateFunction.SUM,
-        // aggregate.getExpr());
-        // YSQLCast count = new YSQLCast(
-        // new YSQLAggregate(YSQLAggregateFunction.COUNT, aggregate.getExpr()),
-        // YSQLDataType.DECIMAL.get());
-        //// YSQLBinaryArithmeticOperation avg = new
-        // YSQLBinaryArithmeticOperation(sum, count,
-        // YSQLBinaryArithmeticOperator.DIV);
-        // return aliasArgs(Arrays.asList(sum, count));
         default:
             throw new AssertionError(aggregate.getFunction());
         }
@@ -163,8 +150,6 @@ public class YSQLTLPAggregateOracle extends YSQLTLPBase implements TestOracle<YS
 
     private String getOuterAggregateFunction(YSQLAggregate aggregate) {
         switch (aggregate.getFunction()) {
-        // case AVG:
-        // return "SUM(agg0::DECIMAL)/SUM(agg1)::DECIMAL";
         case COUNT:
             return YSQLAggregateFunction.SUM + "(agg0)";
         default:
