@@ -26,7 +26,7 @@ public class TestEnvironment {
 
     enum ReducerType {
         USING_STATEMENT_REDUCER, USING_AST_BASED_REDUCER
-    };
+    }
 
     private TestEnvironment(ReducerType type) throws Exception {
         setUpTestingEnvironment();
@@ -94,9 +94,6 @@ public class TestEnvironment {
         field.setAccessible(true);
         field.set(options, true);
         state.setMainOptions(options);
-
-        // Main.StateLogger logger = new Main.StateLogger(databaseName, provider, options);
-        // state.setStateLogger(logger);
 
         try (SQLConnection con = provider.createDatabase(state)) {
             state.setConnection(con);

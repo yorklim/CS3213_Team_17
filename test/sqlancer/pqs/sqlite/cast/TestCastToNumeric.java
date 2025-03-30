@@ -59,7 +59,6 @@ class TestCastToNumeric {
         triples.add(new StringTestTriple("3.0e+5", SQLite3DataType.INT, 300000L));
         triples.add(new StringTestTriple("-3.2", SQLite3DataType.REAL, -3.2d));
         triples.add(new StringTestTriple("10e9", SQLite3DataType.INT, 10000000000L));
-        // triples.add(new StringTestTriple("-0.0", SQLite3DataType.REAL, 0.0d));
         triples.add(new StringTestTriple("9223372036854775807", SQLite3DataType.INT, 9223372036854775807L));
         triples.add(new StringTestTriple("4337561223119921152", SQLite3DataType.INT, 4337561223119921152L));
         triples.add(new StringTestTriple("7839344951195291815", SQLite3DataType.INT, 7839344951195291815L));
