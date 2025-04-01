@@ -34,7 +34,7 @@ jdbc_map = {
     'clickhouse': ('ru.yandex.clickhouse', 'clickhouse-jdbc', '0.3.2'), # check
 }
 
-def build_dependencies(file_dir):
+def build_dependencies(file_dir, build_all=True):
     """Split into sqlancer own internal dependencies, and external mvn dependencies"""
     assert os.path.isdir(file_dir)
 
@@ -94,7 +94,7 @@ def build_dependencies(file_dir):
                         continue
                     else:
                         break
-        elif os.path.isdir(f): # For nested yugabyte
+        elif build_all and os.path.isdir(f): # For nested yugabyte
             file_paths = [os.path.join(f, i) for i in os.listdir(f)]
             for file_path in file_paths:
                 if file_path not in checked:
@@ -335,7 +335,7 @@ def main():
     if len(sys.argv) == 1:
         # Core build
         db_name = None
-        packages, mvn_deps = build_dependencies(f"./src/sqlancer")
+        packages, mvn_deps = build_dependencies(f"./src/sqlancer", build_all=False)
     else:
         # Specific db build
         db_name = sys.argv[1]
