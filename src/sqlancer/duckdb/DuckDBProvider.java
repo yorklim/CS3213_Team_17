@@ -101,23 +101,23 @@ public class DuckDBProvider extends SQLProviderAdapter<DuckDBGlobalState, DuckDB
         tryDeleteFile(dbpath + ".wal");
     }
 
-//     @Override
-//     public SQLConnection createDatabase(DuckDBGlobalState globalState) throws SQLException {
-//     String databaseFile = System.getProperty("duckdb.database.file", "");
-//     String url = "jdbc:duckdb:" + databaseFile;
-//     tryDeleteDatabase(databaseFile);
-//
-//     MainOptions options = globalState.getOptions();
-//     if (!(options.isDefaultUsername() && options.isDefaultPassword())) {
-//     throw new AssertionError("DuckDB doesn't support credentials (username/password)");
-//     }
-//
-//     Connection conn = DriverManager.getConnection(url);
-//     Statement stmt = conn.createStatement();
-//     stmt.execute("PRAGMA checkpoint_threshold='1 byte';");
-//     stmt.close();
-//     return new SQLConnection(conn);
-//     }
+    // @Override
+    // public SQLConnection createDatabase(DuckDBGlobalState globalState) throws SQLException {
+    // String databaseFile = System.getProperty("duckdb.database.file", "");
+    // String url = "jdbc:duckdb:" + databaseFile;
+    // tryDeleteDatabase(databaseFile);
+    //
+    // MainOptions options = globalState.getOptions();
+    // if (!(options.isDefaultUsername() && options.isDefaultPassword())) {
+    // throw new AssertionError("DuckDB doesn't support credentials (username/password)");
+    // }
+    //
+    // Connection conn = DriverManager.getConnection(url);
+    // Statement stmt = conn.createStatement();
+    // stmt.execute("PRAGMA checkpoint_threshold='1 byte';");
+    // stmt.close();
+    // return new SQLConnection(conn);
+    // }
 
     @Override
     public SQLConnection createDatabase(DuckDBGlobalState globalState) throws SQLException {
