@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
-public class DriverManager {
+public final class DriverManager {
     private static final String CONFIG_FILE = "configs/drivers.PROPERTIES";
     private static final String DEFAULT_CONFIG = "configs/default-drivers.PROPERTIES";
     private static final String DRIVER_DIR = "drivers";

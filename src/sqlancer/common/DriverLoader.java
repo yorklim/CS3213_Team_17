@@ -5,13 +5,13 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.HttpURLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.net.HttpURLConnection;
 import java.nio.file.StandardCopyOption;
 import java.util.jar.JarFile;
 
-public class DriverLoader {
+public final class DriverLoader {
 
     private DriverLoader() {
     }

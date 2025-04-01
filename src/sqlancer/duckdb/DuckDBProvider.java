@@ -1,11 +1,11 @@
 package sqlancer.duckdb;
 
 import java.io.File;
+import java.net.URLClassLoader;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.net.URLClassLoader;
 import java.util.Properties;
 
 import com.google.auto.service.AutoService;
