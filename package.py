@@ -1,4 +1,3 @@
-import glob
 import json
 import os
 import shutil
@@ -326,7 +325,7 @@ def main():
         print("Usage : python3 package.py (db_name / full)")
         return -1
 
-    if len(sys.argv) == 2 and sys.argv[1] == "all":
+    if len(sys.argv) == 2 and sys.argv[1] == "full":
         subprocess.run(['mvn', 'clean', 'package', '-DskipTests'])
         return 0
 
