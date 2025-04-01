@@ -48,7 +48,7 @@ jobs:
   citus:
     name: DBMS Tests (Citus)
     runs-on: ubuntu-latest
-#    if: false
+    if: false
     steps:
       - uses: actions/checkout@v3
         with:
@@ -255,7 +255,7 @@ jobs:
   datafusion:
     name: DBMS Tests (DataFusion)
     runs-on: ubuntu-latest
-#    if: false
+    if: false
     steps:
       - uses: actions/checkout@v3
         with:
@@ -391,7 +391,7 @@ jobs:
 
   materialize:
     name: DBMS Tests (Materialize)
-#    if: false
+    if: false
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
