@@ -87,7 +87,7 @@ def build_dependencies(file_dir):
                         package = line.removeprefix("package ").removesuffix(";")
                         packages.add(package)
                         package_path = base_dir + package.replace(".", "/")
-                        file_paths = [os.path.join(package_path, i) for i in os.listdir(package_path)]
+                        file_paths = [os.path.join(package_path, i) for i in os.listdir(package_path) if i.endswith(".java")]
                         for file_path in file_paths:
                             if file_path not in checked:
                                 files.append(file_path)
