@@ -8,14 +8,17 @@ import java.nio.file.Paths;
 import java.util.Properties;
 
 public class DriverManager {
-    private static final String CONFIG_FILE = "configs/drivers.properties";
-    private static final String DEFAULT_CONFIG = "configs/default-drivers.properties";
+    private static final String CONFIG_FILE = "configs/drivers.PROPERTIES";
+    private static final String DEFAULT_CONFIG = "configs/default-drivers.PROPERTIES";
     private static final String DRIVER_DIR = "drivers";
     private static final String DEFAULT_REPO = "https://repo1.maven.org/maven2";
-    private static final Properties properties = new Properties();
+    private static final Properties PROPERTIES = new Properties();
 
     static {
         initialize();
+    }
+
+    private DriverManager() {
     }
 
     private static void initialize() {
@@ -24,7 +27,7 @@ public class DriverManager {
             Path configPath = Paths.get(CONFIG_FILE);
             if (Files.exists(configPath)) {
                 try (InputStream input = Files.newInputStream(configPath)) {
-                    properties.load(input);
+                    PROPERTIES.load(input);
                     System.out.println("Loaded configuration from: " + configPath);
                     return;
                 }
@@ -43,9 +46,9 @@ public class DriverManager {
                 Files.copy(defaultInput, configPath);
                 System.out.println("Created default configuration at: " + configPath);
 
-                // Reload the properties
+                // Reload the PROPERTIES
                 try (InputStream input = Files.newInputStream(configPath)) {
-                    properties.load(input);
+                    PROPERTIES.load(input);
                 }
             }
         } catch (IOException e) {
@@ -56,16 +59,16 @@ public class DriverManager {
     }
 
     private static void loadHardcodedDefaults() {
-        properties.setProperty("sqlite.driver.version", "3.47.2.0");
-        properties.setProperty("duckdb.driver.version", "1.1.3");
+        PROPERTIES.setProperty("sqlite.driver.version", "3.47.2.0");
+        PROPERTIES.setProperty("duckdb.driver.version", "1.1.3");
     }
 
     public static String getDriverVersion(String dbms) {
-        return properties.getProperty(dbms + ".driver.version");
+        return PROPERTIES.getProperty(dbms + ".driver.version");
     }
 
     public static String getRepositoryUrl() {
-        return properties.getProperty("repository.url", DEFAULT_REPO);
+        return PROPERTIES.getProperty("repository.url", DEFAULT_REPO);
     }
 
     public static Path getDriverPath(String dbms, String version) {

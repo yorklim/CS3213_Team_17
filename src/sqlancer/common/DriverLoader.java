@@ -7,11 +7,14 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.net.HttpURLConnection;
+import java.nio.file.StandardCopyOption;
 import java.util.jar.JarFile;
 
 public class DriverLoader {
+
+    private DriverLoader() {
+    }
 
     public static class DriverLoadResult {
         public final Class<?> driverClass;
@@ -59,8 +62,9 @@ public class DriverLoader {
             // Try manifest first
             try (JarFile jar = new JarFile(driverPath.toFile())) {
                 String manifestVersion = jar.getManifest().getMainAttributes().getValue("Implementation-Version");
-                if (manifestVersion != null)
+                if (manifestVersion != null) {
                     return manifestVersion;
+                }
             }
 
             // Try driver-specific method
