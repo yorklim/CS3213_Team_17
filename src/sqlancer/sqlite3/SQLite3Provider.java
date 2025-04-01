@@ -55,21 +55,6 @@ public class SQLite3Provider extends SQLProviderAdapter<SQLite3GlobalState, SQLi
     private static Class<?> driverClass;
     private static URLClassLoader driverLoader; // Store the class loader
 
-    static {
-        try {
-            DriverLoader.DriverLoadResult result = DriverLoader.loadDriver("org.sqlite.JDBC", "sqlite");
-            driverClass = result.driverClass;
-            driverLoader = result.classLoader;
-
-            // Add shutdown hook to clean up resources
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                closeResources();
-            }));
-        } catch (Exception e) {
-            throw new ExceptionInInitializerError("Failed to load SQLite driver: " + e.getMessage());
-        }
-    }
-
     public static boolean allowFloatingPointFp = true;
     public static boolean mustKnowResult;
 
@@ -79,6 +64,19 @@ public class SQLite3Provider extends SQLProviderAdapter<SQLite3GlobalState, SQLi
 
     public SQLite3Provider() {
         super(SQLite3GlobalState.class, SQLite3Options.class);
+    }
+
+    private static void initializeDriver() throws SQLException {
+        if (driverClass == null) {
+            try {
+                DriverLoader.DriverLoadResult result = DriverLoader.loadDriver("org.sqlite.JDBC", "sqlite");
+                driverClass = result.driverClass;
+                driverLoader = result.classLoader;
+                Runtime.getRuntime().addShutdownHook(new Thread(() -> closeResources()));
+            } catch (Exception e) {
+                throw new SQLException("Failed to load SQLite driver", e);
+            }
+        }
     }
 
     public static void closeResources() {
@@ -325,6 +323,9 @@ public class SQLite3Provider extends SQLProviderAdapter<SQLite3GlobalState, SQLi
         if (dataBase.exists() && ((SQLite3GlobalState) globalState).getDbmsSpecificOptions().deleteIfExists) {
             dataBase.delete();
         }
+
+        // Initialize the dynamic driver
+        SQLite3Provider.initializeDriver();
 
         String url = "jdbc:sqlite:" + dataBase.getAbsolutePath();
 

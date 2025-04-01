@@ -22,42 +22,60 @@ public final class DriverManager {
     }
 
     private static void initialize() {
-        try {
-            // Try to load existing config first
-            Path configPath = Paths.get(CONFIG_FILE);
-            if (Files.exists(configPath)) {
-                try (InputStream input = Files.newInputStream(configPath)) {
-                    PROPERTIES.load(input);
-                    System.out.println("Loaded configuration from: " + configPath);
-                    return;
-                }
+        Path configPath = Paths.get(CONFIG_FILE);
+
+        // Try to load existing config first if it exists
+        if (Files.exists(configPath) && loadPropertiesFromFile(configPath)) {
+            return;
+        }
+
+        // Load default config from classpath
+        try (InputStream defaultInput = DriverManager.class.getResourceAsStream(DEFAULT_CONFIG)) {
+            if (defaultInput == null) {
+                System.err.println("Default configuration not found in classpath: " + DEFAULT_CONFIG);
+                loadHardcodedDefaults();
+                return;
             }
 
-            // Load default config from classpath
-            try (InputStream defaultInput = DriverManager.class.getResourceAsStream(DEFAULT_CONFIG)) {
-                if (defaultInput == null) {
-                    throw new IOException("Default configuration not found in classpath: " + DEFAULT_CONFIG);
-                }
-
-                // Create parent directories if needed
-                Files.createDirectories(configPath.getParent());
-
-                // Copy default config
-                Files.copy(defaultInput, configPath);
-                System.out.println("Created default configuration at: " + configPath);
-
-                // Reload the PROPERTIES
-                try (InputStream input = Files.newInputStream(configPath)) {
-                    PROPERTIES.load(input);
-                }
+            // Try to create config file with default values
+            if (!createDefaultConfigFile(configPath, defaultInput)) {
+                loadHardcodedDefaults();
             }
         } catch (IOException e) {
-            System.err.println("ERROR: Failed to initialize driver configuration. Using hardcoded defaults.");
+            System.err.println("Failed to access default configuration: " + e.getMessage());
             loadHardcodedDefaults();
-            e.printStackTrace();
         }
     }
 
+    private static boolean loadPropertiesFromFile(Path configPath) {
+        try (InputStream input = Files.newInputStream(configPath)) {
+            PROPERTIES.load(input);
+            System.out.println("Loaded configuration from: " + configPath);
+            return true;
+        } catch (IOException e) {
+            System.err.println("Failed to load configuration file: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private static boolean createDefaultConfigFile(Path configPath, InputStream defaultInput) {
+        try {
+            Files.createDirectories(configPath.getParent());
+            Files.copy(defaultInput, configPath);
+            System.out.println("Created default configuration at: " + configPath);
+
+            // Load the newly created config file
+            return loadPropertiesFromFile(configPath);
+        } catch (IOException e) {
+            System.err.println("Failed to create default configuration: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Hardcoded fallback versions (suppressed PMD warning as these are semantic versions, not IP addresses).
+     */
+    @SuppressWarnings("PMD.AvoidUsingHardCodedIP")
     private static void loadHardcodedDefaults() {
         PROPERTIES.setProperty("sqlite.driver.version", "3.47.2.0");
         PROPERTIES.setProperty("duckdb.driver.version", "1.1.3");

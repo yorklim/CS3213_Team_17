@@ -24,18 +24,16 @@ public class DuckDBProvider extends SQLProviderAdapter<DuckDBGlobalState, DuckDB
     private static Class<?> driverClass;
     private static URLClassLoader driverLoader; // Store the class loader
 
-    static {
-        try {
-            DriverLoader.DriverLoadResult result = DriverLoader.loadDriver("org.duckdb.DuckDBDriver", "duckdb");
-            driverClass = result.driverClass;
-            driverLoader = result.classLoader;
-
-            // Add shutdown hook to clean up resources
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                closeResources();
-            }));
-        } catch (Exception e) {
-            throw new ExceptionInInitializerError("Failed to initialize DuckDB driver: " + e.getMessage());
+    private static void initializeDriver() throws SQLException {
+        if (driverClass == null) {
+            try {
+                DriverLoader.DriverLoadResult result = DriverLoader.loadDriver("org.duckdb.DuckDBDriver", "duckdb");
+                driverClass = result.driverClass;
+                driverLoader = result.classLoader;
+                Runtime.getRuntime().addShutdownHook(new Thread(() -> closeResources()));
+            } catch (Exception e) {
+                throw new SQLException("Failed to initialize DuckDB driver", e);
+            }
         }
     }
 
@@ -101,26 +99,11 @@ public class DuckDBProvider extends SQLProviderAdapter<DuckDBGlobalState, DuckDB
         tryDeleteFile(dbpath + ".wal");
     }
 
-    // @Override
-    // public SQLConnection createDatabase(DuckDBGlobalState globalState) throws SQLException {
-    // String databaseFile = System.getProperty("duckdb.database.file", "");
-    // String url = "jdbc:duckdb:" + databaseFile;
-    // tryDeleteDatabase(databaseFile);
-    //
-    // MainOptions options = globalState.getOptions();
-    // if (!(options.isDefaultUsername() && options.isDefaultPassword())) {
-    // throw new AssertionError("DuckDB doesn't support credentials (username/password)");
-    // }
-    //
-    // Connection conn = DriverManager.getConnection(url);
-    // Statement stmt = conn.createStatement();
-    // stmt.execute("PRAGMA checkpoint_threshold='1 byte';");
-    // stmt.close();
-    // return new SQLConnection(conn);
-    // }
-
     @Override
     public SQLConnection createDatabase(DuckDBGlobalState globalState) throws SQLException {
+        // Initialize the dynamic driver
+        DuckDBProvider.initializeDriver();
+
         String databaseFile = System.getProperty("duckdb.database.file", "");
         String url = "jdbc:duckdb:" + databaseFile;
         tryDeleteDatabase(databaseFile);
