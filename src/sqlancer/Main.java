@@ -20,6 +20,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.slf4j.simple.SimpleLogger;
+
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.JCommander.Builder;
 
@@ -38,7 +40,7 @@ public final class Main {
     static boolean progressMonitorStarted;
 
     static {
-        System.setProperty(org.slf4j.simple.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "ERROR");
+        System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "ERROR");
         if (!LOG_DIRECTORY.exists()) {
             LOG_DIRECTORY.mkdir();
         }
