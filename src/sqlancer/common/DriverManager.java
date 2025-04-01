@@ -72,10 +72,6 @@ public final class DriverManager {
         }
     }
 
-    /**
-     * Hardcoded fallback versions (suppressed PMD warning as these are semantic versions, not IP addresses).
-     */
-    @SuppressWarnings("PMD.AvoidUsingHardCodedIP")
     private static void loadHardcodedDefaults() {
         PROPERTIES.setProperty("sqlite.driver.version", "3.47.2.0");
         PROPERTIES.setProperty("duckdb.driver.version", "1.1.3");
