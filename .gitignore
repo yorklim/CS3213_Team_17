@@ -16,3 +16,6 @@ database*.log
 database*.properties
 database*.script
 databases/
+
+# Don't commit the drivers downloaded
+drivers/

@@ -19,6 +19,7 @@ import sqlancer.SQLConnection;
 import sqlancer.SQLProviderAdapter;
 import sqlancer.StatementExecutor;
 import sqlancer.common.DBMSCommon;
+import sqlancer.common.DriverLoader;
 import sqlancer.common.query.ExpectedErrors;
 import sqlancer.common.query.SQLQueryAdapter;
 import sqlancer.common.query.SQLQueryProvider;
@@ -285,6 +286,13 @@ public class SQLite3Provider extends SQLProviderAdapter<SQLite3GlobalState, SQLi
 
     @Override
     public SQLConnection createDatabase(SQLite3GlobalState globalState) throws SQLException {
+
+        try {
+            DriverLoader.loadDriver("org.sqlite.JDBC", "sqlite");
+        } catch (Exception e) {
+            throw new SQLException("Failed to load SQLite driver", e);
+        }
+
         File dir = new File("." + File.separator + "databases");
         if (!dir.exists()) {
             dir.mkdir();
