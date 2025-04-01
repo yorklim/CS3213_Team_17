@@ -95,6 +95,11 @@ def build_dependencies(file_dir):
                         continue
                     else:
                         break
+        elif os.path.isdir(f): # For nested yugabyte
+            file_paths = [os.path.join(f, i) for i in os.listdir(f)]
+            for file_path in file_paths:
+                if file_path not in checked:
+                    files.append(file_path)
 
     return packages, external_deps
 
