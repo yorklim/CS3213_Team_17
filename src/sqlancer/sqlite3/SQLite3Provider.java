@@ -2,11 +2,14 @@ package sqlancer.sqlite3;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.DriverManager;
+import java.net.URLClassLoader;
+import java.sql.Connection;
+import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 import com.google.auto.service.AutoService;
@@ -49,6 +52,24 @@ import sqlancer.sqlite3.schema.SQLite3Schema.SQLite3Table;
 @AutoService(DatabaseProvider.class)
 public class SQLite3Provider extends SQLProviderAdapter<SQLite3GlobalState, SQLite3Options> {
 
+    private static Class<?> driverClass;
+    private static URLClassLoader driverLoader; // Store the class loader
+
+    static {
+        try {
+            DriverLoader.DriverLoadResult result = DriverLoader.loadDriver("org.sqlite.JDBC", "sqlite");
+            driverClass = result.driverClass;
+            driverLoader = result.classLoader;
+
+            // Add shutdown hook to clean up resources
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                closeResources();
+            }));
+        } catch (Exception e) {
+            throw new ExceptionInInitializerError("Failed to load SQLite driver: " + e.getMessage());
+        }
+    }
+
     public static boolean allowFloatingPointFp = true;
     public static boolean mustKnowResult;
 
@@ -58,6 +79,16 @@ public class SQLite3Provider extends SQLProviderAdapter<SQLite3GlobalState, SQLi
 
     public SQLite3Provider() {
         super(SQLite3GlobalState.class, SQLite3Options.class);
+    }
+
+    public static void closeResources() {
+        if (driverLoader != null) {
+            try {
+                driverLoader.close();
+            } catch (Exception e) {
+                // Ignore
+            }
+        }
     }
 
     public enum Action implements AbstractAction<SQLite3GlobalState> {
@@ -286,13 +317,6 @@ public class SQLite3Provider extends SQLProviderAdapter<SQLite3GlobalState, SQLi
 
     @Override
     public SQLConnection createDatabase(SQLite3GlobalState globalState) throws SQLException {
-
-        try {
-            DriverLoader.loadDriver("org.sqlite.JDBC", "sqlite");
-        } catch (Exception e) {
-            throw new SQLException("Failed to load SQLite driver", e);
-        }
-
         File dir = new File("." + File.separator + "databases");
         if (!dir.exists()) {
             dir.mkdir();
@@ -301,8 +325,18 @@ public class SQLite3Provider extends SQLProviderAdapter<SQLite3GlobalState, SQLi
         if (dataBase.exists() && ((SQLite3GlobalState) globalState).getDbmsSpecificOptions().deleteIfExists) {
             dataBase.delete();
         }
+
         String url = "jdbc:sqlite:" + dataBase.getAbsolutePath();
-        return new SQLConnection(DriverManager.getConnection(url));
+
+        // Use the dynamically loaded driver instead of DriverManager
+        try {
+            Driver driver = (Driver) driverClass.getDeclaredConstructor().newInstance();
+            Properties props = new Properties();
+            Connection conn = driver.connect(url, props);
+            return new SQLConnection(conn);
+        } catch (Exception e) {
+            throw new SQLException("Failed to create SQLite connection", e);
+        }
     }
 
     @Override
