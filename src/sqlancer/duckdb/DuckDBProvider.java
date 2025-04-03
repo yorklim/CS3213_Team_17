@@ -24,7 +24,7 @@ public class DuckDBProvider extends SQLProviderAdapter<DuckDBGlobalState, DuckDB
     private static Class<?> driverClass;
     private static URLClassLoader driverLoader; // Store the class loader
 
-    private static void initializeDriver() throws SQLException {
+    private static synchronized void initializeDriver() throws SQLException {
         if (driverClass == null) {
             try {
                 DriverLoader.DriverLoadResult result = DriverLoader.loadDriver("org.duckdb.DuckDBDriver", "duckdb");

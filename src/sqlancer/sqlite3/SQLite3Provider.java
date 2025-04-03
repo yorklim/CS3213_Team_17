@@ -66,7 +66,7 @@ public class SQLite3Provider extends SQLProviderAdapter<SQLite3GlobalState, SQLi
         super(SQLite3GlobalState.class, SQLite3Options.class);
     }
 
-    private static void initializeDriver() throws SQLException {
+    private static synchronized void initializeDriver() throws SQLException {
         if (driverClass == null) {
             try {
                 DriverLoader.DriverLoadResult result = DriverLoader.loadDriver("org.sqlite.JDBC", "sqlite");
