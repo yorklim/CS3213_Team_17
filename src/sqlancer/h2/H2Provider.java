@@ -45,7 +45,7 @@ public class H2Provider extends SQLProviderAdapter<H2GlobalState, H2Options> {
 
         String staticQuery = System.getProperty("staticQuery");
         // For Future Custom Queries for Testing (Table Query Generation)
-        if (staticTable == null || !staticQuery.equals("true")) {
+        if (staticQuery == null || !staticQuery.equals("true")) {
             tableQueryGenerator.generateNExecute();
         } else {
             tableQueryGenerator.runQueryFromFile("staticQuery.sql", globalState);
