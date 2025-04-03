@@ -1,10 +1,12 @@
 package sqlancer.duckdb;
 
 import java.io.File;
+import java.net.URLClassLoader;
 import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
 
 import com.google.auto.service.AutoService;
 
@@ -13,13 +15,40 @@ import sqlancer.MainOptions;
 import sqlancer.SQLConnection;
 import sqlancer.SQLGlobalState;
 import sqlancer.SQLProviderAdapter;
+import sqlancer.common.DriverLoader;
 import sqlancer.duckdb.DuckDBProvider.DuckDBGlobalState;
 
 @AutoService(DatabaseProvider.class)
 public class DuckDBProvider extends SQLProviderAdapter<DuckDBGlobalState, DuckDBOptions> {
 
+    private static Class<?> driverClass;
+    private static URLClassLoader driverLoader; // Store the class loader
+
+    private static synchronized void initializeDriver() throws SQLException {
+        if (driverClass == null) {
+            try {
+                DriverLoader.DriverLoadResult result = DriverLoader.loadDriver("org.duckdb.DuckDBDriver", "duckdb");
+                driverClass = result.driverClass;
+                driverLoader = result.classLoader;
+                Runtime.getRuntime().addShutdownHook(new Thread(() -> closeResources()));
+            } catch (Exception e) {
+                throw new SQLException("Failed to initialize DuckDB driver", e);
+            }
+        }
+    }
+
     public DuckDBProvider() {
         super(DuckDBGlobalState.class, DuckDBOptions.class);
+    }
+
+    public static void closeResources() {
+        if (driverLoader != null) {
+            try {
+                driverLoader.close();
+            } catch (Exception e) {
+                // Ignore
+            }
+        }
     }
 
     public static class DuckDBGlobalState extends SQLGlobalState<DuckDBOptions, DuckDBSchema> {
@@ -72,6 +101,9 @@ public class DuckDBProvider extends SQLProviderAdapter<DuckDBGlobalState, DuckDB
 
     @Override
     public SQLConnection createDatabase(DuckDBGlobalState globalState) throws SQLException {
+        // Initialize the dynamic driver
+        DuckDBProvider.initializeDriver();
+
         String databaseFile = System.getProperty("duckdb.database.file", "");
         String url = "jdbc:duckdb:" + databaseFile;
         tryDeleteDatabase(databaseFile);
@@ -81,11 +113,20 @@ public class DuckDBProvider extends SQLProviderAdapter<DuckDBGlobalState, DuckDB
             throw new AssertionError("DuckDB doesn't support credentials (username/password)");
         }
 
-        Connection conn = DriverManager.getConnection(url);
-        Statement stmt = conn.createStatement();
-        stmt.execute("PRAGMA checkpoint_threshold='1 byte';");
-        stmt.close();
-        return new SQLConnection(conn);
+        // Manually instantiate and use the driver
+        try {
+            Driver driver = (Driver) driverClass.getDeclaredConstructor().newInstance();
+            Properties props = new Properties();
+            Connection conn = driver.connect(url, props);
+
+            Statement stmt = conn.createStatement();
+            stmt.execute("PRAGMA checkpoint_threshold='1 byte';");
+            stmt.close();
+
+            return new SQLConnection(conn);
+        } catch (Exception e) {
+            throw new SQLException("Failed to create connection", e);
+        }
     }
 
     @Override
