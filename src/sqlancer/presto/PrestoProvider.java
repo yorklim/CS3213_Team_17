@@ -1,5 +1,8 @@
 package sqlancer.presto;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -31,18 +34,27 @@ public class PrestoProvider extends SQLProviderAdapter<PrestoGlobalState, Presto
 
         String staticTable = System.getProperty("staticTable");
         // For Future Custom Queries for Testing (Table Creation)
-        if (staticTable == null || !staticTable.equals("true")) {
+        if (staticTable == null) {
             tableCreator.create();
         } else {
-            tableCreator.runQueryFromFile("staticTable.sql", globalState);
+            Path path = Paths.get(staticTable);
+            if (Files.notExists(path)) {
+                throw new IllegalArgumentException("File does not exist: " + staticTable);
+            }
+            tableCreator.runQueryFromFile(staticTable, globalState);
         }
 
         String staticQuery = System.getProperty("staticQuery");
         // For Future Custom Queries for Testing (Table Query Generation)
-        if (staticQuery == null || !staticQuery.equals("true")) {
+
+        if (staticQuery == null) {
             tableQueryGenerator.generateNExecute();
         } else {
-            tableQueryGenerator.runQueryFromFile("staticQuery.sql", globalState);
+            Path path = Paths.get(staticQuery);
+            if (Files.notExists(path)) {
+                throw new IllegalArgumentException("File does not exist: " + staticQuery);
+            }
+            tableQueryGenerator.runQueryFromFile(staticQuery, globalState);
         }
     }
 

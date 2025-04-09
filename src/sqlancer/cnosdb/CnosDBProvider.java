@@ -1,5 +1,9 @@
 package sqlancer.cnosdb;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import com.google.auto.service.AutoService;
 
 import sqlancer.DatabaseProvider;
@@ -38,18 +42,26 @@ public class CnosDBProvider extends ProviderAdapter<CnosDBGlobalState, CnosDBOpt
 
         String staticTable = System.getProperty("staticTable");
         // For Future Custom Queries for Testing (Table Creation)
-        if (staticTable == null || !staticTable.equals("true")) {
+        if (staticTable == null) {
             tableCreator.create();
         } else {
-            tableCreator.runQueryFromFileCnos("staticTable.sql", globalState);
+            Path path = Paths.get(staticTable);
+            if (Files.notExists(path)) {
+                throw new IllegalArgumentException("File does not exist: " + staticTable);
+            }
+            tableCreator.runQueryFromFileCnos(staticTable, globalState);
         }
 
         String staticQuery = System.getProperty("staticQuery");
         // For Future Custom Queries for Testing (Table Query Generation)
-        if (staticQuery == null || !staticQuery.equals("true")) {
+        if (staticQuery == null) {
             tableQueryGenerator.generateNExecute();
         } else {
-            tableQueryGenerator.runQueryFromFileCnos("staticQuery.sql", globalState);
+            Path path = Paths.get(staticQuery);
+            if (Files.notExists(path)) {
+                throw new IllegalArgumentException("File does not exist: " + staticQuery);
+            }
+            tableQueryGenerator.runQueryFromFileCnos(staticQuery, globalState);
         }
     }
 

@@ -55,6 +55,11 @@ public abstract class ProviderAdapter<G extends GlobalState<O, ? extends Abstrac
 
             TestOracle<G> oracle = getTestOracle(globalState);
             for (int i = 0; i < globalState.getOptions().getNrQueries(); i++) {
+                String skipOracle = System.getProperty("skipOracle");
+                // skipOracle simulates the oracle always returning true
+                if (skipOracle != null && skipOracle.equals("true")) {
+                    break;
+                }
                 try (OracleRunReproductionState localState = globalState.getState().createLocalState()) {
                     assert localState != null;
                     try {
