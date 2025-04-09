@@ -1,5 +1,8 @@
 package sqlancer.doris;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 
 import com.google.auto.service.AutoService;
@@ -40,6 +43,10 @@ public class DorisProvider extends SQLProviderAdapter<DorisGlobalState, DorisOpt
         if (staticTable == null) {
             tableCreator.create();
         } else {
+            Path path = Paths.get(staticTable);
+            if (Files.notExists(path)) {
+                throw new IllegalArgumentException("File does not exist: " + staticTable);
+            }
             tableCreator.runQueryFromFile(staticTable, globalState);
         }
 
@@ -49,6 +56,10 @@ public class DorisProvider extends SQLProviderAdapter<DorisGlobalState, DorisOpt
         if (staticQuery == null) {
             tableQueryGenerator.generateNExecute();
         } else {
+            Path path = Paths.get(staticQuery);
+            if (Files.notExists(path)) {
+                throw new IllegalArgumentException("File does not exist: " + staticQuery);
+            }
             tableQueryGenerator.runQueryFromFile(staticQuery, globalState);
         }
     }

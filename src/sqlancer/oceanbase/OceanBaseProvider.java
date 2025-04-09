@@ -1,5 +1,8 @@
 package sqlancer.oceanbase;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
@@ -30,14 +33,23 @@ public class OceanBaseProvider extends SQLProviderAdapter<OceanBaseGlobalState, 
         if (staticTable == null) {
             tableCreator.create();
         } else {
+            Path path = Paths.get(staticTable);
+            if (Files.notExists(path)) {
+                throw new IllegalArgumentException("File does not exist: " + staticTable);
+            }
             tableCreator.runQueryFromFile(staticTable, globalState);
         }
 
         String staticQuery = System.getProperty("staticQuery");
         // For Future Custom Queries for Testing (Table Query Generation)
+
         if (staticQuery == null) {
             tableQueryGenerator.generateNExecute();
         } else {
+            Path path = Paths.get(staticQuery);
+            if (Files.notExists(path)) {
+                throw new IllegalArgumentException("File does not exist: " + staticQuery);
+            }
             tableQueryGenerator.runQueryFromFile(staticQuery, globalState);
         }
     }

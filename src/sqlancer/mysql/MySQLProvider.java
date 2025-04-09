@@ -1,5 +1,8 @@
 package sqlancer.mysql;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,14 +39,23 @@ public class MySQLProvider extends SQLProviderAdapter<MySQLGlobalState, MySQLOpt
         if (staticTable == null) {
             tableCreator.create();
         } else {
+            Path path = Paths.get(staticTable);
+            if (Files.notExists(path)) {
+                throw new IllegalArgumentException("File does not exist: " + staticTable);
+            }
             tableCreator.runQueryFromFile(staticTable, globalState);
         }
 
         String staticQuery = System.getProperty("staticQuery");
         // For Future Custom Queries for Testing (Table Query Generation)
+
         if (staticQuery == null) {
             tableQueryGenerator.generateNExecute();
         } else {
+            Path path = Paths.get(staticQuery);
+            if (Files.notExists(path)) {
+                throw new IllegalArgumentException("File does not exist: " + staticQuery);
+            }
             tableQueryGenerator.runQueryFromFile(staticQuery, globalState);
         }
 
