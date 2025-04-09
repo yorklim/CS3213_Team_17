@@ -335,5 +335,4 @@ public class MainOptions {
     public boolean canonicalizeSqlString() {
         return canonicalizeSqlString;
     }
-
 }
