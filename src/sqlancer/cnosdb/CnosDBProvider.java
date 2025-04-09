@@ -46,7 +46,7 @@ public class CnosDBProvider extends ProviderAdapter<CnosDBGlobalState, CnosDBOpt
 
         String staticQuery = System.getProperty("staticQuery");
         // For Future Custom Queries for Testing (Table Query Generation)
-        if (staticTable == null || !staticQuery.equals("true")) {
+        if (staticQuery == null || !staticQuery.equals("true")) {
             tableQueryGenerator.generateNExecute();
         } else {
             tableQueryGenerator.runQueryFromFileCnos("staticQuery.sql", globalState);
