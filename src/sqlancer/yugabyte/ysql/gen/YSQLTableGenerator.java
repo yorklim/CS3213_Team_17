@@ -22,15 +22,13 @@ public class YSQLTableGenerator {
     private final StringBuilder sb = new StringBuilder();
     private final List<YSQLColumn> columnsToBeAdded = new ArrayList<>();
     private final YSQLTable table;
-    private final boolean generateOnlyKnown;
     private final YSQLGlobalState globalState;
     private boolean columnCanHavePrimaryKey;
     private boolean columnHasPrimaryKey;
     private boolean isTemporaryTable;
 
-    public YSQLTableGenerator(String tableName, boolean generateOnlyKnown, YSQLGlobalState globalState) {
+    public YSQLTableGenerator(String tableName, YSQLGlobalState globalState) {
         this.tableName = tableName;
-        this.generateOnlyKnown = generateOnlyKnown;
         this.globalState = globalState;
         table = new YSQLTable(tableName, columnsToBeAdded, null, null, null, false, false);
         // YB catalog specific messages
@@ -62,8 +60,8 @@ public class YSQLTableGenerator {
         YSQLErrors.addCommonTableErrors(errors);
     }
 
-    public static SQLQueryAdapter generate(String tableName, boolean generateOnlyKnown, YSQLGlobalState globalState) {
-        return new YSQLTableGenerator(tableName, generateOnlyKnown, globalState).generate();
+    public static SQLQueryAdapter generate(String tableName, YSQLGlobalState globalState) {
+        return new YSQLTableGenerator(tableName, globalState).generate();
     }
 
     private SQLQueryAdapter generate() {
@@ -112,7 +110,6 @@ public class YSQLTableGenerator {
         if (Randomly.getBoolean() && isTemporaryTable) {
             sb.append(" ON COMMIT ");
             // todo ON COMMIT DROP fails and it's known issue
-            // sb.append(Randomly.fromOptions("PRESERVE ROWS", "DELETE ROWS", "DROP"));
             sb.append(Randomly.fromOptions("PRESERVE ROWS", "DELETE ROWS"));
             sb.append(" ");
         }
@@ -122,7 +119,7 @@ public class YSQLTableGenerator {
         sb.append(name);
         sb.append(" ");
         YSQLDataType type = YSQLDataType.getRandomType();
-        boolean serial = YSQLCommon.appendDataType(type, sb, true, generateOnlyKnown, globalState.getCollates());
+        boolean serial = YSQLCommon.appendDataType(type, sb, true);
         YSQLColumn c = new YSQLColumn(name, type);
         c.setTable(table);
         columnsToBeAdded.add(c);

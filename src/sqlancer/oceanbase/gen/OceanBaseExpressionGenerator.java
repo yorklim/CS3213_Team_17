@@ -1,6 +1,5 @@
 package sqlancer.oceanbase.gen;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,7 +10,6 @@ import sqlancer.common.gen.TLPWhereGenerator;
 import sqlancer.common.gen.UntypedExpressionGenerator;
 import sqlancer.common.schema.AbstractTables;
 import sqlancer.oceanbase.OceanBaseGlobalState;
-import sqlancer.oceanbase.OceanBaseSchema;
 import sqlancer.oceanbase.OceanBaseSchema.OceanBaseColumn;
 import sqlancer.oceanbase.OceanBaseSchema.OceanBaseDataType;
 import sqlancer.oceanbase.OceanBaseSchema.OceanBaseRowValue;
@@ -52,7 +50,7 @@ public class OceanBaseExpressionGenerator extends UntypedExpressionGenerator<Oce
         this.state = state;
     }
 
-    public OceanBaseExpressionGenerator setCon(Connection con) {
+    public OceanBaseExpressionGenerator setCon() {
         return this;
     }
 
@@ -61,7 +59,7 @@ public class OceanBaseExpressionGenerator extends UntypedExpressionGenerator<Oce
         return this;
     }
 
-    public OceanBaseExpressionGenerator setOceanBaseColumns(List<OceanBaseSchema.OceanBaseColumn> columns) {
+    public OceanBaseExpressionGenerator setOceanBaseColumns() {
         return this;
     }
 
@@ -288,7 +286,7 @@ public class OceanBaseExpressionGenerator extends UntypedExpressionGenerator<Oce
 
     private enum Option {
         TRUE, FALSE_NULL, NOT_NOT_TRUE, NOT_FALSE_NOT_NULL, IF, IFNULL, COALESCE
-    };
+    }
 
     private OceanBaseExpression getTrueExpr(OceanBaseExpression randomWhereCondition) {
         // we can treat "is true" as combinations of "is flase" and "not","is not true" and "not",etc.
@@ -307,7 +305,7 @@ public class OceanBaseExpressionGenerator extends UntypedExpressionGenerator<Oce
         OceanBaseUnaryPostfixOperation isNotNULL = new OceanBaseUnaryPostfixOperation(randomWhereCondition,
                 OceanBaseUnaryPostfixOperation.UnaryPostfixOperator.IS_NULL, true);
 
-        OceanBaseExpression expr = OceanBaseConstant.createNullConstant();
+        OceanBaseExpression expr;
         Option a = Randomly.fromOptions(Option.values());
         switch (a) {
         case TRUE:

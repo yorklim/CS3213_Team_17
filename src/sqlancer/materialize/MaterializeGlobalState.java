@@ -54,10 +54,8 @@ public class MaterializeGlobalState extends SQLGlobalState<MaterializeOptions, M
         return collNames;
     }
 
-    private List<String> getOpclasses() throws SQLException {
+    private List<String> getOpclasses() {
         List<String> opClasses = new ArrayList<>();
-        // select opcname FROM pg_opclass;
-        // ERROR: unknown catalog item 'pg_opclass'
         opClasses.add("array_ops");
         opClasses.add("array_ops");
         opClasses.add("bit_ops");

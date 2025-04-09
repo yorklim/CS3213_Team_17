@@ -67,9 +67,6 @@ public class SQLite3Function extends SQLite3Expression {
             @Override
             public SQLite3Constant apply(SQLite3Constant... args) {
                 return null;
-                // SQLite3Constant binaryValue = SQLite3Cast.castToBlob(args[0]);
-                // return
-                // SQLite3Constant.createTextConstant(binaryValue.getStringRepresentation());
             }
         },
 
@@ -301,7 +298,7 @@ public class SQLite3Function extends SQLite3Expression {
             return false;
         }
 
-        public TypeAffinity getAffinity(SQLite3Expression... args) {
+        public TypeAffinity getAffinity() {
             return TypeAffinity.NONE;
         }
 
@@ -345,11 +342,11 @@ public class SQLite3Function extends SQLite3Expression {
         }
         return func.apply(constants, collate);
 
-    };
+    }
 
     @Override
     public TypeAffinity getAffinity() {
-        return func.getAffinity(args);
+        return func.getAffinity();
     }
 
 }

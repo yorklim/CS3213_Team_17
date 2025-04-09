@@ -117,10 +117,6 @@ public class MySQLTableGenerator {
             }
             sb.append(" HASH(");
             // TODO: consider arbitrary expressions
-            // MySQLExpression expr =
-            // MySQLRandomExpressionGenerator.generateRandomExpression(Collections.emptyList(),
-            // null, r);
-            // sb.append(MySQLVisitor.asString(expr));
             sb.append(Randomly.fromList(columns));
             sb.append(")");
             break;
@@ -202,11 +198,6 @@ public class MySQLTableGenerator {
                 sb.append("ENGINE = ");
                 sb.append(fromOptions);
                 break;
-            // case ENCRYPTION:
-            // sb.append("ENCRYPTION = '");
-            // sb.append(Randomly.fromOptions("Y", "N"));
-            // sb.append("'");
-            // break;
             case INSERT_METHOD:
                 sb.append("INSERT_METHOD = ");
                 sb.append(Randomly.fromOptions("NO", "FIRST", "LAST"));

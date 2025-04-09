@@ -21,7 +21,7 @@ public class SQLite3MatchStringGenerator {
 
     enum MatchAction {
         NEAR, LOGICAL_BINARY_OPERATOR, NOT, COLUMN, COLSPEC, STRING
-    };
+    }
 
     private void generate() {
         if (depth == 0) {

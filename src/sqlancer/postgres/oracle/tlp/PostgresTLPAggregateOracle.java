@@ -135,19 +135,6 @@ public class PostgresTLPAggregateOracle extends PostgresTLPBase implements TestO
         case MAX:
         case MIN:
             return aliasArgs(Arrays.asList(aggregate));
-        // case AVG:
-        //// List<PostgresExpression> arg = Arrays.asList(new
-        // PostgresCast(aggregate.getExpr().get(0),
-        // PostgresDataType.DECIMAL.get()));
-        // PostgresAggregate sum = new PostgresAggregate(PostgresAggregateFunction.SUM,
-        // aggregate.getExpr());
-        // PostgresCast count = new PostgresCast(
-        // new PostgresAggregate(PostgresAggregateFunction.COUNT, aggregate.getExpr()),
-        // PostgresDataType.DECIMAL.get());
-        //// PostgresBinaryArithmeticOperation avg = new
-        // PostgresBinaryArithmeticOperation(sum, count,
-        // PostgresBinaryArithmeticOperator.DIV);
-        // return aliasArgs(Arrays.asList(sum, count));
         default:
             throw new AssertionError(aggregate.getFunction());
         }
@@ -164,8 +151,6 @@ public class PostgresTLPAggregateOracle extends PostgresTLPBase implements TestO
 
     private String getOuterAggregateFunction(PostgresAggregate aggregate) {
         switch (aggregate.getFunction()) {
-        // case AVG:
-        // return "SUM(agg0::DECIMAL)/SUM(agg1)::DECIMAL";
         case COUNT:
             return PostgresAggregateFunction.SUM.toString() + "(agg0)";
         default:

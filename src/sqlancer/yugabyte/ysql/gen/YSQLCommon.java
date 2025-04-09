@@ -22,8 +22,8 @@ public final class YSQLCommon {
     private YSQLCommon() {
     }
 
-    public static boolean appendDataType(YSQLDataType type, StringBuilder sb, boolean allowSerial,
-            boolean generateOnlyKnown, List<String> opClasses) throws AssertionError {
+    public static boolean appendDataType(YSQLDataType type, StringBuilder sb, boolean allowSerial)
+            throws AssertionError {
         boolean serial = false;
         switch (type) {
         case BOOLEAN:
@@ -75,9 +75,7 @@ public final class YSQLCommon {
             break;
         case BIT:
             sb.append("BIT");
-            // if (Randomly.getBoolean()) {
             sb.append(" VARYING");
-            // }
             sb.append("(");
             sb.append(Randomly.getNotCachedInteger(1, 500));
             sb.append(")");
@@ -266,18 +264,5 @@ public final class YSQLCommon {
     public enum TableConstraints {
         CHECK, UNIQUE, PRIMARY_KEY, FOREIGN_KEY
     }
-
-    // private enum StorageParameters {
-    // COLOCATED("COLOCATED", (r) -> Randomly.getBoolean());
-    // // TODO
-    //
-    // private final String parameter;
-    // private final Function<Randomly, Object> op;
-    //
-    // StorageParameters(String parameter, Function<Randomly, Object> op) {
-    // this.parameter = parameter;
-    // this.op = op;
-    // }
-    // }
 
 }

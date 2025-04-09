@@ -59,8 +59,6 @@ public abstract class DatabendConstant implements DatabendExpression {
 
     public abstract DatabendConstant isLessThan(DatabendConstant rightVal);
 
-    // public abstract String getTextRepresentation();
-
     public static class DatabendNullConstant extends DatabendConstant {
 
         @Override
@@ -93,10 +91,6 @@ public abstract class DatabendConstant implements DatabendExpression {
             return DatabendDataType.NULL;
         }
 
-        // @Override
-        // public DatabendConstant getExpectedValue() {
-        // return super.getExpectedValue();
-        // }
     }
 
     public static class DatabendIntConstant extends DatabendConstant {

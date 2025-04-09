@@ -1,7 +1,5 @@
 package sqlancer.sqlite3.gen.ddl;
 
-import java.sql.SQLException;
-
 import sqlancer.IgnoreMeException;
 import sqlancer.Randomly;
 import sqlancer.common.DBMSCommon;
@@ -29,7 +27,7 @@ public final class SQLite3ViewGenerator {
         return new SQLQueryAdapter(sb.toString(), true);
     }
 
-    public static SQLQueryAdapter generate(SQLite3GlobalState globalState) throws SQLException {
+    public static SQLQueryAdapter generate(SQLite3GlobalState globalState) {
         if (globalState.getSchema().getTables().getTables()
                 .size() >= globalState.getDbmsSpecificOptions().maxNumTables) {
             throw new IgnoreMeException();

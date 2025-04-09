@@ -15,7 +15,7 @@ import sqlancer.common.query.ExpectedErrors;
 import sqlancer.common.query.SQLQueryAdapter;
 import sqlancer.yugabyte.ysql.YSQLErrors;
 import sqlancer.yugabyte.ysql.YSQLGlobalState;
-import sqlancer.yugabyte.ysql.YSQLProvider;
+import sqlancer.yugabyte.ysql.YSQLTableQueryGenerator;
 import sqlancer.yugabyte.ysql.gen.YSQLTableGenerator;
 
 public class YSQLCatalog implements TestOracle<YSQLGlobalState> {
@@ -26,14 +26,16 @@ public class YSQLCatalog implements TestOracle<YSQLGlobalState> {
     protected final MainOptions options;
     protected final SQLConnection con;
 
-    private final List<YSQLProvider.Action> dmlActions = Arrays.asList(YSQLProvider.Action.INSERT,
-            YSQLProvider.Action.UPDATE, YSQLProvider.Action.DELETE);
-    private final List<YSQLProvider.Action> catalogActions = Arrays.asList(YSQLProvider.Action.CREATE_VIEW,
-            YSQLProvider.Action.CREATE_SEQUENCE, YSQLProvider.Action.ALTER_TABLE, YSQLProvider.Action.SET_CONSTRAINTS,
-            YSQLProvider.Action.DISCARD, YSQLProvider.Action.DROP_INDEX, YSQLProvider.Action.COMMENT_ON,
-            YSQLProvider.Action.RESET_ROLE, YSQLProvider.Action.RESET);
-    private final List<YSQLProvider.Action> diskActions = Arrays.asList(YSQLProvider.Action.TRUNCATE,
-            YSQLProvider.Action.VACUUM);
+    private final List<YSQLTableQueryGenerator.Action> dmlActions = Arrays.asList(YSQLTableQueryGenerator.Action.INSERT,
+            YSQLTableQueryGenerator.Action.UPDATE, YSQLTableQueryGenerator.Action.DELETE);
+    private final List<YSQLTableQueryGenerator.Action> catalogActions = Arrays.asList(
+            YSQLTableQueryGenerator.Action.CREATE_VIEW, YSQLTableQueryGenerator.Action.CREATE_SEQUENCE,
+            YSQLTableQueryGenerator.Action.ALTER_TABLE, YSQLTableQueryGenerator.Action.SET_CONSTRAINTS,
+            YSQLTableQueryGenerator.Action.DISCARD, YSQLTableQueryGenerator.Action.DROP_INDEX,
+            YSQLTableQueryGenerator.Action.COMMENT_ON, YSQLTableQueryGenerator.Action.RESET_ROLE,
+            YSQLTableQueryGenerator.Action.RESET);
+    private final List<YSQLTableQueryGenerator.Action> diskActions = Arrays
+            .asList(YSQLTableQueryGenerator.Action.TRUNCATE, YSQLTableQueryGenerator.Action.VACUUM);
 
     public YSQLCatalog(YSQLGlobalState globalState) {
         this.state = globalState;
@@ -44,7 +46,7 @@ public class YSQLCatalog implements TestOracle<YSQLGlobalState> {
         YSQLErrors.addCommonFetchErrors(errors);
     }
 
-    private YSQLProvider.Action getRandomAction(List<YSQLProvider.Action> actions) {
+    private YSQLTableQueryGenerator.Action getRandomAction(List<YSQLTableQueryGenerator.Action> actions) {
         return actions.get(state.getRandomly().getInteger(0, actions.size()));
     }
 
@@ -61,7 +63,7 @@ public class YSQLCatalog implements TestOracle<YSQLGlobalState> {
 
                 try {
                     String tableName = DBMSCommon.createTableName(globalState.getSchema().getDatabaseTables().size());
-                    SQLQueryAdapter createTable = YSQLTableGenerator.generate(tableName, true, globalState);
+                    SQLQueryAdapter createTable = YSQLTableGenerator.generate(tableName, globalState);
                     globalState.executeStatement(createTable);
                     globalState.getManager().incrementSelectQueryCount();
                     globalState.executeStatement(new SQLQueryAdapter("COMMIT", true));
@@ -79,7 +81,7 @@ public class YSQLCatalog implements TestOracle<YSQLGlobalState> {
         if (seed > 95) {
             createTables(state, 1);
         } else {
-            YSQLProvider.Action randomAction;
+            YSQLTableQueryGenerator.Action randomAction;
 
             if (seed > 40) {
                 randomAction = getRandomAction(dmlActions);

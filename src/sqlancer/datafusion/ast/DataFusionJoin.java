@@ -77,7 +77,6 @@ public class DataFusionJoin
 
     public enum JoinType {
         INNER;
-        // NATURAL, LEFT, RIGHT;
 
         public static JoinType getRandom() {
             return Randomly.fromOptions(values());

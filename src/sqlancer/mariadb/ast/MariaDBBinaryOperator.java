@@ -13,11 +13,8 @@ public class MariaDBBinaryOperator implements MariaDBExpression {
         GREATER_THAN_EQUAL(">="),
 
         // regex
-        LIKE("LIKE"), RLIKE("RLIKE"), REGEXP("REGEXP"),
-        // PLUS("+");
-        AND("AND"), OR("OR"), XOR("XOR"),
-
-        BITWISE_AND("&"), LEFT_SHIFT("<<"), RIGHT_SHIFT(">>"), BITWISE_XOR("^"), BITWISE_OR("|");
+        LIKE("LIKE"), RLIKE("RLIKE"), REGEXP("REGEXP"), AND("AND"), OR("OR"), XOR("XOR"), BITWISE_AND("&"),
+        LEFT_SHIFT("<<"), RIGHT_SHIFT(">>"), BITWISE_XOR("^"), BITWISE_OR("|");
 
         private String op;
 
@@ -33,7 +30,7 @@ public class MariaDBBinaryOperator implements MariaDBExpression {
             return Randomly.fromOptions(MariaDBBinaryComparisonOperator.values());
         }
 
-    };
+    }
 
     public MariaDBBinaryOperator(MariaDBExpression left, MariaDBExpression right, MariaDBBinaryComparisonOperator op) {
         this.left = left;
@@ -47,7 +44,7 @@ public class MariaDBBinaryOperator implements MariaDBExpression {
 
     public MariaDBExpression getRight() {
         return right;
-    };
+    }
 
     public MariaDBBinaryComparisonOperator getOp() {
         return op;

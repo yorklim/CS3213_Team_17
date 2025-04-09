@@ -265,7 +265,6 @@ public class TiDBExpressionGenerator extends UntypedExpressionGenerator<TiDBExpr
             mutators.add(this::mutateOr);
         }
         mutators.add(this::mutateLimit);
-        // mutators.add(this::mutateDistinct);
 
         return Randomly.fromList(mutators).apply(select);
     }
@@ -290,7 +289,7 @@ public class TiDBExpressionGenerator extends UntypedExpressionGenerator<TiDBExpr
             join.setOnCondition(joinGen2.generateExpression());
         }
 
-        JoinType newJoinType = TiDBJoin.JoinType.INNER;
+        JoinType newJoinType;
         if (join.getJoinType() == JoinType.LEFT || join.getJoinType() == JoinType.RIGHT) { // No invarient relation
                                                                                            // between LEFT and RIGHT
                                                                                            // join

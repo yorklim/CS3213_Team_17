@@ -26,7 +26,9 @@ public class MariaDBSetGenerator {
         this.isSingleThreaded = options.getNumberConcurrentThreads() == 1;
     }
 
-    public static SQLQueryAdapter set(Randomly r, MainOptions options) {
+    public static SQLQueryAdapter set(MariaDBGlobalState globalState) {
+        Randomly r = globalState.getRandomly();
+        MainOptions options = globalState.getOptions();
         return new MariaDBSetGenerator(r, options).get();
     }
 
@@ -73,7 +75,7 @@ public class MariaDBSetGenerator {
         MYISAM_USE_MMAP("myisam_use_mmap", (r) -> Randomly.fromOptions("OFF", "ON"), Scope.GLOBAL),
         OPTIMIZER_PRUNE_LEVEL("optimizer_prune_level", (r) -> Randomly.fromOptions(0, 1), Scope.GLOBAL, Scope.SESSION),
         OPTIMIZER_SEARCH_DEPTH("optimizer_search_depth", (r) -> r.getLong(0, 62), Scope.GLOBAL, Scope.SESSION),
-        OPTIMIZER_SWITCH("optimizer_switch", (r) -> getOptimizerSwitchConfiguration(r), Scope.GLOBAL, Scope.SESSION),
+        OPTIMIZER_SWITCH("optimizer_switch", (r) -> getOptimizerSwitchConfiguration(), Scope.GLOBAL, Scope.SESSION),
         // PRELOAD_BUFFER_SIZE("preload_buffer_size", (r) -> r.getLong(1024, 1073741824), Scope.GLOBAL, Scope.SESSION),
         // QUERY_ALLOC_BLOCK_SIZE("query_alloc_block_size", (r) -> r.getLong(1024, 4294967295L), Scope.GLOBAL,
         // Scope.SESSION),
@@ -118,7 +120,7 @@ public class MariaDBSetGenerator {
             this.scopes = scopes.clone();
         }
 
-        private static String getOptimizerSwitchConfiguration(Randomly r) {
+        private static String getOptimizerSwitchConfiguration() {
             StringBuilder sb = new StringBuilder();
             sb.append("'");
             String[] options = { "condition_pushdown_for_derived", "condition_pushdown_for_subquery",
@@ -187,7 +189,7 @@ public class MariaDBSetGenerator {
         return new SQLQueryAdapter("SET optimizer_switch='default'");
     }
 
-    public static List<SQLQueryAdapter> getAllOptimizer(MariaDBGlobalState globalState) {
+    public static List<SQLQueryAdapter> getAllOptimizer() {
         List<SQLQueryAdapter> result = new ArrayList<>();
         String[] options = { "condition_pushdown_for_derived", "condition_pushdown_for_subquery",
                 "condition_pushdown_from_having", "derived_merge", "derived_with_keys", "exists_to_in", "extended_keys",

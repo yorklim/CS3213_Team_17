@@ -19,9 +19,6 @@ public final class PostgresTruncateGenerator {
             sb.append(" TABLE");
         }
         // TODO partitions
-        // if (Randomly.getBoolean()) {
-        // sb.append(" ONLY");
-        // }
         sb.append(" ");
         sb.append(globalState.getSchema().getDatabaseTablesRandomSubsetNotEmpty().stream().map(t -> t.getName())
                 .collect(Collectors.joining(", ")));

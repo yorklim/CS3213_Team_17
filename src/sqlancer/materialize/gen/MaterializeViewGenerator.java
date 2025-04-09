@@ -17,17 +17,13 @@ public final class MaterializeViewGenerator {
         ExpectedErrors errors = new ExpectedErrors();
         StringBuilder sb = new StringBuilder("CREATE");
         @SuppressWarnings("unused")
-        boolean materialized;
-        @SuppressWarnings("unused")
         boolean recursive = false;
         if (Randomly.getBoolean()) {
             sb.append(" MATERIALIZED");
-            materialized = true;
         } else {
             if (Randomly.getBoolean()) {
                 sb.append(" OR REPLACE");
             }
-            materialized = false;
         }
         sb.append(" VIEW ");
         int i = 0;

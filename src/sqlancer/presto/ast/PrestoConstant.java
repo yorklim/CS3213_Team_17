@@ -212,11 +212,11 @@ public abstract class PrestoConstant implements PrestoExpression {
         return new PrestoTimestampWithTimezoneConstant(integer);
     }
 
-    public static PrestoExpression createIntervalDayToSecond(long integer) {
+    public static PrestoExpression createIntervalDayToSecond() {
         return new PrestoIntervalDayToSecondConstant();
     }
 
-    public static PrestoExpression createIntervalYearToMonth(long integer) {
+    public static PrestoExpression createIntervalYearToMonth() {
         return new PrestoIntervalYearToMonthConstant();
     }
 
@@ -280,9 +280,9 @@ public abstract class PrestoConstant implements PrestoExpression {
         case TIMESTAMP_WITH_TIME_ZONE:
             return PrestoConstant.createTimestampWithTimeZoneConstant(randomly.getLong(0, System.currentTimeMillis()));
         case INTERVAL_YEAR_TO_MONTH:
-            return PrestoConstant.createIntervalYearToMonth(randomly.getLong(0, System.currentTimeMillis()));
+            return PrestoConstant.createIntervalYearToMonth();
         case INTERVAL_DAY_TO_SECOND:
-            return PrestoConstant.createIntervalDayToSecond(randomly.getLong(0, System.currentTimeMillis()));
+            return PrestoConstant.createIntervalDayToSecond();
         case INT:
             return PrestoConstant.PrestoIntConstant.createIntConstant(type, Randomly.getNonCachedInteger(),
                     castInteger);
@@ -693,11 +693,7 @@ public abstract class PrestoConstant implements PrestoExpression {
 
         @Override
         public String toString() {
-            // if (toInterval == null) {
             return String.format("INTERVAL '%s' %s", textRepresentation, fromInterval.name());
-            // } else {
-            // return String.format("INTERVAL '%s' %s TO %s", textRepresentation, fromInterval, toInterval);
-            // }
         }
 
         private enum Interval {

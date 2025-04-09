@@ -211,7 +211,8 @@ public class CitusTLPBase extends PostgresTLPBase {
             List<PostgresColumn> columns = new ArrayList<>();
             columns.addAll(subqueryTables.getColumns());
             columns.addAll(fromTable.getColumns());
-            PostgresExpression subquery = createSubquery(globalState, String.format("sub%d", i), subqueryTables);
+            PostgresExpression subquery = PostgresExpressionGenerator.createSubquery(globalState,
+                    String.format("sub%d", i), subqueryTables);
             PostgresExpressionGenerator subqueryJoinGen = new PostgresExpressionGenerator(globalState)
                     .setColumns(columns);
             PostgresExpression joinClause = subqueryJoinGen.generateExpression(PostgresDataType.BOOLEAN);

@@ -1,6 +1,5 @@
 package sqlancer.sqlite3.gen;
 
-import java.sql.SQLException;
 import java.util.function.Supplier;
 
 import sqlancer.Randomly;
@@ -120,15 +119,6 @@ public class SQLite3PragmaGenerator {
             break;
         // TODO: [SQLITE_ERROR] SQL error or missing database (attached databases must
         // use the same text encoding as main database)
-        // case ENCODING:
-        // sb.append("PRAGMA main.encoding = \"");
-        // String encoding = Randomly.fromOptions("UTF-8", "UTF-16", "UTF-16be", "UTF-16le");
-        // sb.append(encoding);
-        // sb.append("\";\n");
-        // sb.append("PRAGMA temp.encoding = \"");
-        // sb.append(encoding);
-        // sb.append("\"");
-        // break;
         case FOREIGN_KEYS:
             createPragma("foreign_keys", () -> getRandomTextBoolean());
             break;
@@ -200,9 +190,6 @@ public class SQLite3PragmaGenerator {
         case STATS:
             createPragma("stats", () -> null);
             break;
-        // case TEMP_STORE:
-        // createPragma("temp_store", () -> Randomly.fromOptions("DEFAULT", "FILE", "MEMORY"));
-        // break;
         case THREADS:
             createPragma("threads", () -> Randomly.getNonCachedInteger());
             break;
@@ -224,7 +211,7 @@ public class SQLite3PragmaGenerator {
         return new SQLQueryAdapter(pragmaString, errors);
     }
 
-    public static SQLQueryAdapter insertPragma(SQLite3GlobalState globalState) throws SQLException {
+    public static SQLQueryAdapter insertPragma(SQLite3GlobalState globalState) {
         return new SQLite3PragmaGenerator().insert(globalState);
     }
 

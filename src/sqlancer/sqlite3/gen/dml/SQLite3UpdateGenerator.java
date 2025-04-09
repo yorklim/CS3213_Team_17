@@ -79,13 +79,6 @@ public class SQLite3UpdateGenerator extends AbstractUpdateGenerator<SQLite3Colum
             sb.append(whereClause);
         }
 
-        // ORDER BY and LIMIT are only supported by enabling a compile-time option
-        // List<Expression> expressions = QueryGenerator.generateOrderBy(table.getColumns());
-        // if (!expressions.isEmpty()) {
-        // sb.append(" ORDER BY ");
-        // sb.append(expressions.stream().map(e -> SQLite3Visitor.asString(e)).collect(Collectors.joining(", ")));
-        // }
-
         SQLite3Errors.addInsertUpdateErrors(errors);
 
         errors.add("[SQLITE_ERROR] SQL error or missing database (parser stack overflow)");

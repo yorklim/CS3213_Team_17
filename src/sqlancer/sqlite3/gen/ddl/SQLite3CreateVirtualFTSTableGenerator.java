@@ -40,7 +40,7 @@ public class SQLite3CreateVirtualFTSTableGenerator {
         COLUMNSIZE, // 4.5. The Columnsize Option
         DETAIL, // 4.6. The Detail Option
         CONTENTLESS, //
-    };
+    }
 
     private enum Fts4Options {
         MATCHINFO, TOKENIZE, PREFIX, ORDER, LANGUAGEID, COMPRESS, NOT_INDEXED

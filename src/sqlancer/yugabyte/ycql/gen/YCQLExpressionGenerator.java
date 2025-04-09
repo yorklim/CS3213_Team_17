@@ -11,7 +11,7 @@ import sqlancer.Randomly;
 import sqlancer.common.ast.BinaryOperatorNode.Operator;
 import sqlancer.common.ast.newast.NewOrderingTerm.Ordering;
 import sqlancer.common.gen.UntypedExpressionGenerator;
-import sqlancer.yugabyte.ycql.YCQLProvider.YCQLGlobalState;
+import sqlancer.yugabyte.ycql.YCQLGlobalState;
 import sqlancer.yugabyte.ycql.YCQLSchema.YCQLColumn;
 import sqlancer.yugabyte.ycql.YCQLSchema.YCQLDataType;
 import sqlancer.yugabyte.ycql.ast.YCQLBetweenOperation;
@@ -118,7 +118,7 @@ public final class YCQLExpressionGenerator extends UntypedExpressionGenerator<YC
             newExpr.add(curExpr);
         }
         return newExpr;
-    };
+    }
 
     public enum YCQLAggregateFunction {
         MAX(1), MIN(1), AVG(1), COUNT(1), SUM(1);
@@ -148,10 +148,6 @@ public final class YCQLExpressionGenerator extends UntypedExpressionGenerator<YC
         TIMESTAMP(0), //
         BIGINT(1), //
         UUID(0); //
-        // // extras
-        // PARTITION_HASH(2), //
-        // WRITETIME(1), //
-        // TTL(1); //
 
         private final int nrArgs;
         private final boolean isVariadic;

@@ -128,7 +128,7 @@ public class DorisNewExpressionGenerator extends TypedExpressionGenerator<DorisE
             List<DorisFunction> applicableFunctions = DorisFunction.getFunctionsCompatibleWith(type);
             if (!applicableFunctions.isEmpty()) {
                 DorisFunction function = Randomly.fromList(applicableFunctions);
-                return function.getCall(type, this, depth + 1);
+                return function.getCall(this, depth + 1);
             }
         }
         if (!DorisBugs.bug36070 && type != DorisDataType.NULL && globalState.getDbmsSpecificOptions().testCasts
@@ -200,7 +200,6 @@ public class DorisNewExpressionGenerator extends TypedExpressionGenerator<DorisE
 
     private enum BooleanExpression {
         POSTFIX_OPERATOR, NOT, BINARY_LOGICAL_OPERATOR, BINARY_COMPARISON, LIKE, BETWEEN, IN_OPERATION;
-        // SIMILAR_TO, POSIX_REGEX, BINARY_RANGE_COMPARISON,FUNCTION, CAST,;
     }
 
     DorisExpression generateBooleanExpression(int depth) {

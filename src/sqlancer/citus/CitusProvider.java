@@ -41,6 +41,7 @@ import sqlancer.postgres.PostgresSchema;
 import sqlancer.postgres.PostgresSchema.PostgresColumn;
 import sqlancer.postgres.PostgresSchema.PostgresTable;
 import sqlancer.postgres.PostgresSchema.PostgresTable.TableType;
+import sqlancer.postgres.PostgresTableQueryGenerator;
 import sqlancer.postgres.gen.PostgresAnalyzeGenerator;
 import sqlancer.postgres.gen.PostgresClusterGenerator;
 import sqlancer.postgres.gen.PostgresCommentGenerator;
@@ -65,8 +66,7 @@ public class CitusProvider extends PostgresProvider {
 
     public enum Action implements AbstractAction<PostgresGlobalState> {
         ANALYZE(PostgresAnalyzeGenerator::create), //
-        ALTER_TABLE(g -> CitusAlterTableGenerator.create(g.getSchema().getRandomTable(t -> !t.isView()), g,
-                generateOnlyKnown)), //
+        ALTER_TABLE(g -> CitusAlterTableGenerator.create(g.getSchema().getRandomTable(t -> !t.isView()), g)), //
         CLUSTER(PostgresClusterGenerator::create), //
         COMMIT(g -> {
             if (Randomly.getBoolean()) {
@@ -215,13 +215,12 @@ public class CitusProvider extends PostgresProvider {
         distributeTable(columns, tableName, globalState);
     }
 
-    @Override
     protected void createTables(PostgresGlobalState globalState, int numTables) throws Exception {
         while (globalState.getSchema().getDatabaseTables().size() < numTables) {
             try {
                 String tableName = DBMSCommon.createTableName(globalState.getSchema().getDatabaseTables().size());
                 SQLQueryAdapter createTable = CitusTableGenerator.generate(tableName, globalState.getSchema(),
-                        generateOnlyKnown, globalState);
+                        globalState);
                 globalState.executeStatement(createTable);
             } catch (IgnoreMeException e) {
 
@@ -384,10 +383,10 @@ public class CitusProvider extends PostgresProvider {
         }
     }
 
-    @Override
     protected void prepareTables(PostgresGlobalState globalState) throws Exception {
-        StatementExecutor<PostgresGlobalState, PostgresProvider.Action> se = new StatementExecutor<>(globalState,
-                PostgresProvider.Action.values(), PostgresProvider::mapActions, q -> {
+        PostgresTableQueryGenerator generator = new PostgresTableQueryGenerator(globalState);
+        StatementExecutor<PostgresGlobalState, PostgresTableQueryGenerator.Action> se = new StatementExecutor<>(
+                globalState, PostgresTableQueryGenerator.Action.values(), generator::mapActions, q -> {
                     if (globalState.getSchema().getDatabaseTables().isEmpty()) {
                         throw new IgnoreMeException();
                     }

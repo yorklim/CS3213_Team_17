@@ -173,7 +173,6 @@ public class DatabendSchema extends AbstractSchema<DatabendGlobalState, Databend
                 ResultSet rs = s.executeQuery(rowValueQuery);
                 if (!rs.next()) {
                     throw new IgnoreMeException();
-                    // throw new AssertionError("could not find random row " + rowValueQuery + "\n");
                 }
                 for (int i = 0; i < getColumns().size(); i++) {
                     DatabendColumn column = getColumns().get(i);
@@ -364,7 +363,6 @@ public class DatabendSchema extends AbstractSchema<DatabendGlobalState, Databend
                             dataType = dataType.substring(0, dataType.indexOf(' '));
                         }
                         boolean isNullable = rs.getBoolean("is_nullable");
-                        // boolean isPrimaryKey = rs.getString("pk").contains("true");
                         boolean isPrimaryKey = false; // 没找到主键元数据
                         DatabendColumn c = new DatabendColumn(columnName, getColumnType(dataType), isPrimaryKey,
                                 isNullable);

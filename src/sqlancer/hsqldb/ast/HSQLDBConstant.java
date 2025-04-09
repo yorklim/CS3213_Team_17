@@ -210,11 +210,11 @@ public class HSQLDBConstant implements HSQLDBExpression {
         return new HSQLDBDateConstant(integer);
     }
 
-    public static HSQLDBExpression createTimeConstant(long integer, int size) {
+    public static HSQLDBExpression createTimeConstant(long integer) {
         return new HSQLDBTimeConstant(integer);
     }
 
-    public static HSQLDBExpression createTimestampConstant(long integer, int size) {
+    public static HSQLDBExpression createTimestampConstant(long integer) {
         return new HSQLDBTimestampConstant(integer);
     }
 

@@ -35,8 +35,8 @@ public enum YSQLFunctionWithUnknownResult {
     //
     TO_CHAR("to_char", YSQLDataType.TEXT, YSQLDataType.BYTEA, YSQLDataType.TEXT) {
         @Override
-        public YSQLExpression[] getArguments(YSQLDataType returnType, YSQLExpressionGenerator gen, int depth) {
-            YSQLExpression[] args = super.getArguments(returnType, gen, depth);
+        public YSQLExpression[] getArguments(YSQLExpressionGenerator gen, int depth) {
+            YSQLExpression[] args = super.getArguments(gen, depth);
             args[0] = gen.generateExpression(YSQLDataType.getRandomType());
             return args;
         }
@@ -48,8 +48,8 @@ public enum YSQLFunctionWithUnknownResult {
     CHR("chr", YSQLDataType.TEXT, YSQLDataType.INT),
     CONVERT_FROM("convert_from", YSQLDataType.TEXT, YSQLDataType.TEXT, YSQLDataType.TEXT) {
         @Override
-        public YSQLExpression[] getArguments(YSQLDataType returnType, YSQLExpressionGenerator gen, int depth) {
-            YSQLExpression[] args = super.getArguments(returnType, gen, depth);
+        public YSQLExpression[] getArguments(YSQLExpressionGenerator gen, int depth) {
+            YSQLExpression[] args = super.getArguments(gen, depth);
             args[1] = YSQLConstant.createTextConstant("UTF8");
             return args;
         }
@@ -131,8 +131,6 @@ public enum YSQLFunctionWithUnknownResult {
 
     // https://www.postgresql.org/docs/devel/functions-admin.html#FUNCTIONS-ADMIN-DBSIZE
     GET_COLUMN_SIZE("get_column_size", YSQLDataType.INT, YSQLDataType.TEXT);
-    // PG_DATABASE_SIZE("pg_database_size", YSQLDataType.INT, YSQLDataType.INT);
-    // PG_SIZE_BYTES("pg_size_bytes", YSQLDataType.INT, YSQLDataType.TEXT);
 
     private final String functionName;
     private final YSQLDataType returnType;
@@ -158,7 +156,7 @@ public enum YSQLFunctionWithUnknownResult {
         return t == returnType;
     }
 
-    public YSQLExpression[] getArguments(YSQLDataType returnType, YSQLExpressionGenerator gen, int depth) {
+    public YSQLExpression[] getArguments(YSQLExpressionGenerator gen, int depth) {
         YSQLExpression[] args = new YSQLExpression[argTypes.length];
         for (int i = 0; i < args.length; i++) {
             args[i] = gen.generateExpression(depth, argTypes[i]);

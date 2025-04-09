@@ -6,37 +6,16 @@ import java.util.stream.Collectors;
 
 import com.google.auto.service.AutoService;
 
-import sqlancer.AbstractAction;
 import sqlancer.DatabaseProvider;
-import sqlancer.IgnoreMeException;
 import sqlancer.MainOptions;
-import sqlancer.Randomly;
 import sqlancer.SQLConnection;
 import sqlancer.SQLProviderAdapter;
-import sqlancer.StatementExecutor;
-import sqlancer.common.DBMSCommon;
 import sqlancer.common.DatabaseUtils;
 import sqlancer.common.query.ExpectedErrors;
 import sqlancer.common.query.SQLQueryAdapter;
-import sqlancer.common.query.SQLQueryProvider;
 import sqlancer.mysql.MySQLSchema.MySQLColumn;
 import sqlancer.mysql.MySQLSchema.MySQLTable;
-import sqlancer.mysql.gen.MySQLAlterTable;
-import sqlancer.mysql.gen.MySQLDeleteGenerator;
-import sqlancer.mysql.gen.MySQLDropIndex;
 import sqlancer.mysql.gen.MySQLInsertGenerator;
-import sqlancer.mysql.gen.MySQLSetGenerator;
-import sqlancer.mysql.gen.MySQLTableGenerator;
-import sqlancer.mysql.gen.MySQLTruncateTableGenerator;
-import sqlancer.mysql.gen.MySQLUpdateGenerator;
-import sqlancer.mysql.gen.admin.MySQLFlush;
-import sqlancer.mysql.gen.admin.MySQLReset;
-import sqlancer.mysql.gen.datadef.MySQLIndexGenerator;
-import sqlancer.mysql.gen.tblmaintenance.MySQLAnalyzeTable;
-import sqlancer.mysql.gen.tblmaintenance.MySQLCheckTable;
-import sqlancer.mysql.gen.tblmaintenance.MySQLChecksum;
-import sqlancer.mysql.gen.tblmaintenance.MySQLOptimize;
-import sqlancer.mysql.gen.tblmaintenance.MySQLRepair;
 
 @AutoService(DatabaseProvider.class)
 public class MySQLProvider extends SQLProviderAdapter<MySQLGlobalState, MySQLOptions> {
@@ -45,111 +24,28 @@ public class MySQLProvider extends SQLProviderAdapter<MySQLGlobalState, MySQLOpt
         super(MySQLGlobalState.class, MySQLOptions.class);
     }
 
-    enum Action implements AbstractAction<MySQLGlobalState> {
-        SHOW_TABLES((g) -> new SQLQueryAdapter("SHOW TABLES")), //
-        INSERT(MySQLInsertGenerator::insertRow), //
-        SET_VARIABLE(MySQLSetGenerator::set), //
-        REPAIR(MySQLRepair::repair), //
-        OPTIMIZE(MySQLOptimize::optimize), //
-        CHECKSUM(MySQLChecksum::checksum), //
-        CHECK_TABLE(MySQLCheckTable::check), //
-        ANALYZE_TABLE(MySQLAnalyzeTable::analyze), //
-        FLUSH(MySQLFlush::create), RESET(MySQLReset::create), CREATE_INDEX(MySQLIndexGenerator::create), //
-        ALTER_TABLE(MySQLAlterTable::create), //
-        TRUNCATE_TABLE(MySQLTruncateTableGenerator::generate), //
-        SELECT_INFO((g) -> new SQLQueryAdapter(
-                "select TABLE_NAME, ENGINE from information_schema.TABLES where table_schema = '" + g.getDatabaseName()
-                        + "'")), //
-        UPDATE(MySQLUpdateGenerator::create), //
-        DELETE(MySQLDeleteGenerator::delete), //
-        DROP_INDEX(MySQLDropIndex::generate);
-
-        private final SQLQueryProvider<MySQLGlobalState> sqlQueryProvider;
-
-        Action(SQLQueryProvider<MySQLGlobalState> sqlQueryProvider) {
-            this.sqlQueryProvider = sqlQueryProvider;
-        }
-
-        @Override
-        public SQLQueryAdapter getQuery(MySQLGlobalState globalState) throws Exception {
-            return sqlQueryProvider.getQuery(globalState);
-        }
-    }
-
-    private static int mapActions(MySQLGlobalState globalState, Action a) {
-        Randomly r = globalState.getRandomly();
-        int nrPerformed = 0;
-        switch (a) {
-        case DROP_INDEX:
-            nrPerformed = r.getInteger(0, 2);
-            break;
-        case SHOW_TABLES:
-            nrPerformed = r.getInteger(0, 1);
-            break;
-        case INSERT:
-            nrPerformed = r.getInteger(0, globalState.getOptions().getMaxNumberInserts());
-            break;
-        case REPAIR:
-            nrPerformed = r.getInteger(0, 1);
-            break;
-        case SET_VARIABLE:
-            nrPerformed = r.getInteger(0, 5);
-            break;
-        case CREATE_INDEX:
-            nrPerformed = r.getInteger(0, 5);
-            break;
-        case FLUSH:
-            nrPerformed = Randomly.getBooleanWithSmallProbability() ? r.getInteger(0, 1) : 0;
-            break;
-        case OPTIMIZE:
-            // seems to yield low CPU utilization
-            nrPerformed = Randomly.getBooleanWithSmallProbability() ? r.getInteger(0, 1) : 0;
-            break;
-        case RESET:
-            // affects the global state, so do not execute
-            nrPerformed = globalState.getOptions().getNumberConcurrentThreads() == 1 ? r.getInteger(0, 1) : 0;
-            break;
-        case CHECKSUM:
-        case CHECK_TABLE:
-        case ANALYZE_TABLE:
-            nrPerformed = r.getInteger(0, 2);
-            break;
-        case ALTER_TABLE:
-            nrPerformed = r.getInteger(0, 5);
-            break;
-        case TRUNCATE_TABLE:
-            nrPerformed = r.getInteger(0, 2);
-            break;
-        case SELECT_INFO:
-            nrPerformed = r.getInteger(0, 10);
-            break;
-        case UPDATE:
-            nrPerformed = r.getInteger(0, 10);
-            break;
-        case DELETE:
-            nrPerformed = r.getInteger(0, 10);
-            break;
-        default:
-            throw new AssertionError(a);
-        }
-        return nrPerformed;
-    }
-
     @Override
     public void generateDatabase(MySQLGlobalState globalState) throws Exception {
-        while (globalState.getSchema().getDatabaseTables().size() < Randomly.getNotCachedInteger(1, 2)) {
-            String tableName = DBMSCommon.createTableName(globalState.getSchema().getDatabaseTables().size());
-            SQLQueryAdapter createTable = MySQLTableGenerator.generate(globalState, tableName);
-            globalState.executeStatement(createTable);
+        // Table creation (Creates Schema & Insert data into tables)
+        MySQLTableCreator tableCreator = new MySQLTableCreator(globalState);
+        // Generate random queries (Insert, Update, Delete, etc.)
+        MySQLTableQueryGenerator tableQueryGenerator = new MySQLTableQueryGenerator(globalState);
+
+        String staticTable = System.getProperty("staticTable");
+        // For Future Custom Queries for Testing (Table Creation)
+        if (staticTable == null || !staticTable.equals("true")) {
+            tableCreator.create();
+        } else {
+            tableCreator.runQueryFromFile("staticTable.sql", globalState);
         }
 
-        StatementExecutor<MySQLGlobalState, Action> se = new StatementExecutor<>(globalState, Action.values(),
-                MySQLProvider::mapActions, (q) -> {
-                    if (globalState.getSchema().getDatabaseTables().isEmpty()) {
-                        throw new IgnoreMeException();
-                    }
-                });
-        se.executeStatements();
+        String staticQuery = System.getProperty("staticQuery");
+        // For Future Custom Queries for Testing (Table Query Generation)
+        if (staticQuery == null || !staticQuery.equals("true")) {
+            tableQueryGenerator.generateNExecute();
+        } else {
+            tableQueryGenerator.runQueryFromFile("staticQuery.sql", globalState);
+        }
 
         if (globalState.getDbmsSpecificOptions().getTestOracleFactory().stream()
                 .anyMatch((o) -> o == MySQLOracleFactory.CERT)) {

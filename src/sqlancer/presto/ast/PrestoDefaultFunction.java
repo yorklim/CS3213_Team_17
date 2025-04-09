@@ -133,24 +133,6 @@ public enum PrestoDefaultFunction implements PrestoFunction {
         this.argumentTypes = new PrestoDataType[0];
     }
 
-    PrestoDefaultFunction(PrestoDataType returnType) {
-        this.returnType = returnType;
-        this.argumentTypes = new PrestoDataType[0];
-        this.functionName = toString();
-    }
-
-    PrestoDefaultFunction(PrestoDataType returnType, PrestoDataType... argumentTypes) {
-        this.returnType = returnType;
-        this.argumentTypes = argumentTypes.clone();
-        this.functionName = toString();
-    }
-
-    PrestoDefaultFunction(String functionName, PrestoDataType returnType, PrestoDataType... argumentTypes) {
-        this.functionName = functionName;
-        this.returnType = returnType;
-        this.argumentTypes = argumentTypes.clone();
-    }
-
     public static List<PrestoDefaultFunction> getFunctionsCompatibleWith(PrestoCompositeDataType returnType) {
         return Stream.of(values()).filter(f -> f.isCompatibleWithReturnType(returnType)).collect(Collectors.toList());
     }

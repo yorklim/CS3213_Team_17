@@ -124,7 +124,7 @@ public final class SQLite3CreateTriggerGenerator {
         }
     }
 
-    private static String getQueryString(SQLite3Schema s, SQLite3GlobalState globalState) throws SQLException {
+    private static String getQueryString(SQLite3Schema s, SQLite3GlobalState globalState) {
         String q;
         do {
             q = SQLite3InsertGenerator.insertRow(globalState, getTableNotEqualsTo(s, s.getRandomTableNoViewOrBailout()))

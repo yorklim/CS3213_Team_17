@@ -227,7 +227,7 @@ public class MaterializeFunction implements MaterializeExpression {
         public abstract MaterializeDataType[] getInputTypesForReturnType(MaterializeDataType returnType,
                 int nrArguments);
 
-        public boolean checkArguments(MaterializeExpression... constants) {
+        public boolean checkArguments() {
             return true;
         }
 

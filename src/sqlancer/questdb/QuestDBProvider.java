@@ -8,21 +8,13 @@ import java.util.Properties;
 
 import com.google.auto.service.AutoService;
 
-import sqlancer.AbstractAction;
 import sqlancer.DatabaseProvider;
-import sqlancer.IgnoreMeException;
-import sqlancer.Randomly;
 import sqlancer.SQLConnection;
 import sqlancer.SQLGlobalState;
 import sqlancer.SQLProviderAdapter;
-import sqlancer.StatementExecutor;
 import sqlancer.common.query.SQLQueryAdapter;
-import sqlancer.common.query.SQLQueryProvider;
 import sqlancer.questdb.QuestDBProvider.QuestDBGlobalState;
-import sqlancer.questdb.gen.QuestDBAlterIndexGenerator;
-import sqlancer.questdb.gen.QuestDBInsertGenerator;
 import sqlancer.questdb.gen.QuestDBTableGenerator;
-import sqlancer.questdb.gen.QuestDBTruncateGenerator;
 
 @AutoService(DatabaseProvider.class)
 public class QuestDBProvider extends SQLProviderAdapter<QuestDBGlobalState, QuestDBOptions> {
@@ -30,68 +22,38 @@ public class QuestDBProvider extends SQLProviderAdapter<QuestDBGlobalState, Ques
         super(QuestDBGlobalState.class, QuestDBOptions.class);
     }
 
-    public enum Action implements AbstractAction<QuestDBGlobalState> {
-        INSERT(QuestDBInsertGenerator::getQuery), //
-        ALTER_INDEX(QuestDBAlterIndexGenerator::getQuery), //
-        TRUNCATE(QuestDBTruncateGenerator::generate); //
-        // TODO (anxing): maybe implement these later
-        // UPDATE(QuestDBUpdateGenerator::getQuery), //
-        // CREATE_VIEW(QuestDBViewGenerator::generate), //
-
-        private final SQLQueryProvider<QuestDBGlobalState> sqlQueryProvider;
-
-        Action(SQLQueryProvider<QuestDBGlobalState> sqlQueryProvider) {
-            this.sqlQueryProvider = sqlQueryProvider;
-        }
-
-        @Override
-        public SQLQueryAdapter getQuery(QuestDBGlobalState state) throws Exception {
-            return sqlQueryProvider.getQuery(state);
-        }
-    }
-
-    private static int mapActions(QuestDBGlobalState globalState, Action a) {
-        Randomly r = globalState.getRandomly();
-        switch (a) {
-        case INSERT:
-            return r.getInteger(0, globalState.getOptions().getMaxNumberInserts());
-        case ALTER_INDEX:
-            return r.getInteger(0, 3);
-        case TRUNCATE:
-            return r.getInteger(0, 5);
-        default:
-            throw new AssertionError("Unknown action: " + a);
-        }
-    }
-
     public static class QuestDBGlobalState extends SQLGlobalState<QuestDBOptions, QuestDBSchema> {
 
         @Override
         protected QuestDBSchema readSchema() throws SQLException {
-            return QuestDBSchema.fromConnection(getConnection(), getDatabaseName());
+            return QuestDBSchema.fromConnection(getConnection());
         }
 
     }
 
     @Override
     public void generateDatabase(QuestDBGlobalState globalState) throws Exception {
-        for (int i = 0; i < Randomly.fromOptions(1, 2); i++) {
-            boolean success;
-            do {
-                SQLQueryAdapter qt = new QuestDBTableGenerator().getQuery(globalState, null);
-                success = globalState.executeStatement(qt);
-            } while (!success);
+        // Table creation (Creates Schema * Insert data into tables)
+        QuestDBTableCreator tableCreator = new QuestDBTableCreator(globalState);
+        // Generate random queries (Insert, Update, Delete, etc.)
+        QuestDBTableQueryGenerator tableQueryGenerator = new QuestDBTableQueryGenerator(globalState);
+
+        String staticTable = System.getProperty("staticTable");
+        // For Future Custom Queries for Testing (Table Creation)
+        if (staticTable == null || !staticTable.equals("true")) {
+            tableCreator.create();
+        } else {
+            tableCreator.runQueryFromFile("staticTable.sql", globalState);
         }
-        if (globalState.getSchema().getDatabaseTables().isEmpty()) {
-            throw new IgnoreMeException();
+
+        String staticQuery = System.getProperty("staticQuery");
+        // For Future Custom Queries for Testing (Table Query Generation)
+        if (staticQuery == null || !staticQuery.equals("true")) {
+            tableQueryGenerator.generateNExecute();
+        } else {
+            tableQueryGenerator.runQueryFromFile("staticQuery.sql", globalState);
         }
-        StatementExecutor<QuestDBGlobalState, Action> se = new StatementExecutor<>(globalState, Action.values(),
-                QuestDBProvider::mapActions, (q) -> {
-                    if (globalState.getSchema().getDatabaseTables().isEmpty()) {
-                        throw new IgnoreMeException();
-                    }
-                });
-        se.executeStatements();
+
     }
 
     @Override
@@ -124,16 +86,6 @@ public class QuestDBProvider extends SQLProviderAdapter<QuestDBGlobalState, Ques
         try (Statement s = con.createStatement()) {
             s.execute("DROP TABLE IF EXISTS " + tableName);
         }
-        // TODO(anxing): Drop all previous tables in db
-        // List<String> tableNames =
-        // globalState.getSchema().getDatabaseTables().stream().map(AbstractTable::getName).collect(Collectors.toList());
-        // for (String tName : tableNames) {
-        // try (Statement s = con.createStatement()) {
-        // String query = "DROP TABLE IF EXISTS " + tName;
-        // globalState.getState().logStatement(query);
-        // s.execute(query);
-        // }
-        // }
         try (Statement s = con.createStatement()) {
             s.execute(createTableCommand.getQueryString());
         }

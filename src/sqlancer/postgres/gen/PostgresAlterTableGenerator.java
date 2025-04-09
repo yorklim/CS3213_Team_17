@@ -17,7 +17,6 @@ public class PostgresAlterTableGenerator {
     private PostgresTable randomTable;
     private Randomly r;
     private static PostgresColumn randomColumn;
-    private boolean generateOnlyKnown;
     private List<String> opClasses;
     private PostgresGlobalState globalState;
 
@@ -51,18 +50,15 @@ public class PostgresAlterTableGenerator {
         REPLICA_IDENTITY
     }
 
-    public PostgresAlterTableGenerator(PostgresTable randomTable, PostgresGlobalState globalState,
-            boolean generateOnlyKnown) {
+    public PostgresAlterTableGenerator(PostgresTable randomTable, PostgresGlobalState globalState) {
         this.randomTable = randomTable;
         this.globalState = globalState;
         this.r = globalState.getRandomly();
-        this.generateOnlyKnown = generateOnlyKnown;
         this.opClasses = globalState.getOpClasses();
     }
 
-    public static SQLQueryAdapter create(PostgresTable randomTable, PostgresGlobalState globalState,
-            boolean generateOnlyKnown) {
-        return new PostgresAlterTableGenerator(randomTable, globalState, generateOnlyKnown).generate();
+    public static SQLQueryAdapter create(PostgresTable randomTable, PostgresGlobalState globalState) {
+        return new PostgresAlterTableGenerator(randomTable, globalState).generate();
     }
 
     private enum Attribute {
@@ -73,7 +69,7 @@ public class PostgresAlterTableGenerator {
         Attribute(String val) {
             this.val = val;
         }
-    };
+    }
 
     public List<Action> getActions(ExpectedErrors errors) {
         PostgresCommon.addCommonExpressionErrors(errors);
@@ -155,7 +151,7 @@ public class PostgresAlterTableGenerator {
                 }
                 sb.append(" TYPE ");
                 PostgresDataType randomType = PostgresDataType.getRandomType();
-                PostgresCommon.appendDataType(randomType, sb, false, generateOnlyKnown, opClasses);
+                PostgresCommon.appendDataType(randomType, sb, false, opClasses);
                 // TODO [ COLLATE collation ] [ USING expression ]
                 errors.add("cannot alter type of a column used by a view or rule");
                 errors.add("cannot convert infinity to numeric");

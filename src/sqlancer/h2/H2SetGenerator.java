@@ -28,8 +28,6 @@ public final class H2SetGenerator {
         MAX_MEMORY_ROWS((r) -> Randomly.getNotCachedInteger(0, 100000)), //
         MAX_MEMORY_UNDO((r) -> Randomly.getNotCachedInteger(0, 100000)), //
         MAX_OPERATION_MEMORY((r) -> Randomly.getNotCachedInteger(0, 100000)), //
-        // MODE((r) -> Randomly.fromOptions("REGULAR", "DB2", "DERBY", "HSQLDB", "MSSQLSERVER", "ORACLE",
-        // "POSTGRESQL"));
         OPTIMIZE_REUSE_RESULTS((r) -> Randomly.fromOptions(0, 1)), //
         QUERY_STATISTICS((r) -> Randomly.fromOptions("TRUE", "FALSE")), //
         QUERY_STATISTICS_MAX_ENTRIES((r) -> Randomly.getNotCachedInteger(0, 100000)), //

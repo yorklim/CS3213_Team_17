@@ -5,7 +5,7 @@ import java.util.List;
 import sqlancer.Randomly;
 import sqlancer.common.query.ExpectedErrors;
 import sqlancer.common.query.SQLQueryAdapter;
-import sqlancer.yugabyte.ycql.YCQLProvider.YCQLGlobalState;
+import sqlancer.yugabyte.ycql.YCQLGlobalState;
 import sqlancer.yugabyte.ycql.YCQLSchema.YCQLColumn;
 import sqlancer.yugabyte.ycql.YCQLSchema.YCQLTable;
 import sqlancer.yugabyte.ycql.YCQLToStringVisitor;

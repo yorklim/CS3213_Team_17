@@ -25,14 +25,12 @@ public class MaterializeTableGenerator {
     private final List<MaterializeColumn> columnsToBeAdded = new ArrayList<>();
     protected final ExpectedErrors errors = new ExpectedErrors();
     private final MaterializeTable table;
-    private final boolean generateOnlyKnown;
     private final MaterializeGlobalState globalState;
 
-    public MaterializeTableGenerator(String tableName, MaterializeSchema newSchema, boolean generateOnlyKnown,
+    public MaterializeTableGenerator(String tableName, MaterializeSchema newSchema,
             MaterializeGlobalState globalState) {
         this.tableName = tableName;
         this.newSchema = newSchema;
-        this.generateOnlyKnown = generateOnlyKnown;
         this.globalState = globalState;
         table = new MaterializeTable(tableName, columnsToBeAdded, null, null, null, false, false);
         errors.add("invalid input syntax for");
@@ -56,9 +54,9 @@ public class MaterializeTableGenerator {
         MaterializeCommon.addCommonTableErrors(errors);
     }
 
-    public static SQLQueryAdapter generate(String tableName, MaterializeSchema newSchema, boolean generateOnlyKnown,
+    public static SQLQueryAdapter generate(String tableName, MaterializeSchema newSchema,
             MaterializeGlobalState globalState) {
-        return new MaterializeTableGenerator(tableName, newSchema, generateOnlyKnown, globalState).generate();
+        return new MaterializeTableGenerator(tableName, newSchema, globalState).generate();
     }
 
     protected SQLQueryAdapter generate() {
@@ -89,7 +87,7 @@ public class MaterializeTableGenerator {
         sb.append(name);
         sb.append(" ");
         MaterializeDataType type = MaterializeDataType.getRandomType();
-        MaterializeCommon.appendDataType(type, sb, true, generateOnlyKnown, globalState.getCollates());
+        MaterializeCommon.appendDataType(type, sb);
         MaterializeColumn c = new MaterializeColumn(name, type);
         c.setTable(table);
         columnsToBeAdded.add(c);
@@ -101,7 +99,7 @@ public class MaterializeTableGenerator {
 
     private enum ColumnConstraint {
         DEFAULT
-    };
+    }
 
     private void createColumnConstraint(MaterializeDataType type) {
         List<ColumnConstraint> constraintSubset = Randomly.nonEmptySubset(ColumnConstraint.values());
@@ -114,7 +112,6 @@ public class MaterializeTableGenerator {
                 sb.append(MaterializeVisitor
                         .asString(MaterializeExpressionGenerator.generateExpression(globalState, type)));
                 sb.append(")");
-                // CREATE TEMPORARY TABLE t1(c0 smallint DEFAULT ('566963878'));
                 errors.add("out of range");
                 errors.add("is a generated column");
                 break;

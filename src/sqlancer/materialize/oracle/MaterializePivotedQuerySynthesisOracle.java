@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import sqlancer.Randomly;
 import sqlancer.SQLConnection;
 import sqlancer.common.oracle.PivotedQuerySynthesisBase;
+import sqlancer.common.oracle.PivotedQuerySynthesisOracleCommon;
 import sqlancer.common.query.Query;
 import sqlancer.common.query.SQLQueryAdapter;
 import sqlancer.materialize.MaterializeGlobalState;
@@ -119,27 +120,9 @@ public class MaterializePivotedQuerySynthesisOracle extends
     }
 
     @Override
-    protected Query<SQLConnection> getContainmentCheckQuery(Query<?> query) throws SQLException {
-        StringBuilder sb = new StringBuilder();
-        sb.append("SELECT * FROM ("); // ANOTHER SELECT TO USE ORDER BY without restrictions
-        sb.append(query.getUnterminatedQueryString());
-        sb.append(") as result WHERE ");
-        int i = 0;
-        for (MaterializeColumn c : fetchColumns) {
-            if (i++ != 0) {
-                sb.append(" AND ");
-            }
-            sb.append("result.");
-            sb.append(c.getTable().getName());
-            sb.append(c.getName());
-            if (pivotRow.getValues().get(c).isNull()) {
-                sb.append(" IS NULL");
-            } else {
-                sb.append(" = ");
-                sb.append(pivotRow.getValues().get(c).getTextRepresentation());
-            }
-        }
-        String resultingQueryString = sb.toString();
+    protected Query<SQLConnection> getContainmentCheckQuery(Query<?> query) throws Exception {
+        String resultingQueryString = PivotedQuerySynthesisOracleCommon.getContainmentCheckQueryCommon(fetchColumns,
+                pivotRow, query);
         return new SQLQueryAdapter(resultingQueryString, errors);
     }
 

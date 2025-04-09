@@ -205,14 +205,6 @@ public class DorisFunctionOperation implements DorisExpression {
         private DorisDataType[] argumentTypes;
         private String functionName;
 
-        DorisFunction(String functionName, boolean isVariadic, DorisDataType returnType,
-                DorisDataType... argumentTypes) {
-            this.functionName = functionName;
-            this.isVariadic = isVariadic;
-            this.returnType = returnType;
-            this.argumentTypes = argumentTypes.clone();
-        }
-
         DorisFunction(boolean isVariadic, DorisDataType returnType, DorisDataType... argumentTypes) {
             this.functionName = toString();
             this.isVariadic = isVariadic;
@@ -250,7 +242,7 @@ public class DorisFunctionOperation implements DorisExpression {
             return argumentTypes.clone();
         }
 
-        public DorisFunctionOperation getCall(DorisDataType returnType, DorisNewExpressionGenerator gen, int depth) {
+        public DorisFunctionOperation getCall(DorisNewExpressionGenerator gen, int depth) {
             List<DorisExpression> arguments = new ArrayList<>();
             if (getArgumentTypes() != null) {
                 Stream.of(getArgumentTypes()).forEach(arg -> arguments.add(gen.generateExpression(arg, depth + 1)));

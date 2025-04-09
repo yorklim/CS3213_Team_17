@@ -224,7 +224,7 @@ public final class PostgresCommon {
     }
 
     public static boolean appendDataType(PostgresDataType type, StringBuilder sb, boolean allowSerial,
-            boolean generateOnlyKnown, List<String> opClasses) throws AssertionError {
+            List<String> opClasses) throws AssertionError {
         boolean serial = false;
         switch (type) {
         case BOOLEAN:
@@ -277,9 +277,7 @@ public final class PostgresCommon {
             break;
         case BIT:
             sb.append("BIT");
-            // if (Randomly.getBoolean()) {
             sb.append(" VARYING");
-            // }
             sb.append("(");
             sb.append(Randomly.getNotCachedInteger(1, 500));
             sb.append(")");

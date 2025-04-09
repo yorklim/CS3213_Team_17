@@ -1,6 +1,5 @@
 package sqlancer.sqlite3.gen.dml;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +28,7 @@ public class SQLite3InsertGenerator {
         errors = new ExpectedErrors();
     }
 
-    public static SQLQueryAdapter insertRow(SQLite3GlobalState globalState) throws SQLException {
+    public static SQLQueryAdapter insertRow(SQLite3GlobalState globalState) {
         SQLite3Table randomTable = globalState.getSchema().getRandomTableOrBailout(t -> !t.isView() && !t.isReadOnly());
         return insertRow(globalState, randomTable);
     }

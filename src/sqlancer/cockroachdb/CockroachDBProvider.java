@@ -36,7 +36,7 @@ public class CockroachDBProvider extends SQLProviderAdapter<CockroachDBGlobalSta
 
         @Override
         protected CockroachDBSchema readSchema() throws SQLException {
-            return CockroachDBSchema.fromConnection(getConnection(), getDatabaseName());
+            return CockroachDBSchema.fromConnection(getConnection());
         }
 
     }
@@ -68,7 +68,24 @@ public class CockroachDBProvider extends SQLProviderAdapter<CockroachDBGlobalSta
 
         // Table creation (Creates Schema & Insert data into tables)
         CockroachDBTableCreator tableCreator = new CockroachDBTableCreator(globalState);
-        tableCreator.create();
+        // Generate random queries (Insert, Update, Delete, etc.)
+        CockroachDBTableQueryGenerator tableQueryGenerator = new CockroachDBTableQueryGenerator(globalState);
+
+        String staticTable = System.getProperty("staticTable");
+        // For Future Custom Queries for Testing (Table Creation)
+        if (staticTable == null || !staticTable.equals("true")) {
+            tableCreator.create();
+        } else {
+            tableCreator.runQueryFromFile("staticTable.sql", globalState);
+        }
+
+        String staticQuery = System.getProperty("staticQuery");
+        // For Future Custom Queries for Testing (Table Query Generation)
+        if (staticQuery == null || !staticQuery.equals("true")) {
+            tableQueryGenerator.generateNExecute();
+        } else {
+            tableQueryGenerator.runQueryFromFile("staticQuery.sql", globalState);
+        }
 
         if (globalState.getDbmsSpecificOptions().getTestOracleFactory().stream()
                 .anyMatch(o -> o == CockroachDBOracleFactory.CERT)) {

@@ -24,16 +24,6 @@ public class MySQLCheckTable {
         return new MySQLCheckTable(globalState.getSchema().getDatabaseTablesRandomSubsetNotEmpty()).generate();
     }
 
-    // CHECK TABLE tbl_name [, tbl_name] ... [option] ...
-    //
-    // option: {
-    // FOR UPGRADE
-    // | QUICK
-    // | FAST
-    // | MEDIUM
-    // | EXTENDED
-    // | CHANGED
-    // }
     private SQLQueryAdapter generate() {
         sb.append("CHECK TABLE ");
         sb.append(tables.stream().map(t -> t.getName()).collect(Collectors.joining(", ")));

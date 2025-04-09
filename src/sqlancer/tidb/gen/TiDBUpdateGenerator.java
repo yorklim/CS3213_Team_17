@@ -26,7 +26,7 @@ public final class TiDBUpdateGenerator extends AbstractUpdateGenerator<TiDBColum
         return new TiDBUpdateGenerator(globalState).generate();
     }
 
-    private SQLQueryAdapter generate() throws SQLException {
+    private SQLQueryAdapter generate() {
         TiDBTable table = globalState.getSchema().getRandomTable(t -> !t.isView());
         List<TiDBColumn> columns = table.getRandomNonEmptyColumnSubset();
         gen = new TiDBExpressionGenerator(globalState).setColumns(table.getColumns());
