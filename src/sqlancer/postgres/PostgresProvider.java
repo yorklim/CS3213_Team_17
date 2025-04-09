@@ -58,18 +58,18 @@ public class PostgresProvider extends SQLProviderAdapter<PostgresGlobalState, Po
 
         String staticTable = System.getProperty("staticTable");
         // For Future Custom Queries for Testing (Table Creation)
-        if (staticTable == null || !staticTable.equals("true")) {
+        if (staticTable == null) {
             tableCreator.create();
         } else {
-            tableCreator.runQueryFromFile("staticTable.sql", globalState);
+            tableCreator.runQueryFromFile(staticTable, globalState);
         }
 
         String staticQuery = System.getProperty("staticQuery");
         // For Future Custom Queries for Testing (Table Query Generation)
-        if (staticQuery == null || !staticQuery.equals("true")) {
+        if (staticQuery == null) {
             tableQueryGenerator.generateNExecute();
         } else {
-            tableQueryGenerator.runQueryFromFile("staticQuery.sql", globalState);
+            tableQueryGenerator.runQueryFromFile(staticQuery, globalState);
         }
 
         extensionsList = globalState.getDbmsSpecificOptions().extensions;

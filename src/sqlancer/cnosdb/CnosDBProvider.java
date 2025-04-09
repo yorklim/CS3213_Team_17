@@ -38,18 +38,18 @@ public class CnosDBProvider extends ProviderAdapter<CnosDBGlobalState, CnosDBOpt
 
         String staticTable = System.getProperty("staticTable");
         // For Future Custom Queries for Testing (Table Creation)
-        if (staticTable == null || !staticTable.equals("true")) {
+        if (staticTable == null) {
             tableCreator.create();
         } else {
-            tableCreator.runQueryFromFileCnos("staticTable.sql", globalState);
+            tableCreator.runQueryFromFileCnos(staticTable, globalState);
         }
 
         String staticQuery = System.getProperty("staticQuery");
         // For Future Custom Queries for Testing (Table Query Generation)
-        if (staticQuery == null || !staticQuery.equals("true")) {
+        if (staticQuery == null) {
             tableQueryGenerator.generateNExecute();
         } else {
-            tableQueryGenerator.runQueryFromFileCnos("staticQuery.sql", globalState);
+            tableQueryGenerator.runQueryFromFileCnos(staticQuery, globalState);
         }
     }
 
