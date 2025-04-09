@@ -17,5 +17,9 @@ database*.properties
 database*.script
 databases/
 
+package/
+
+
 # Don't commit the drivers downloaded
 drivers/
+
