@@ -346,18 +346,18 @@ def main():
     dep_node_map = mark_nodes(dep_node_map, mvn_deps, class_dep_map)
     mvn_deps = prune_tree(dep_node_map)
 
-    # Edit pom.xml
-    src_pom = "pom.xml"
-    tmp_pom = "tmp.xml"
-    tree = ET.parse(src_pom)
-    shutil.copy(src_pom, tmp_pom)
-    remove_mvn_deps(tree)
-    insert_mvn_deps(tree, mvn_deps, db_name)
-    insert_internal_deps(tree, packages)
-
-    # Build & cleanup
-    save_and_build(tree)
-    shutil.move(tmp_pom, src_pom)
+#     # Edit pom.xml
+#     src_pom = "pom.xml"
+#     tmp_pom = "tmp.xml"
+#     tree = ET.parse(src_pom)
+#     shutil.copy(src_pom, tmp_pom)
+#     remove_mvn_deps(tree)
+#     insert_mvn_deps(tree, mvn_deps, db_name)
+#     insert_internal_deps(tree, packages)
+#
+#     # Build & cleanup
+#     save_and_build(tree)
+#     shutil.move(tmp_pom, src_pom)
 
     return 0
 
