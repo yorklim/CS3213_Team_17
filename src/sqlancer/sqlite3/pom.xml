@@ -25,9 +25,15 @@
 			<artifactId>sqlite-jdbc</artifactId>
 			<version>3.47.2.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<sourceDirectory>../../../src</sourceDirectory>
+		<testSourceDirectory>../../../test</testSourceDirectory>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -104,19 +110,12 @@
 						<include>sqlancer/sqlite3/oracle/tlp/*.java</include>
 						<include>sqlancer/common/oracle/*.java</include>
 					</includes>
+					<testIncludes>
+						<testInclude>sqlancer/dbms/TestConfig.java</testInclude>
+						<testInclude>sqlancer/dbms/TestSQLite*.java</testInclude>
+						<testInclude>sqlancer/qpg/sqlite/*.java</testInclude>
+					</testIncludes>
 				</configuration>
-				<executions>
-					<execution>
-						<id>default-testCompile</id>
-						<phase>test-compile</phase>
-						<goals>
-							<goal>testCompile</goal>
-						</goals>
-						<configuration>
-							<skip>true</skip>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
