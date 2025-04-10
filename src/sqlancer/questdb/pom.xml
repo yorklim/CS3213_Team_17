@@ -77,42 +77,14 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
 					<includes>
-						<include>sqlancer/cnosdb/oracle/tlp/*.java</include>
+						<include>sqlancer/Main.java</include>
 						<include>sqlancer/questdb/ast/*.java</include>
-						<include>sqlancer/cnosdb/oracle/*.java</include>
-						<include>sqlancer/common/query/*.java</include>
-						<include>sqlancer/common/oracle/*.java</include>
-						<include>sqlancer/cnosdb/ast/*.java</include>
-						<include>sqlancer/cnosdb/gen/*.java</include>
-						<include>sqlancer/cnosdb/query/*.java</include>
-						<include>sqlancer/common/schema/*.java</include>
-						<include>sqlancer/common/visitor/*.java</include>
-						<include>sqlancer/*.java</include>
-						<include>sqlancer/common/log/*.java</include>
-						<include>sqlancer/cnosdb/client/*.java</include>
-						<include>sqlancer/common/ast/*.java</include>
-						<include>sqlancer/cnosdb/*.java</include>
 						<include>sqlancer/questdb/test/*.java</include>
-						<include>sqlancer/common/ast/newast/*.java</include>
-						<include>sqlancer/common/gen/*.java</include>
-						<include>sqlancer/common/*.java</include>
 						<include>sqlancer/questdb/*.java</include>
 						<include>sqlancer/questdb/gen/*.java</include>
-						<include>sqlancer/transformations/*.java</include>
 					</includes>
+					<!-- No tests for QuestDB -->
 				</configuration>
-				<executions>
-					<execution>
-						<id>default-testCompile</id>
-						<phase>test-compile</phase>
-						<goals>
-							<goal>testCompile</goal>
-						</goals>
-						<configuration>
-							<skip>true</skip>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
