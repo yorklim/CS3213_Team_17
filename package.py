@@ -115,12 +115,12 @@ class Node:
 
 def get_mvn_dependencies_tree():
     """Process current pom.xml's dependency tree"""
-    subprocess.run(['mvn', 'dependency:tree', '-DoutputFile=./package/tree.txt', '-DoutputType=tgf'], stdout = subprocess.DEVNULL)
+    subprocess.run(['mvn', 'dependency:tree', '-pl', 'src', '-DoutputFile=./package/tree.txt', '-DoutputType=tgf'], stdout = subprocess.DEVNULL)
 
     dep_node_map = {}
     id_dep_map = {}
     edge_map = {}
-    with open("./package/tree.txt", "r") as f:
+    with open("./src/package/tree.txt", "r") as f:
         buildNode = True
         for line in f:
             if line == "#\n":
@@ -217,10 +217,10 @@ def build_class_maven_map(classpaths):
 
 def extract_classes():
     """Extracts out a mapping of every class to its maven dependency"""
-    subprocess.run(['mvn', 'dependency:build-classpath', '-Dmdep.outputFile=./package/cp.txt'], stdout = subprocess.DEVNULL)
+    subprocess.run(['mvn', 'dependency:build-classpath', '-pl', 'src', '-Dmdep.outputFile=./package/cp.txt'], stdout = subprocess.DEVNULL)
 
     classpaths = None
-    with open("./package/cp.txt", "r") as f:
+    with open("./src/package/cp.txt", "r") as f:
         classpaths = f.readline().strip().split(":")
 
     class_dep_map = build_class_maven_map(classpaths)
