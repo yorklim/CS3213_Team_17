@@ -106,25 +106,26 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
 					<includes>
-						<include>sqlancer/common/visitor/*.java</include>
-						<include>sqlancer/common/query/*.java</include>
 						<include>sqlancer/*.java</include>
 						<include>sqlancer/common/*.java</include>
+						<include>sqlancer/common/visitor/*.java</include>
+						<include>sqlancer/common/query/*.java</include>
+						<include>sqlancer/common/ast/*.java</include>
+						<include>sqlancer/common/log/*.java</include>
+						<include>sqlancer/common/gen/*.java</include>
+						<include>sqlancer/common/ast/newast/*.java</include>
+						<include>sqlancer/common/schema/*.java</include>
+						<include>sqlancer/common/oracle/*.java</include>
+						<include>sqlancer/common/constant/*.java</include>
+						<include>sqlancer/transformations/*.java</include>
 						<!-- NOTE: CNOSdb is included due to coupling from common.FileExecutor -->
 						<include>sqlancer/cnosdb/*.java</include>
 						<include>sqlancer/cnosdb/client/*.java</include>
-						<include>sqlancer/common/ast/*.java</include>
 						<include>sqlancer/cnosdb/query/*.java</include>
 						<include>sqlancer/cnosdb/oracle/tlp/*.java</include>
 						<include>sqlancer/cnosdb/oracle/*.java</include>
 						<include>sqlancer/cnosdb/ast/*.java</include>
-						<include>sqlancer/common/log/*.java</include>
-						<include>sqlancer/common/gen/*.java</include>
-						<include>sqlancer/common/ast/newast/*.java</include>
 						<include>sqlancer/cnosdb/gen/*.java</include>
-						<include>sqlancer/transformations/*.java</include>
-						<include>sqlancer/common/schema/*.java</include>
-						<include>sqlancer/common/oracle/*.java</include>
 					</includes>
 				</configuration>
 				<executions>
