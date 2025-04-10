@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
@@ -95,7 +96,8 @@ public final class DriverLoader {
         System.out.println("Downloading driver from: " + downloadUrl);
 
         Files.createDirectories(target.getParent());
-        HttpURLConnection connection = (HttpURLConnection) new URL(downloadUrl).openConnection();
+        URI uri = URI.create(downloadUrl);
+        HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
         try (InputStream in = connection.getInputStream()) {
             Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
         }
