@@ -536,9 +536,9 @@ jobs:
         run: mvn package -pl src/sqlancer/sqlite3 -DskipTests -am
       - name: SQLite Tests
         run: |
-          mvn -Dtest=TestSQLitePQS test
-          mvn -Dtest=TestSQLiteTLP test
-          mvn -Dtest=TestSQLiteNoREC test
+          mvn -Dtest=TestSQLitePQS test -pl src/sqlancer/sqlite3 -am -DfailIfNoTests=false
+          mvn -Dtest=TestSQLiteTLP test -pl src/sqlancer/sqlite3 -am -DfailIfNoTests=false
+          mvn -Dtest=TestSQLiteNoREC test -pl src/sqlancer/sqlite3 -am -DfailIfNoTests=false
 
   sqlite-qpg:
     name: QPG Tests (SQLite)
@@ -555,10 +555,10 @@ jobs:
           java-version: '11'
           cache: 'maven'
       - name: Build
-        run: mvn -B package -DskipTests=true
+        run: mvn -B package -DskipTests=true -pl src/sqlancer/sqlite3 -am
       - name: SQLite Tests for QPG
         run: |
-          mvn -Dtest=TestSQLiteQPG test
+          mvn -Dtest=TestSQLiteQPG test -pl src/sqlancer/sqlite3 -am -DfailIfNoTests=false
 
   tidb:
     name: DBMS Tests (TiDB)
