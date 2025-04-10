@@ -33,8 +33,15 @@ public final class DriverLoader {
         System.out.println(
                 "[DEBUG] Requested driver for " + dbms + ", version: " + version + " driverPath: " + driverPath);
 
-        // 1. Download the driver
-        downloadDriver(dbms, version, driverPath);
+//        // 1. Download the driver
+//        downloadDriver(dbms, version, driverPath);
+
+        // 1. Check if driver JAR already exists before downloading
+        if (Files.exists(driverPath)) {
+            System.out.println("[INFO] Driver already exists at: " + driverPath);
+        } else {
+            downloadDriver(dbms, version, driverPath);
+        }
 
         // 2. Create classloader with system classloader as parent
         URLClassLoader driverLoader = new URLClassLoader(new URL[] { driverPath.toUri().toURL() },
