@@ -122,7 +122,7 @@
     </dependency>
   </dependencies>
   <build>
-    <sourceDirectory>${basedir}/src</sourceDirectory>
+    <sourceDirectory>${basedir</sourceDirectory>
     <testSourceDirectory>../test</testSourceDirectory>
     <plugins>
       <plugin>
