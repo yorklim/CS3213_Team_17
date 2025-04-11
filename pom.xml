@@ -38,11 +38,12 @@
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.sources>${maven.multiModuleProjectDirectory}/src</sonar.sources>
     <sonar.tests>${maven.multiModuleProjectDirectory}/test</sonar.tests>
-    <sonar.projectBaseDir>${maven.multiModuleProjectDirectory}/src</sonar.projectBaseDir>
+    <sonar.projectBaseDir>${maven.multiModuleProjectDirectory}</sonar.projectBaseDir>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <sonar.coverage.jacoco.xmlReportPaths>
     ../app-it/target/site/jacoco-aggregate/jacoco.xml
     </sonar.coverage.jacoco.xmlReportPaths>
+    <sonar.exclusions>./**/*</sonar.exclusions>
   </properties>
 
   <modules>
