@@ -702,7 +702,7 @@ jobs:
         run: mvn -B package -DskipTests=true
       - name: Run Tests
         run: |
-          mvn -Dtest=TestStatementReducer test
+          mvn -Dtest=TestStatementReducer test -DfailIfNoTests=false
 
   build:
     if: ${{ always() }}

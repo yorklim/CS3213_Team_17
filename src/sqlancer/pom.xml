@@ -54,9 +54,15 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-csv</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <sourceDirectory>../../src</sourceDirectory>
+    <testSourceDirectory>../../test</testSourceDirectory>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -127,19 +133,11 @@
             <include>sqlancer/cnosdb/ast/*.java</include>
             <include>sqlancer/cnosdb/gen/*.java</include>
           </includes>
+          <testIncludes>
+            <testInclude>sqlancer/reducer/*.java</testInclude>
+            <testInclude>sqlancer/reducer/VirtualDB/*.java</testInclude>
+          </testIncludes>
         </configuration>
-        <executions>
-          <execution>
-            <id>default-testCompile</id>
-            <phase>test-compile</phase>
-            <goals>
-              <goal>testCompile</goal>
-            </goals>
-            <configuration>
-              <skip>true</skip>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
