@@ -17,6 +17,7 @@
   <properties>
     <sonar.source>${basedir}</sonar.source>
     <sonar.inclusions>${basedir}/**/*.java</sonar.inclusions>
+    <sonar.test.exclusions>${maven.multiModuleProjectDirectory}/**/*</sonar.test.exclusions>
   </properties>
 
   <dependencies>

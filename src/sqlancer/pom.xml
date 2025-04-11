@@ -19,6 +19,8 @@
       ${basedir}/*.java,${basedir}/common/**/*.java,${basedir}/transformations/**/*.java
     </common.includes>
     <sonar.inclusions>${common.includes}</sonar.inclusions>
+    <test.path>${maven.multiModuleProjectDirectory}/test/sqlancer</test.path>
+    <sonar.test.inclusions>${test.path}/dbms/TestConfig.java,${test.path}/reducer/*.java,${test.path}/*.java</sonar.test.inclusions>
   </properties>
 
   <dependencies>

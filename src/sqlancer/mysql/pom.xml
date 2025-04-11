@@ -17,6 +17,8 @@
   <properties>
     <sonar.source>${basedir}</sonar.source>
     <sonar.inclusions>${basedir}/**/*.java</sonar.inclusions>
+    <test.path>${maven.multiModuleProjectDirectory}/test/sqlancer</test.path>
+    <sonar.test.inclusions>${test.path}/dbms/TestMySQL*.java,${test.path}/dqp/mysql/*.java</sonar.test.inclusions>
   </properties>
 
   <dependencies>
