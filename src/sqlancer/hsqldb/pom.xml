@@ -14,6 +14,10 @@
   <artifactId>hsqldb</artifactId>
   <packaging>jar</packaging>
 
+  <properties>
+    <sonar.inclusions>${basedir}/**/*.java</sonar.inclusions>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>com.sqlancer</groupId>

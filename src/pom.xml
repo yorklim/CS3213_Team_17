@@ -14,6 +14,11 @@
   <artifactId>sqlancer-full</artifactId>
   <packaging>jar</packaging>
 
+<!--  All files should already be checked by the submodules, overriding to prevent duplication -->
+  <properties>
+    <sonar.exclusions>./**/*</sonar.exclusions>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>com.sqlancer</groupId>
