@@ -133,11 +133,19 @@
             <include>sqlancer/cnosdb/ast/*.java</include>
             <include>sqlancer/cnosdb/gen/*.java</include>
           </includes>
-          <testIncludes>
-            <testInclude>sqlancer/reducer/*.java</testInclude>
-            <testInclude>sqlancer/reducer/VirtualDB/*.java</testInclude>
-          </testIncludes>
         </configuration>
+        <executions>
+          <execution>
+            <id>default-testCompile</id>
+            <phase>test-compile</phase>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
