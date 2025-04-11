@@ -90,7 +90,7 @@
                 <outputDirectory>${project.build.directory}/configs</outputDirectory>
                 <resources>
                   <resource>
-                    <directory>${project.basedir}/configs</directory>
+                    <directory>${projectRootDir}/configs</directory>
                     <includes>
                       <include>*.properties</include>
                     </includes>
@@ -283,7 +283,7 @@
             </dependency>
           </dependencies>
           <configuration>
-            <configLocation>configs/checkstyle.xml</configLocation>
+            <configLocation>${maven.multiModuleProjectDirectory}/configs/checkstyle.xml</configLocation>
           </configuration>
           <executions>
             <execution>
@@ -302,6 +302,11 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-pmd-plugin</artifactId>
           <version>3.14.0</version>
+          <configuration>
+            <rulesets>
+              <ruleset>${maven.multiModuleProjectDirectory}/configs/pmd-rules.xml</ruleset>
+            </rulesets>
+          </configuration>
           <executions>
             <execution>
               <id>pmd</id>
@@ -312,9 +317,6 @@
               <configuration>
                 <failurePriority>2</failurePriority>
                 <failOnViolation>true</failOnViolation>
-                <rulesets>
-                  <ruleset>configs/pmd-rules.xml</ruleset>
-                </rulesets>
               </configuration>
             </execution>
           </executions>
