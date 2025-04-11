@@ -16,10 +16,10 @@
 
   <properties>
     <common.includes>
-      sqlancer/*.java,sqlancer/common/**/*.java,sqlancer/transformations/**/*.java
+      ${basedir}/*.java,${basedir}/common/**/*.java,${basedir}/transformations/**/*.java
     </common.includes>
-    <sonar.sources>../src</sonar.sources>
-    <sonar.tests>../test</sonar.tests>
+    <sonar.sources>${maven.multiModuleProjectDirectory}/src</sonar.sources>
+    <sonar.tests>${maven.multiModuleProjectDirectory}/test</sonar.tests>
     <sonar.inclusions>${common.includes}</sonar.inclusions>
   </properties>
 
