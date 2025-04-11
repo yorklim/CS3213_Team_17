@@ -25,9 +25,15 @@
 			<artifactId>mariadb-java-client</artifactId>
 			<version>3.1.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<sourceDirectory>../../../src</sourceDirectory>
+		<testSourceDirectory>../../../test</testSourceDirectory>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -77,42 +83,18 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
 					<includes>
-						<include>sqlancer/*.java</include>
-						<include>sqlancer/cnosdb/gen/*.java</include>
-						<include>sqlancer/common/ast/*.java</include>
-						<include>sqlancer/cnosdb/oracle/tlp/*.java</include>
+						<include>sqlancer/Main.java</include>
 						<include>sqlancer/mariadb/gen/*.java</include>
 						<include>sqlancer/mariadb/oracle/*.java</include>
 						<include>sqlancer/mariadb/*.java</include>
-						<include>sqlancer/cnosdb/ast/*.java</include>
-						<include>sqlancer/common/log/*.java</include>
-						<include>sqlancer/common/ast/newast/*.java</include>
 						<include>sqlancer/mariadb/ast/*.java</include>
-						<include>sqlancer/cnosdb/oracle/*.java</include>
-						<include>sqlancer/common/schema/*.java</include>
-						<include>sqlancer/common/visitor/*.java</include>
-						<include>sqlancer/common/*.java</include>
-						<include>sqlancer/cnosdb/*.java</include>
-						<include>sqlancer/transformations/*.java</include>
-						<include>sqlancer/common/oracle/*.java</include>
-						<include>sqlancer/cnosdb/client/*.java</include>
-						<include>sqlancer/common/gen/*.java</include>
-						<include>sqlancer/cnosdb/query/*.java</include>
-						<include>sqlancer/common/query/*.java</include>
 					</includes>
+					<testIncludes>
+						<testInclude>sqlancer/dbms/TestConfig.java</testInclude>
+						<testInclude>sqlancer/dbms/TestMariaDB*.java</testInclude>
+						<testInclude>sqlancer/dqp/mariadb/*.java</testInclude>
+					</testIncludes>
 				</configuration>
-				<executions>
-					<execution>
-						<id>default-testCompile</id>
-						<phase>test-compile</phase>
-						<goals>
-							<goal>testCompile</goal>
-						</goals>
-						<configuration>
-							<skip>true</skip>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
