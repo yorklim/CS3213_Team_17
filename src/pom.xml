@@ -11,7 +11,7 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>full</artifactId>
+	<artifactId>sqlancer-full</artifactId>
 	<packaging>jar</packaging>
 
 	<dependencies>

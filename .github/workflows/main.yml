@@ -93,7 +93,7 @@ jobs:
           psql -c "SELECT * from citus_add_node('localhost', 9701);" -p 9700 -U $USER -d test
           psql -c "SELECT * from citus_add_node('localhost', 9702);" -p 9700 -U $USER -d test
       - name: Run Tests
-        run: CITUS_AVAILABLE=true mvn -Dtest=TestCitus test
+        run: CITUS_AVAILABLE=true mvn -Dtest=TestCitus test -pl src/sqlancer/citus -am -DfailIfNoTests=false
 
   cnosdb:
     name: DBMS Tests (CnosDB)
@@ -117,9 +117,9 @@ jobs:
           sleep 5
       - name: Run Tests
         run: |
-          CNOSDB_AVAILABLE=true mvn -Dtest=TestCnosDBNoREC test
+          CNOSDB_AVAILABLE=true mvn -Dtest=TestCnosDBNoREC test -pl src/sqlancer/cnosdb -am -DfailIfNoTests=false
           sleep 20
-          CNOSDB_AVAILABLE=true mvn -Dtest=TestCnosDBTLP test
+          CNOSDB_AVAILABLE=true mvn -Dtest=TestCnosDBTLP test -pl src/sqlancer/cnosdb -am -DfailIfNoTests=false
 
   clickhouse:
     name: DBMS Tests (ClickHouse)
@@ -142,7 +142,7 @@ jobs:
           docker run --ulimit nofile=262144:262144 --name clickhouse-server -p8123:8123 -d clickhouse/clickhouse-server:24.3.1.2672
           sleep 5
       - name: Run Tests
-        run: CLICKHOUSE_AVAILABLE=true mvn -Dtest=ClickHouseBinaryComparisonOperationTest,TestClickHouse,ClickHouseOperatorsVisitorTest,ClickHouseToStringVisitorTest test
+        run: CLICKHOUSE_AVAILABLE=true mvn -Dtest=ClickHouseBinaryComparisonOperationTest,TestClickHouse,ClickHouseOperatorsVisitorTest,ClickHouseToStringVisitorTest test -pl src/sqlancer/clickhouse -am -DfailIfNoTests=false
       - name: Show fatal errors
         run: docker exec clickhouse-server grep Fatal /var/log/clickhouse-server/clickhouse-server.log || echo No Fatal Errors found
       - name: Teardown ClickHouse server
@@ -174,9 +174,9 @@ jobs:
         run: cd cockroach-v24.2.0.linux-amd64/ && ./cockroach sql --insecure -e "CREATE USER sqlancer; GRANT admin to sqlancer" && cd ..
       - name: Run Tests
         run: |
-          COCKROACHDB_AVAILABLE=true mvn -Dtest=TestCockroachDBNoREC test
-          COCKROACHDB_AVAILABLE=true mvn -Dtest=TestCockroachDBTLP test
-          COCKROACHDB_AVAILABLE=true mvn -Dtest=TestCockroachDBCERT test
+          COCKROACHDB_AVAILABLE=true mvn -Dtest=TestCockroachDBNoREC test -pl src/sqlancer/cockroachdb -am -DfailIfNoTests=false
+          COCKROACHDB_AVAILABLE=true mvn -Dtest=TestCockroachDBTLP test -pl src/sqlancer/cockroachdb -am -DfailIfNoTests=false
+          COCKROACHDB_AVAILABLE=true mvn -Dtest=TestCockroachDBCERT test -pl src/sqlancer/cockroachdb -am -DfailIfNoTests=false
 
   cockroachdb-qpg:
     name: QPG Tests (CockroachDB)
@@ -192,7 +192,7 @@ jobs:
           java-version: '11'
           cache: 'maven'
       - name: Build SQLancer
-        run: mvn -B package -DskipTests=true
+        run: mvn -B package -DskipTests=true -pl src/sqlancer/cockroachdb -am
       - name: Set up CockroachDB
         run: |
           wget -qO- https://binaries.cockroachdb.com/cockroach-v24.2.0.linux-amd64.tgz | tar  xvz
@@ -201,7 +201,7 @@ jobs:
       - name: Create SQLancer user
         run: cd cockroach-v24.2.0.linux-amd64/ && ./cockroach sql --insecure -e "CREATE USER sqlancer; GRANT admin to sqlancer" && cd ..
       - name: Run Tests
-        run: COCKROACHDB_AVAILABLE=true mvn -Dtest=TestCockroachDBQPG test
+        run: COCKROACHDB_AVAILABLE=true mvn -Dtest=TestCockroachDBQPG test -pl src/sqlancer/cockroachdb -am -DfailIfNoTests=false
 
   databend:
     name: DBMS Tests (Databend)
@@ -229,9 +229,9 @@ jobs:
         run: mvn package -pl src/sqlancer/databend -DskipTests -am
       - name: Run Tests
         run: |
-          DATABEND_AVAILABLE=true mvn -Dtest=TestDatabendTLP test
-          DATABEND_AVAILABLE=true mvn -Dtest=TestDatabendNoREC test
-          DATABEND_AVAILABLE=true mvn -Dtest=TestDatabendPQS test
+          DATABEND_AVAILABLE=true mvn -Dtest=TestDatabendTLP test -pl src/sqlancer/databend -am -DfailIfNoTests=false
+          DATABEND_AVAILABLE=true mvn -Dtest=TestDatabendNoREC test -pl src/sqlancer/databend -am -DfailIfNoTests=false
+          DATABEND_AVAILABLE=true mvn -Dtest=TestDatabendPQS test -pl src/sqlancer/databend -am -DfailIfNoTests=false
 
   datafusion:
     name: DBMS Tests (DataFusion)
@@ -260,7 +260,7 @@ jobs:
         run: mvn package -pl src/sqlancer/datafusion -DskipTests -am
       - name: Run Tests
         run: |
-          DATAFUSION_AVAILABLE=true mvn test -Pdatafusion-tests
+          DATAFUSION_AVAILABLE=true mvn test -Pdatafusion-tests -pl src/sqlancer/datafusion -am -DfailIfNoTests=false
 
   duckdb:
     name: DBMS Tests (DuckDB)
@@ -280,8 +280,8 @@ jobs:
         run: mvn package -pl src/sqlancer/duckdb -DskipTests -am
       - name: DuckDB Tests
         run: |
-          mvn -Dtest=TestDuckDBTLP test
-          mvn -Dtest=TestDuckDBNoREC test
+          mvn -Dtest=TestDuckDBTLP test -pl src/sqlancer/duckdb -am -DfailIfNoTests=false
+          mvn -Dtest=TestDuckDBNoREC test -pl src/sqlancer/duckdb -am -DfailIfNoTests=false
 
   h2:
     name: DBMS Tests (H2)
@@ -299,7 +299,7 @@ jobs:
       - name: Build SQLancer
         run: mvn package -pl src/sqlancer/h2 -DskipTests -am
       - name: Run Tests
-        run: mvn -Dtest=TestH2 test
+        run: mvn -Dtest=TestH2 test -pl src/sqlancer/h2 -am -DfailIfNoTests=false
 
   hsqldb:
     name: DBMS Tests (HSQLB)
@@ -318,8 +318,8 @@ jobs:
         run: mvn package -pl src/sqlancer/hsqldb -DskipTests -am
       - name: Run Tests
         run: |
-          mvn -Dtest=TestHSQLDBNoREC test
-          mvn -Dtest=TestHSQLDBTLP test
+          mvn -Dtest=TestHSQLDBNoREC test -pl src/sqlancer/hsqldb -am -DfailIfNoTests=false
+          mvn -Dtest=TestHSQLDBTLP test -pl src/sqlancer/hsqldb -am -DfailIfNoTests=false
 
   mariadb:
     name: DBMS Tests (MariaDB)
@@ -348,7 +348,7 @@ jobs:
       - name: Create SQLancer User
         run: sudo mysql -h 127.0.0.1 -uroot -proot -e "CREATE USER 'sqlancer'@'%' IDENTIFIED BY 'sqlancer'; GRANT ALL PRIVILEGES ON * . * TO 'sqlancer'@'%';"
       - name: Run Tests
-        run: MARIADB_AVAILABLE=true mvn -Dtest=TestMariaDB test
+        run: MARIADB_AVAILABLE=true mvn -Dtest=TestMariaDB test -pl src/sqlancer/mariadb -am -DfailIfNoTests=false
 
   materialize:
     name: DBMS Tests (Materialize)
@@ -375,9 +375,9 @@ jobs:
       run: mvn package -pl src/sqlancer/materialize -DskipTests -am
     - name: Run Tests
       run: |
-        MATERIALIZE_AVAILABLE=true mvn test -Dtest=TestMaterializeNoREC
-        MATERIALIZE_AVAILABLE=true mvn test -Dtest=TestMaterializeTLP
-        MATERIALIZE_AVAILABLE=true mvn test -Dtest=TestMaterializePQS
+        MATERIALIZE_AVAILABLE=true mvn test -Dtest=TestMaterializeNoREC -pl src/sqlancer/materialize -am -DfailIfNoTests=false
+        MATERIALIZE_AVAILABLE=true mvn test -Dtest=TestMaterializeTLP -pl src/sqlancer/materialize -am -DfailIfNoTests=false
+        MATERIALIZE_AVAILABLE=true mvn test -Dtest=TestMaterializePQS -pl src/sqlancer/materialize -am -DfailIfNoTests=false
 
   materialize-qpg:
     name: QPG Tests (Materialize)
@@ -401,11 +401,11 @@ jobs:
           java-version: '11'
           cache: 'maven'
       - name: Build SQLancer
-        run: mvn -B package -DskipTests=true
+        run: mvn -B package -DskipTests=true -pl src/sqlancer/materialize -am
       - name: Run Tests
         run: |
-          MATERIALIZE_AVAILABLE=true mvn test -Dtest=TestMaterializeQPG
-          MATERIALIZE_AVAILABLE=true mvn test -Dtest=TestMaterializeQueryPlan
+          MATERIALIZE_AVAILABLE=true mvn test -Dtest=TestMaterializeQPG -pl src/sqlancer/materialize -am -DfailIfNoTests=false
+          MATERIALIZE_AVAILABLE=true mvn test -Dtest=TestMaterializeQueryPlan -pl src/sqlancer/materialize -am -DfailIfNoTests=false
 
   mysql:
     name: DBMS Tests (MySQL)
@@ -434,9 +434,9 @@ jobs:
         run: mysql -h 127.0.0.1  -uroot -proot -e "CREATE USER 'sqlancer'@'%' IDENTIFIED BY 'sqlancer'; GRANT ALL PRIVILEGES ON * . * TO 'sqlancer'@'%';"
       - name: Run Tests
         run: |
-          MYSQL_AVAILABLE=true mvn test -Dtest=TestMySQLPQS
-          MYSQL_AVAILABLE=true mvn test -Dtest=TestMySQLTLP
-          MYSQL_AVAILABLE=true mvn test -Dtest=TestMySQLCERT
+          MYSQL_AVAILABLE=true mvn test -Dtest=TestMySQLPQS -pl src/sqlancer/mysql -am -DfailIfNoTests=false
+          MYSQL_AVAILABLE=true mvn test -Dtest=TestMySQLTLP -pl src/sqlancer/mysql -am -DfailIfNoTests=false
+          MYSQL_AVAILABLE=true mvn test -Dtest=TestMySQLCERT -pl src/sqlancer/mysql -am -DfailIfNoTests=false
 
   oceanbase:
     name: DBMS Tests (OceanBase)
@@ -460,9 +460,9 @@ jobs:
           mysql -h127.1 -uroot@test -P2881 -Doceanbase -A -e"CREATE USER 'sqlancer'@'%' IDENTIFIED BY 'sqlancer'; GRANT ALL PRIVILEGES ON * . * TO 'sqlancer'@'%';"
       - name: Run Tests
         run: |
-          OCEANBASE_AVAILABLE=true mvn test -Dtest=TestOceanBaseNoREC
-          OCEANBASE_AVAILABLE=true mvn test -Dtest=TestOceanBasePQS
-          OCEANBASE_AVAILABLE=true mvn test -Dtest=TestOceanBaseTLP
+          OCEANBASE_AVAILABLE=true mvn test -Dtest=TestOceanBaseNoREC -pl src/sqlancer/oceanbase -am -DfailIfNoTests=false
+          OCEANBASE_AVAILABLE=true mvn test -Dtest=TestOceanBasePQS -pl src/sqlancer/oceanbase -am -DfailIfNoTests=false
+          OCEANBASE_AVAILABLE=true mvn test -Dtest=TestOceanBaseTLP -pl src/sqlancer/oceanbase -am -DfailIfNoTests=false
   postgres:
     name: DBMS Tests (PostgreSQL)
     runs-on: ubuntu-latest
@@ -487,10 +487,10 @@ jobs:
         run: mvn package -pl src/sqlancer/postgres -DskipTests -am
       - name: Run Tests
         run: |
-          POSTGRES_AVAILABLE=true mvn -Dtest=TestPostgresPQS test
-          POSTGRES_AVAILABLE=true mvn -Dtest=TestPostgresTLP test
-          POSTGRES_AVAILABLE=true mvn -Dtest=TestPostgresNoREC test
-          POSTGRES_AVAILABLE=true mvn -Dtest=TestPostgresCERT test
+          POSTGRES_AVAILABLE=true mvn -Dtest=TestPostgresPQS test -pl src/sqlancer/postgres -am -DfailIfNoTests=false
+          POSTGRES_AVAILABLE=true mvn -Dtest=TestPostgresTLP test -pl src/sqlancer/postgres -am -DfailIfNoTests=false
+          POSTGRES_AVAILABLE=true mvn -Dtest=TestPostgresNoREC test -pl src/sqlancer/postgres -am -DfailIfNoTests=false
+          POSTGRES_AVAILABLE=true mvn -Dtest=TestPostgresCERT test -pl src/sqlancer/postgres -am -DfailIfNoTests=false
 
   presto:
     name: DBMS Tests (Presto)
@@ -677,12 +677,12 @@ jobs:
         with:
           python-version: '3.10'
       - name: Build SQLancer
-        run: python package.py doris
+        run: mvn package -DskipTests -pl src/sqlancer/doris -am
       - name: Run Tests
         run: |
-          DORIS_AVAILABLE=true mvn -Dtest=TestDorisNoREC test
-          DORIS_AVAILABLE=true mvn -Dtest=TestDorisPQS test
-          DORIS_AVAILABLE=true mvn -Dtest=TestDorisTLP test
+          DORIS_AVAILABLE=true mvn -Dtest=TestDorisNoREC test -pl src/sqlancer/doris -am -DfailIfNoTests=false
+          DORIS_AVAILABLE=true mvn -Dtest=TestDorisPQS test -pl src/sqlancer/doris -am -DfailIfNoTests=false
+          DORIS_AVAILABLE=true mvn -Dtest=TestDorisTLP test -pl src/sqlancer/doris -am -DfailIfNoTests=false
 
   reducer:
     name: Reducer Tests
