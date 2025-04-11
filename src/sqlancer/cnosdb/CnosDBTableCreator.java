@@ -5,6 +5,9 @@ import sqlancer.cnosdb.gen.CnosDBTableGenerator;
 import sqlancer.cnosdb.query.CnosDBOtherQuery;
 import sqlancer.common.TableCreator;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+
 public class CnosDBTableCreator extends TableCreator {
 
     private final CnosDBGlobalState globalState;
@@ -20,6 +23,21 @@ public class CnosDBTableCreator extends TableCreator {
             String tableName = String.format("m%d", globalState.getSchema().getDatabaseTables().size());
             CnosDBOtherQuery createTable = CnosDBTableGenerator.generate(tableName);
             globalState.executeStatement(createTable);
+        }
+    }
+
+    public void runQueryFromFileCnos(String file, CnosDBGlobalState globalState) {
+        try {
+            FileReader fr = new FileReader(file);
+            BufferedReader br = new BufferedReader(fr);
+            String cur = br.readLine();
+            while (cur != null) {
+                globalState.executeStatement(new CnosDBOtherQuery(cur, null));
+                cur = br.readLine();
+            }
+            br.close();
+            fr.close();
+        } catch (Exception e) {
         }
     }
 }
