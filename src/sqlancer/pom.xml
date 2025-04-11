@@ -14,6 +14,12 @@
   <artifactId>core</artifactId>
   <packaging>jar</packaging>
 
+  <properties>
+    <common.includes>
+      sqlancer/*.java,sqlancer/common/**/*.java,sqlancer/transformations/**/*.java
+    </common.includes>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>com.google.auto.service</groupId>
@@ -87,6 +93,11 @@
       <plugin>
         <groupId>net.revelc.code.formatter</groupId>
         <artifactId>formatter-maven-plugin</artifactId>
+        <configuration>
+          <includes>
+            ${common.includes}
+          </includes>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -103,27 +114,28 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <includes>
+            ${common.includes}
+          </includes>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
+        <configuration>
+          <includes>
+            ${common.includes}
+          </includes>
+        </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
           <includes>
             <include>sqlancer/*.java</include>
-            <include>sqlancer/common/*.java</include>
-            <include>sqlancer/common/visitor/*.java</include>
-            <include>sqlancer/common/query/*.java</include>
-            <include>sqlancer/common/ast/*.java</include>
-            <include>sqlancer/common/log/*.java</include>
-            <include>sqlancer/common/gen/*.java</include>
-            <include>sqlancer/common/ast/newast/*.java</include>
-            <include>sqlancer/common/schema/*.java</include>
-            <include>sqlancer/common/oracle/*.java</include>
-            <include>sqlancer/common/constant/*.java</include>
-            <include>sqlancer/transformations/*.java</include>
+            <include>sqlancer/common/**/*.java</include>
+            <include>sqlancer/transformations/**/*.java</include>
             <!-- NOTE: CNOSdb is included due to coupling from common.FileExecutor -->
             <include>sqlancer/cnosdb/*.java</include>
             <include>sqlancer/cnosdb/client/*.java</include>

@@ -37,7 +37,8 @@
     </dependency>
   </dependencies>
   <build>
-    <sourceDirectory>../../../src</sourceDirectory>
+    <sourceDirectory>${basedir}</sourceDirectory>
+    <testSourceDirectory>../../../test</testSourceDirectory>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -87,13 +88,11 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
           <includes>
-            <include>sqlancer/Main.java</include>
-            <include>sqlancer/presto/*.java</include>
-            <include>sqlancer/presto/test/*.java</include>
-            <include>sqlancer/presto/ast/*.java</include>
-            <include>sqlancer/presto/gen/*.java</include>
+            <include>../Main.java</include>
+            <include>./**/*.java</include>
           </includes>
           <testIncludes>
+            <testInclude>sqlancer/dbms/TestConfig.java</testInclude>
             <testInclude>sqlancer/dbms/TestPresto*.java</testInclude>
           </testIncludes>
         </configuration>
