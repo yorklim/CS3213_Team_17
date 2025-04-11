@@ -342,9 +342,7 @@
         <plugin>
           <groupId>org.sonarsource.scanner.maven</groupId>
           <artifactId>sonar-maven-plugin</artifactId>
-          <configuration>
-            <sonar.skip>false</sonar.skip>
-          </configuration>
+          <version>5.1.0.4751</version>
         </plugin>
       </plugins>
     </pluginManagement>
