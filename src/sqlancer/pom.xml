@@ -18,6 +18,9 @@
     <common.includes>
       ${basedir}/*.java,${basedir}/common/**/*.java,${basedir}/transformations/**/*.java
     </common.includes>
+    <sonar.sources>${maven.multiModuleProjectDirectory}/src</sonar.sources>
+    <sonar.tests>${maven.multiModuleProjectDirectory}/test</sonar.tests>
+    <sonar.inclusions>${common.includes}</sonar.inclusions>
   </properties>
 
   <dependencies>

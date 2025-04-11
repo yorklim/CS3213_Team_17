@@ -14,11 +14,6 @@
   <artifactId>citus</artifactId>
   <packaging>jar</packaging>
 
-  <properties>
-    <sonar.sources>${basedir}</sonar.sources>
-    <sonar.tests>${basedir}</sonar.tests>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>com.sqlancer</groupId>
