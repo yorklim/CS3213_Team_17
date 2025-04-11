@@ -1,12 +1,12 @@
 package sqlancer.cnosdb;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+
 import sqlancer.Randomly;
 import sqlancer.cnosdb.gen.CnosDBTableGenerator;
 import sqlancer.cnosdb.query.CnosDBOtherQuery;
 import sqlancer.common.TableCreator;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
 
 public class CnosDBTableCreator extends TableCreator {
 

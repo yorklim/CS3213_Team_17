@@ -1,11 +1,11 @@
 package sqlancer.common;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+
 import sqlancer.GlobalState;
 import sqlancer.cnosdb.CnosDBGlobalState;
 import sqlancer.cnosdb.query.CnosDBOtherQuery;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
 
 public abstract class TableQueryGenerator extends FileExecutor {
     protected int total;
