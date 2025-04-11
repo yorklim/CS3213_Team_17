@@ -1,5 +1,7 @@
 package sqlancer.cnosdb;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.Objects;
 
 import sqlancer.AbstractAction;
@@ -76,6 +78,21 @@ public class CnosDBTableQueryGenerator extends TableQueryGenerator {
                     throw new IgnoreMeException();
                 }
             }
+        }
+    }
+
+    public void runQueryFromFileCnos(String file, CnosDBGlobalState globalState) {
+        try {
+            FileReader fr = new FileReader(file);
+            BufferedReader br = new BufferedReader(fr);
+            String cur = br.readLine();
+            while (cur != null) {
+                globalState.executeStatement(new CnosDBOtherQuery(cur, null));
+                cur = br.readLine();
+            }
+            br.close();
+            fr.close();
+        } catch (Exception e) {
         }
     }
 }
