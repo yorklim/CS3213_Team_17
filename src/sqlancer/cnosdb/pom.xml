@@ -32,7 +32,7 @@
     </dependency>
   </dependencies>
   <build>
-    <sourceDirectory>../../../src</sourceDirectory>
+    <sourceDirectory>${basedir}</sourceDirectory>
     <testSourceDirectory>../../../test</testSourceDirectory>
     <plugins>
       <plugin>
@@ -83,14 +83,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
           <includes>
-            <include>sqlancer/Main.java</include>
-            <include>sqlancer/cnosdb/ast/*.java</include>
-            <include>sqlancer/cnosdb/*.java</include>
-            <include>sqlancer/cnosdb/client/*.java</include>
-            <include>sqlancer/cnosdb/oracle/tlp/*.java</include>
-            <include>sqlancer/cnosdb/gen/*.java</include>
-            <include>sqlancer/cnosdb/oracle/*.java</include>
-            <include>sqlancer/cnosdb/query/*.java</include>
+            <include>../Main.java</include>
+            <include>./**/*.java</include>
           </includes>
           <testIncludes>
             <testInclude>sqlancer/dbms/TestConfig.java</testInclude>

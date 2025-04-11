@@ -32,7 +32,7 @@
     </dependency>
   </dependencies>
   <build>
-    <sourceDirectory>../../../src</sourceDirectory>
+    <sourceDirectory>${basedir}</sourceDirectory>
     <testSourceDirectory>../../../test</testSourceDirectory>
     <plugins>
       <plugin>
@@ -83,12 +83,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
           <includes>
-            <include>sqlancer/Main.java</include>
-            <include>sqlancer/postgres/oracle/tlp/*.java</include>
-            <include>sqlancer/postgres/*.java</include>
-            <include>sqlancer/postgres/gen/*.java</include>
-            <include>sqlancer/postgres/ast/*.java</include>
-            <include>sqlancer/postgres/oracle/*.java</include>
+            <include>../Main.java</include>
+            <include>./**/*.java</include>
           </includes>
           <testIncludes>
             <testInclude>sqlancer/dbms/TestConfig.java</testInclude>

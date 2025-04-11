@@ -27,7 +27,7 @@
     </dependency>
   </dependencies>
   <build>
-    <sourceDirectory>../../../src</sourceDirectory>
+    <sourceDirectory>${basedir}</sourceDirectory>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -77,11 +77,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
           <includes>
-            <include>sqlancer/Main.java</include>
-            <include>sqlancer/questdb/ast/*.java</include>
-            <include>sqlancer/questdb/test/*.java</include>
-            <include>sqlancer/questdb/*.java</include>
-            <include>sqlancer/questdb/gen/*.java</include>
+            <include>../Main.java</include>
+            <include>./**/*.java</include>
           </includes>
           <!-- No tests for QuestDB -->
         </configuration>
