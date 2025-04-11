@@ -16,8 +16,8 @@
 
   <properties>
     <!--  All files should already be checked by the submodules, overriding to prevent duplication -->
-    <sonar.exclusions>./**/*</sonar.exclusions>
-    <sonar.test.exclusions>./**/*</sonar.test.exclusions>
+    <sonar.exclusions>${maven.multiModuleProjectDirectory}/**/*</sonar.exclusions>
+    <sonar.test.exclusions>${maven.multiModuleProjectDirectory}/**/*</sonar.test.exclusions>
   </properties>
 
   <dependencies>
