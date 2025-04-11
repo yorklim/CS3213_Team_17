@@ -18,9 +18,6 @@
     <common.includes>
       sqlancer/*.java,sqlancer/common/**/*.java,sqlancer/transformations/**/*.java
     </common.includes>
-    <sonar.sources>../src</sonar.sources>
-    <sonar.tests>../test</sonar.tests>
-    <sonar.inclusions>${common.includes}</sonar.inclusions>
   </properties>
 
   <dependencies>
