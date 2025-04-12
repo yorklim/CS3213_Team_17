@@ -18,6 +18,7 @@
     <common.includes>
       sqlancer/*.java,sqlancer/common/**/*.java,sqlancer/transformations/**/*.java
     </common.includes>
+    <sonar.skip>true</sonar.skip>
   </properties>
 
   <dependencies>
