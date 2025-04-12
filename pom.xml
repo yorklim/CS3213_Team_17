@@ -43,7 +43,9 @@
     <sonar.coverage.jacoco.xmlReportPaths>
     ../app-it/target/site/jacoco-aggregate/jacoco.xml
     </sonar.coverage.jacoco.xmlReportPaths>
+<!--    Parent pom should not scan any files? -->
     <sonar.exclusions>./**/*</sonar.exclusions>
+    <sonar.test.exclusions>./**/*</sonar.test.exclusions>
   </properties>
 
   <modules>
