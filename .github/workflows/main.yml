@@ -734,4 +734,5 @@ jobs:
       - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify sonar:sonar -Dsonar.projectKey=yorklim_CS3213_Team_17 -DskipTests -Pcoverage
+        run: |
+          mvn -B verify sonar:sonar -Dsonar.projectKey=yorklim_CS3213_Team_17 -DskipTests -X

@@ -136,14 +136,6 @@
             <include>sqlancer/*.java</include>
             <include>sqlancer/common/**/*.java</include>
             <include>sqlancer/transformations/**/*.java</include>
-            <!-- NOTE: CNOSdb is included due to coupling from common.FileExecutor -->
-            <include>sqlancer/cnosdb/*.java</include>
-            <include>sqlancer/cnosdb/client/*.java</include>
-            <include>sqlancer/cnosdb/query/*.java</include>
-            <include>sqlancer/cnosdb/oracle/tlp/*.java</include>
-            <include>sqlancer/cnosdb/oracle/*.java</include>
-            <include>sqlancer/cnosdb/ast/*.java</include>
-            <include>sqlancer/cnosdb/gen/*.java</include>
           </includes>
         </configuration>
         <executions>
