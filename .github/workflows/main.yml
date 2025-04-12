@@ -735,4 +735,4 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          run: mvn -B verify sonar:sonar -Dsonar.projectKey=yorklim_CS3213_Team_17 -DskipTests -X
+          mvn -B verify sonar:sonar -Dsonar.projectKey=yorklim_CS3213_Team_17 -DskipTests -X -pl src
