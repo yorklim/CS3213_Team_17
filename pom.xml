@@ -381,7 +381,7 @@
       <dependency>
         <groupId>com.arangodb</groupId>
         <artifactId>arangodb-java-driver</artifactId>
-        <version>6.9.0</version>
+        <version>7.17.1</version>
       </dependency>
       <dependency>
         <groupId>com.ing.data</groupId>
